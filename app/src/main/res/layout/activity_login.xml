@@ -7,8 +7,6 @@
     android:orientation="vertical"
     tools:context="com.example.seanh.groupup.LoginActivity">
 
-    <!-- Login progress -->
-
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
