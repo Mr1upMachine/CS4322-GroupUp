@@ -1,6 +1,6 @@
 package com.example.seanh.groupup;
 
-import android.content.Intent;
+import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -69,5 +69,4 @@ public class MainActivity extends AppCompatActivity {
         //Hides the progress bar
         findViewById(R.id.progressBarMainActivity).setVisibility(View.GONE);
     }
-
 }
