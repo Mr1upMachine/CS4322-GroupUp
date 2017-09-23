@@ -11,11 +11,17 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
+import android.widget.TextView;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivity extends AppCompatActivity {
     private List<Event> eventList = new ArrayList<>();
     private RecyclerView recyclerView;
     private EventsAdapter eAdapter;
+
+    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
