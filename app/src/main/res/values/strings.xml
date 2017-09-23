@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">GroupUp</string>
+    <string name="auth_failed">Auth. Failed</string>
 </resources>
