@@ -2,6 +2,7 @@ package com.example.seanh.groupup;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -23,9 +24,10 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.button2).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Database.writeNewUser("seanhale1@live.com","12345");
+                //Event event = new Event("name","desc","URL",0.0,1.1);
+                //Database.recordNewEvent(event);
 
-
+                Log.d("OUTPUT", Database.getEventById(1).toString());
             }
         });
     }
