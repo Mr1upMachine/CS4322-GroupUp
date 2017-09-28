@@ -11,7 +11,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivity extends AppCompatActivity {
 
-    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,7 +19,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         TextView textDisplayUser = (TextView) findViewById(R.id.textDisplayUser);
-        textDisplayUser.setText(user.getEmail());
+        textDisplayUser.setText(firebaseUser.getEmail());
 
         findViewById(R.id.button2).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -27,7 +27,11 @@ public class MainActivity extends AppCompatActivity {
                 //Event event = new Event("name","desc","URL",0.0,1.1);
                 //Database.recordNewEvent(event);
 
-                Log.d("OUTPUT", Database.getEventById(1).toString());
+                //User user = new User(firebaseUser.getUid(),firebaseUser.getEmail(),"fn","test");
+
+                //Database.createNewUser(user);
+
+                Log.d("OUTPUT", Database.getUserById(firebaseUser.getUid()).toString());
             }
         });
     }

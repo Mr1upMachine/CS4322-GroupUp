@@ -4,6 +4,7 @@ public class Event {
     private int id;
     private String name, description, picURL;
     private double locX, locY;
+    private User owner;
 
     //Constructors
     Event(){}
@@ -55,8 +56,15 @@ public class Event {
         this.locX = locX;
         this.locY = locY;
     }
+    public User getOwner() {
+        return owner;
+    }
+    public void setOwner(User owner) {
+        this.owner = owner;
+    }
 
     public String toString(){
         return "Event{id="+id+" name="+name+" desc="+description+" picURL="+picURL+" locX="+locX+" locY"+locY;
     }
+
 }

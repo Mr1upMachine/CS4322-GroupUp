@@ -31,6 +31,7 @@ public class LoginActivity extends AppCompatActivity {
         editLoginPassword = (EditText) findViewById(R.id.editLoginPassword);
 
         mAuth = FirebaseAuth.getInstance();
+        //Auto sign in
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -39,6 +40,7 @@ public class LoginActivity extends AppCompatActivity {
                     // User is signed in
                     Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
                     LoginActivity.this.startActivity( new Intent(LoginActivity.this, MainActivity.class) );
+                    finish();
                 } else {
                     // User is signed out
                     Log.d(TAG, "onAuthStateChanged:signed_out");
@@ -66,12 +68,14 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
+        //auto sign in
         mAuth.addAuthStateListener(mAuthListener);
     }
 
     @Override
     public void onStop() {
         super.onStop();
+        //auto sign in
         if (mAuthListener != null) {
             mAuth.removeAuthStateListener(mAuthListener);
         }
@@ -114,6 +118,7 @@ public class LoginActivity extends AppCompatActivity {
                         }
                         else {
                             LoginActivity.this.startActivity( new Intent(LoginActivity.this, MainActivity.class) );
+                            finish();
                         }
                         // ...
                     }
