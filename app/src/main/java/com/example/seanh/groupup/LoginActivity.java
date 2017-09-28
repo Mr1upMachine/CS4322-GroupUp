@@ -31,6 +31,8 @@ public class LoginActivity extends AppCompatActivity {
         editLoginPassword = (EditText) findViewById(R.id.editLoginPassword);
 
         mAuth = FirebaseAuth.getInstance();
+
+
         //Auto sign in
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -81,6 +83,7 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+    //TODO add auto new entry to user database
     public void createAccount(String email, String password){
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {

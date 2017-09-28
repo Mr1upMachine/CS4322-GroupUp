@@ -24,14 +24,7 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.button2).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Event event = new Event("name","desc","URL",0.0,1.1);
-                //Database.recordNewEvent(event);
-
-                //User user = new User(firebaseUser.getUid(),firebaseUser.getEmail(),"fn","test");
-
-                //Database.createNewUser(user);
-
-                Log.d("OUTPUT", Database.getUserById(firebaseUser.getUid()).toString());
+                Database.createNewEvent(new Event("RocketLeagueTourney", "Some noobs gettin pwnd", "exampleStringURL", 48.928, 817.7151738));
             }
         });
     }
