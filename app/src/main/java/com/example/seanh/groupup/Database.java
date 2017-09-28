@@ -56,6 +56,7 @@ public class Database {
         dataEvents.child("idCount").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
+                //TODO get rid of backassward code loop
                 eventIdCount = snapshot.getValue(Integer.class);
             }
             @Override
