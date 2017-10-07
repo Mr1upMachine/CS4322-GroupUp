@@ -1,5 +1,7 @@
 package com.example.seanh.groupup;
 
+import android.util.Log;
+
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -19,7 +21,7 @@ public class Database {
     private static final StorageReference mStorageRef = FirebaseStorage.getInstance().getReference();
 
     //TODO find better way to do this
-    private static int eventIdCount = getEventIdCount();
+    private static int eventIdCount = -65535; //TODO find out why event id is wrong
     private static Event tempEvent = new Event();
     private static User tempUser = new User();
 
@@ -27,6 +29,9 @@ public class Database {
 
     //Records new event into the database
     public static void createNewEvent(Event e) {
+        //TODO fix async issue
+        getEventIdCount();
+
         e.setId(++eventIdCount);
         dataEventIDs.child("" + eventIdCount).setValue(e);
         setEventIdCount(eventIdCount);
@@ -52,18 +57,21 @@ public class Database {
         //TODO write method
     }
 
-    public static int getEventIdCount(){
-        dataEvents.child("idCount").addListenerForSingleValueEvent(new ValueEventListener() {
+    public static void getEventIdCount(){
+        //Creates the listener
+        ValueEventListener valueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
-                //TODO get rid of backassward code loop
+                Log.d("OUTPUT","before "+eventIdCount);
                 eventIdCount = snapshot.getValue(Integer.class);
+                Log.d("OUTPUT","after "+eventIdCount);
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
             }
-        });
-        return eventIdCount;
+        };
+        dataEvents.child("idCount").addListenerForSingleValueEvent(valueEventListener); //sets the listener
+        dataEvents.child("idCount").removeEventListener(valueEventListener); //stops the listener
     }
     public static void setEventIdCount(int id){
         dataEvents.child("idCount").setValue(id);
@@ -93,6 +101,7 @@ public class Database {
     public static void updateUser(User newUser){
         //TODO write method
     }
+
 
 
 

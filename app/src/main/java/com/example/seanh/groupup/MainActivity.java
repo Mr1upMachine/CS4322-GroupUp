@@ -1,6 +1,5 @@
 package com.example.seanh.groupup;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -8,10 +7,10 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Toast;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
-import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -36,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(eAdapter);
 
+
         //Test data
         User u = new User("id0","123fakeemail@rocketmail.com","John","Lebrowski");
         eventList.add(new Event("Basketball pick-up", "title says it all", "10/9/17 5:00PM", "https://imgur.com/gallery/JgWznk4", 1.0, 1.1, u));
@@ -52,7 +52,6 @@ public class MainActivity extends AppCompatActivity {
 
         //onClickListener for RecycleView elements
         recyclerView.addOnItemTouchListener(new RecyclerTouchListener(this, recyclerView, new ClickListener() {
-            @Override
             public void onClick(View view, final int position) {
                 //Values are passing to activity & to fragment as well
                 Toast.makeText(MainActivity.this, "Single Click on position: "+position, Toast.LENGTH_SHORT).show();
@@ -63,7 +62,6 @@ public class MainActivity extends AppCompatActivity {
                 i.putExtra("Event", e.toString());
                 i.putExtra("Owner", e.getOwner().toString());
                 startActivity(i);
-            }
 
             @Override
             public void onLongClick(View view, final int position) {
