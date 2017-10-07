@@ -24,7 +24,9 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.button2).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Database.createNewEvent(new Event("RocketLeagueTourney", "Some noobs gettin pwnd", "exampleStringURL", 48.928, 817.7151738));
+                //Database.getEventIdCount();
+                Database.createNewEvent(new Event("while test", "this is a bad idea", "yep", 123.45, 0.11));
+                Log.d("OUTPUT","woo button pressed");
             }
         });
     }
