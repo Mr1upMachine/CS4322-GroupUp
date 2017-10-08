@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/imageEventRowBackground"
+        android:layout_width="match_parent"
+        android:layout_height="125dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:src="#050505" />
+
+    <ImageView
+        android:id="@+id/imageEventRowIcon"
+        android:layout_width="125dp"
+        android:layout_height="125dp"
+        android:layout_alignParentStart="true"
+        app:srcCompat="@drawable/triangle" />
+
+    <TextView
+        android:id="@+id/textEventRowLocation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/imageEventRowBackground"
+        android:layout_alignParentEnd="true"
+        android:paddingEnd="10dp"
+        android:text="Location, Loc 00/00/00 00:00" />
+
+    <TextView
+        android:id="@+id/textEventRowOwner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/imageEventRowBackground"
+        android:layout_alignParentStart="true"
+        android:paddingStart="20dp"
+        android:text="Owner" />
+
+</RelativeLayout>
