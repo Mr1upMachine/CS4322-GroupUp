@@ -44,25 +44,23 @@ public class MainActivity extends AppCompatActivity {
         eAdapter.notifyDataSetChanged();
 
 
-        //makes onClickListener for RecycleView elements
+        //onClickListener for RecycleView elements
         recyclerView.addOnItemTouchListener(new RecyclerTouchListener(this, recyclerView, new ClickListener() {
             @Override
             public void onClick(View view, final int position) {
                 //Values are passing to activity & to fragment as well
                 Toast.makeText(MainActivity.this, "Single Click on position: "+position, Toast.LENGTH_SHORT).show();
 
-                //passes through the information about this event
+                //passes through the information to the next activity about this event
                 Event e = eventList.get(position);
-                User u = e.getOwner();
-
                 Intent i = new Intent(MainActivity.this, EventViewActivity.class);
                 i.putExtra("Event", e.toString());
-                i.putExtra("Owner", u.toString());
+                i.putExtra("Owner", e.getOwner().toString());
                 startActivity(i);
             }
 
             @Override
-            public void onLongClick(View view, int position) {
+            public void onLongClick(View view, final int position) {
                 Toast.makeText(MainActivity.this, "Long press on position: "+position, Toast.LENGTH_LONG).show();
             }
         }));
