@@ -1,11 +1,13 @@
 package com.example.seanh.groupup;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,8 +31,8 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setAdapter(eAdapter);
 
         //Test data
-        User u = new User("id0","email","fname","lname");
-        eventList.add(new Event("event1", "e1desc", "e1time", "e1pic", 1.0, 1.1, u));
+        User u = new User("id0","123fakeemail@rocketmail.com","John","Lebrowski");
+        eventList.add(new Event("Basketball pick-up", "title says it all", "10/9/17 5:00PM", "https://imgur.com/gallery/JgWznk4", 1.0, 1.1, u));
         eventList.add(new Event("event2", "e2desc", "e2time", "e2pic", 2.0, 2.2, u));
         eventList.add(new Event("event3", "e3desc", "e3time", "e3pic", 3.0, 3.3, u));
         eventList.add(new Event("event4", "e4desc", "e4time", "e4pic", 4.0, 4.4, u));
@@ -41,7 +43,33 @@ public class MainActivity extends AppCompatActivity {
         //Updates the RecycleView
         eAdapter.notifyDataSetChanged();
 
+
+        //makes onClickListener for RecycleView elements
+        recyclerView.addOnItemTouchListener(new RecyclerTouchListener(this, recyclerView, new ClickListener() {
+            @Override
+            public void onClick(View view, final int position) {
+                //Values are passing to activity & to fragment as well
+                Toast.makeText(MainActivity.this, "Single Click on position: "+position, Toast.LENGTH_SHORT).show();
+
+                //passes through the information about this event
+                Event e = eventList.get(position);
+                User u = e.getOwner();
+
+                Intent i = new Intent(MainActivity.this, EventViewActivity.class);
+                i.putExtra("Event", e.toString());
+                i.putExtra("Owner", u.toString());
+                startActivity(i);
+            }
+
+            @Override
+            public void onLongClick(View view, int position) {
+                Toast.makeText(MainActivity.this, "Long press on position: "+position, Toast.LENGTH_LONG).show();
+            }
+        }));
+
+
         //Hides the progress bar
         findViewById(R.id.progressBarMainActivity).setVisibility(View.GONE);
     }
+
 }

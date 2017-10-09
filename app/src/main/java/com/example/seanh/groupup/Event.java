@@ -77,6 +77,6 @@ public class Event {
     }
 
     public String toString(){
-        return "Event{id="+id+" name="+name+" desc="+description+" picURL="+picURL+" locX="+locX+" locY"+locY;
+        return "Event{id="+id+" name="+name+" desc="+description+" time="+time+" picURL="+picURL+" locX="+locX+" locY"+locY+"}";
     }
 }

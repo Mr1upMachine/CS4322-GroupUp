@@ -23,7 +23,9 @@ public class LoginActivity extends AppCompatActivity {
         findViewById(R.id.buttonLogin).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //opens main activity and closes this one
                 LoginActivity.this.startActivity( new Intent(LoginActivity.this, MainActivity.class) );
+                finish();
             }
         });
 

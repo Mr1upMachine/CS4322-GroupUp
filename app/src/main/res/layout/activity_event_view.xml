@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.seanh.groupup.EventViewActivity"
+    tools:layout_editor_absoluteY="81dp"
+    tools:layout_editor_absoluteX="0dp">
+
+    <TextView
+        android:id="@+id/textEventViewOwner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingBottom="8dp"
+        android:text="Owner: "
+        tools:layout_constraintTop_creator="1"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        tools:layout_constraintLeft_creator="1"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textEventViewEvent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingBottom="8dp"
+        android:text="Event: "
+        tools:layout_constraintTop_creator="1"
+        app:layout_constraintTop_toBottomOf="@+id/textEventViewOwner"
+        tools:layout_constraintLeft_creator="1"
+        app:layout_constraintLeft_toLeftOf="@+id/textEventViewOwner" />
+
+</android.support.constraint.ConstraintLayout>
