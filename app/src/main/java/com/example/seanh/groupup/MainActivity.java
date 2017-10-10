@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setAdapter(eAdapter);
 
 
-        //Test data
+        //Test data TODO delete
         User u = new User("id0","123fakeemail@rocketmail.com","John","Lebrowski");
         eventList.add(new Event("Basketball pick-up", "title says it all", "10/9/17 5:00PM", "https://imgur.com/gallery/JgWznk4", 1.0, 1.1, u));
         eventList.add(new Event("event2", "e2desc", "e2time", "e2pic", 2.0, 2.2, u));
