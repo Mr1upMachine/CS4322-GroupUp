@@ -26,8 +26,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/imageEventRowBackground"
-        android:layout_toStartOf="@+id/textEventRowTime"
-        android:paddingEnd="3dp"
+        android:paddingStart="20dp"
         android:text="Location, Loc" />
 
     <TextView
@@ -39,15 +38,6 @@
         android:layout_alignParentEnd="true"
         android:paddingEnd="10dp"
         android:text=" 00/00/00 00:00" />
-
-    <TextView
-        android:id="@+id/textEventRowOwner"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/imageEventRowBackground"
-        android:layout_alignParentStart="true"
-        android:paddingStart="20dp"
-        android:text="Owner" />
 
     <ImageView
         android:id="@+id/imageEventRowIcon"

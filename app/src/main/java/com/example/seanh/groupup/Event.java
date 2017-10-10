@@ -65,7 +65,6 @@ public class Event {
     public String getTime() {
         return time;
     }
-
     public void setTime(String time) {
         this.time = time;
     }
@@ -77,6 +76,6 @@ public class Event {
     }
 
     public String toString(){
-        return "Event{id="+id+" name="+name+" desc="+description+" time="+time+" picURL="+picURL+" locX="+locX+" locY"+locY+"}";
+        return "Event{id="+id+" name="+name+" desc="+description+" time="+time+" picURL="+picURL+" locX="+locX+" locY="+locY+"}";
     }
 }

@@ -22,7 +22,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.MyViewHold
 
         public MyViewHolder(View view) {
             super(view);
-            ownerName = (TextView) view.findViewById(R.id.textEventRowOwner);
+            //ownerName = (TextView) view.findViewById(R.id.textEventRowOwner);
             location = (TextView) view.findViewById(R.id.textEventRowLocation);
             time = (TextView) view.findViewById(R.id.textEventRowTime);
 
@@ -50,7 +50,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.MyViewHold
 
     public void onBindViewHolder(MyViewHolder holder, int position) {
         Event event = eventsList.get(position);
-        holder.ownerName.setText(event.getOwner().getfName());
+        //holder.ownerName.setText(event.getOwner().getfName());
         holder.location.setText(event.getLoc());
         holder.time.setText(event.getTime());
     }
