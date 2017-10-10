@@ -60,7 +60,6 @@ public class MainActivity extends AppCompatActivity {
         //onClickListener for RecycleView elements
         recyclerView.addOnItemTouchListener(new RecyclerTouchListener(this, recyclerView, new ClickListener() {
             public void onClick(View view, final int position) {
-                //Values are passing to activity & to fragment as well
                 Toast.makeText(MainActivity.this, "Single Click on position: " + position, Toast.LENGTH_SHORT).show();
 
                 //passes through the information to the next activity about this event
