@@ -1,5 +1,6 @@
 package com.example.seanh.groupup;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -7,13 +8,12 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Toast;
-import android.widget.TextView;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private List<Event> eventList = new ArrayList<>();
@@ -26,6 +26,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //sets action bar to user's email (for testing)
+        setTitle(""+user.getEmail());
+
+
+
+
 
         //Handles setup of RecyclerView
         recyclerView = (RecyclerView) findViewById(R.id.recycleViewEventList);
@@ -54,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.addOnItemTouchListener(new RecyclerTouchListener(this, recyclerView, new ClickListener() {
             public void onClick(View view, final int position) {
                 //Values are passing to activity & to fragment as well
-                Toast.makeText(MainActivity.this, "Single Click on position: "+position, Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "Single Click on position: " + position, Toast.LENGTH_SHORT).show();
 
                 //passes through the information to the next activity about this event
                 Event e = eventList.get(position);
@@ -62,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
                 i.putExtra("Event", e.toString());
                 i.putExtra("Owner", e.getOwner().toString());
                 startActivity(i);
-
+            }
             @Override
             public void onLongClick(View view, final int position) {
                 Toast.makeText(MainActivity.this, "Long press on position: "+position, Toast.LENGTH_LONG).show();
