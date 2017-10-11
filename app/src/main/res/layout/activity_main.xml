@@ -42,7 +42,7 @@
         tools:layout_constraintLeft_creator="1" />
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/floatingActionButton"
+        android:id="@+id/fabNewEvent"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:layout_marginBottom="20dp"

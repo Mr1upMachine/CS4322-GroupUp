@@ -78,5 +78,16 @@ public class MainActivity extends AppCompatActivity {
 
         //Hides the progress bar
         findViewById(R.id.progressBarMainActivity).setVisibility(View.GONE);
+
+
+
+
+        //Makes FAB (plus button) go to EventCreateActivity
+        findViewById(R.id.fabNewEvent).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, EventCreateActivity.class));
+            }
+        });
     }
 }
