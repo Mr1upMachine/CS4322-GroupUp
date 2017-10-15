@@ -74,8 +74,7 @@ public class MainActivity extends AppCompatActivity {
         }));
 
 
-        //Hides loading bar
-        findViewById(R.id.progressBarMainActivity).setVisibility(View.GONE);
+
 
 
 
@@ -129,6 +128,9 @@ public class MainActivity extends AppCompatActivity {
     public void updateUI(){
         //Updates the RecycleView
         eAdapter.notifyDataSetChanged();
+        //Hides loading bar
+        findViewById(R.id.progressBarMainActivity).setVisibility(View.GONE);
+
     }
 
 }

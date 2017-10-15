@@ -88,13 +88,13 @@ public class EventCreateActivity extends AppCompatActivity {
 
                         date_time = dayOfMonth + "-" + (monthOfYear + 1) + "-" + year;
                         //*************Call Time Picker Here ********************
-                        tiemPicker();
+                        timePicker();
                     }
                 }, mYear, mMonth, mDay);
         datePickerDialog.show();
     }
 
-    private void tiemPicker(){
+    private void timePicker(){
         // Get Current Time
         final Calendar c = Calendar.getInstance();
         mHour = c.get(Calendar.HOUR_OF_DAY);

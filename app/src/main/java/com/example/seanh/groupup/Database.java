@@ -1,7 +1,5 @@
 package com.example.seanh.groupup;
 
-import android.util.Log;
-
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -52,6 +50,7 @@ public class Database {
         return tempEvent;
     }
 
+    /*
     public static List<Event> getAllEvents(){ //TODO make better name
         dataEvents.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -75,8 +74,8 @@ public class Database {
     }
 
 
-    //public static void getEventIdCount(){  }
-
+    public static void getEventIdCount(){  }
+       */
 
     //Records new user into the database
     public static void createNewUser(User u) {
