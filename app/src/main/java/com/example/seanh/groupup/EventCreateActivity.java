@@ -63,6 +63,9 @@ public class EventCreateActivity extends AppCompatActivity {
                 if(!strName.isEmpty() && !strDesc.isEmpty() && !strWhen.isEmpty() && numLocX!=0.0 && numLocY!=0.0){
                     Database.createNewEvent(new Event(strName, strDesc, strWhen, "Dummy pic URL here", numLocX, numLocY,
                             new User(user.getUid(), user.getEmail(), user.getDisplayName(), user.getDisplayName()) ));
+                    try{   Thread.sleep(250);   }catch(Exception e){} //Arbitrary waiting for design choice
+                    Toast.makeText(getApplicationContext(), "Event created successfully",Toast.LENGTH_LONG).show();
+                    finish();
                 }
                 else{
                     Toast.makeText(getApplicationContext(), "Please fill all fields", Toast.LENGTH_SHORT).show();

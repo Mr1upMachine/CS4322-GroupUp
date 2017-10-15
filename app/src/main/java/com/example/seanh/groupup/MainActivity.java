@@ -2,6 +2,7 @@ package com.example.seanh.groupup;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -25,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
     private List<Event> eventList = new ArrayList<>();
     private RecyclerView recyclerView;
     private EventsAdapter eAdapter;
+    SwipeRefreshLayout swipeContainer;
 
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -48,11 +50,8 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(eAdapter);
 
-        getAllEvents();
-        //Log.d("OUTPUT","data call");
-
-        //Updates the RecycleView
-        //eAdapter.notifyDataSetChanged();
+        //loads events for the first time
+        fetchAllEvents();
 
 
         //onClickListener for RecycleView elements
@@ -73,7 +72,19 @@ public class MainActivity extends AppCompatActivity {
             }
         }));
 
-
+        //Makes refreshing the event list easy
+        swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                fetchAllEvents();
+            }
+        });
+        // Configure the refreshing colors
+        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
 
 
 
@@ -89,7 +100,13 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-
+    //Back button currently signs users out TODO change so pressing back 3 times
+    @Override
+    public void onBackPressed(){
+        FirebaseAuth.getInstance().signOut();
+        startActivity(new Intent(MainActivity.this, LoginActivity.class));
+        finish();
+    }
 
 
 
@@ -97,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
 
     private final DatabaseReference dataRoot = FirebaseDatabase.getInstance().getReference();
     private final DatabaseReference dataEvents = dataRoot.child("events");
-    public void getAllEvents(){ //TODO make better name
+    public void fetchAllEvents(){
         dataEvents.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -123,6 +140,7 @@ public class MainActivity extends AppCompatActivity {
         eAdapter.notifyDataSetChanged();
         //Hides loading bar
         findViewById(R.id.progressBarMainActivity).setVisibility(View.GONE);
+        swipeContainer.setRefreshing(false);
 
     }
 

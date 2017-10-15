@@ -8,9 +8,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import java.util.ArrayList;
-import java.util.List;
-
 //TODO All data retrieval lags by one iteration (ie. returns null first time called). Why?
 public class Database {
 
@@ -23,7 +20,6 @@ public class Database {
     private static Event tempEvent = new Event();
     private static User tempUser = new User();
 
-    private static List<Event> eventList = new ArrayList<>()
 
     //Records new event into the database
     public static void createNewEvent(Event e) {
