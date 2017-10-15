@@ -100,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    //Back button currently signs users out TODO change so pressing back 3 times
+    //Back button currently signs users out TODO change so pressing back 3 times instead
     @Override
     public void onBackPressed(){
         FirebaseAuth.getInstance().signOut();
