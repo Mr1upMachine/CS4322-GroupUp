@@ -10,39 +10,38 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.util.ArrayList;
+import java.util.List;
+
 //TODO All data retrieval lags by one iteration (ie. returns null first time called). Why?
 public class Database {
 
     private static final DatabaseReference dataRoot = FirebaseDatabase.getInstance().getReference();
     private static final DatabaseReference dataEvents = dataRoot.child("events");
-    private static final DatabaseReference dataEventIDs = dataEvents.child("id:");
     private static final DatabaseReference dataUsers = dataRoot.child("users");
     //TODO add storage related stuff for user pics and event pics
     private static final StorageReference mStorageRef = FirebaseStorage.getInstance().getReference();
 
-    //TODO find better way to do this
-    private static int eventIdCount = -65535; //TODO find out why event id is wrong
     private static Event tempEvent = new Event();
     private static User tempUser = new User();
 
-
+    private static List<Event> eventList = new ArrayList<>();
 
     //Records new event into the database
     public static void createNewEvent(Event e) {
-        //TODO fix async issue
-        getEventIdCount();
-
-        e.setId(++eventIdCount);
-        dataEventIDs.child("" + eventIdCount).setValue(e);
-        setEventIdCount(eventIdCount);
+        DatabaseReference dr = dataEvents.push(); //generates unique id for event
+        e.setId(dr.getKey()); //makes it easier to get generated key
+        dr.setValue(e); //uploads data to database
     }
-    public static Event getEventById(int id){
+    public static void updateEvent(Event newEvent){
+        DatabaseReference dr = dataEvents.child(newEvent.getId()); //gets event by id
+        dr.setValue(newEvent); //uploads data to database
+    }
+    public static Event getEventById(String id){
         // Read from the database
-        dataEventIDs.child(""+id).addListenerForSingleValueEvent(new ValueEventListener() {
+        dataEvents.child(id).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                // This method is called once with the initial value and again
-                // whenever data at this location is updated.
                 tempEvent = dataSnapshot.getValue(Event.class);
             }
 
@@ -50,32 +49,32 @@ public class Database {
             public void onCancelled(DatabaseError error) {
             }
         });
-
         return tempEvent;
     }
-    public static void updateEvent(Event newEvent){
-        //TODO write method
+
+    public static List<Event> getAllEvents(){ //TODO make better name
+        dataEvents.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                parseAllEvents(dataSnapshot);
+                Log.d("OUTPUT","data parse complete");
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {  }
+        });
+        return eventList;
+    }
+    private static void parseAllEvents(DataSnapshot dataSnapshot){
+        eventList.clear();//clears out old list
+        for (DataSnapshot ds : dataSnapshot.getChildren())
+        {
+            eventList.add(ds.getValue(Event.class));
+        }
     }
 
-    public static void getEventIdCount(){
-        //Creates the listener
-        ValueEventListener valueEventListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                Log.d("OUTPUT","before "+eventIdCount);
-                eventIdCount = snapshot.getValue(Integer.class);
-                Log.d("OUTPUT","after "+eventIdCount);
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        };
-        dataEvents.child("idCount").addListenerForSingleValueEvent(valueEventListener); //sets the listener
-        dataEvents.child("idCount").removeEventListener(valueEventListener); //stops the listener
-    }
-    public static void setEventIdCount(int id){
-        dataEvents.child("idCount").setValue(id);
-    }
+
+    //public static void getEventIdCount(){  }
 
 
     //Records new user into the database
@@ -87,14 +86,11 @@ public class Database {
         dataUsers.child(id).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                // This method is called once with the initial value and again
-                // whenever data at this location is updated.
                 tempUser = dataSnapshot.getValue(User.class);
             }
 
             @Override
-            public void onCancelled(DatabaseError error) {
-            }
+            public void onCancelled(DatabaseError error) {  }
         });
         return tempUser;
     }

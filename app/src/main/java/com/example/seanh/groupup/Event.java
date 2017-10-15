@@ -1,17 +1,12 @@
 package com.example.seanh.groupup;
 
 public class Event {
-    private int id;
-    private String name, description, time, picURL;
+    private String id, name, description, time, picURL, ownerId;
     private double locX, locY;
-    private User owner;
+    //private User owner;
 
     //Constructors
     Event(){}
-    Event(int id, String name){
-        this.id = id;
-        this.name = name;
-    }
     Event(String name, String description, String time, String picURL, double locX, double locY, User owner){
         //Used for the creation of new events
         this.name = name;
@@ -20,14 +15,24 @@ public class Event {
         this.picURL = picURL;
         this.locX = locX;
         this.locY = locY;
-        this.owner = owner;
+        this.ownerId = owner.getId();
+    }
+    Event(String name, String description, String time, String picURL, double locX, double locY, String ownerId){
+        //Used for the creation of new events
+        this.name = name;
+        this.description = description;
+        this.time = time;
+        this.picURL = picURL;
+        this.locX = locX;
+        this.locY = locY;
+        this.ownerId = ownerId;
     }
 
     //Getter & setters
-    public int getId() {
+    public String getId() {
         return id;
     }
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
     public String getName() {
@@ -54,7 +59,7 @@ public class Event {
     public double getLocY() {
         return locY;
     }
-    public String getLoc(){
+    public String generateLocString(){
         //TODO parse gps loc to city
         return locX+" "+locY;
     }
@@ -68,11 +73,11 @@ public class Event {
     public void setTime(String time) {
         this.time = time;
     }
-    public User getOwner() {
-        return owner;
+    public String getOwnerId() {
+        return ownerId;
     }
-    public void setOwner(User owner) {
-        this.owner = owner;
+    public void setOwnerId(String ownerId) {
+        this.ownerId = ownerId;
     }
 
     public String toString(){

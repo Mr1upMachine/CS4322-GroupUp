@@ -12,15 +12,15 @@ import java.util.List;
 import java.util.Random;
 
 
-public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.MyViewHolder> {
+public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewHolder> {
 
     private List<Event> eventsList;
 
-    public class MyViewHolder extends RecyclerView.ViewHolder {
+    public class EventViewHolder extends RecyclerView.ViewHolder {
         public TextView ownerName, location, time;
         public ImageView icon, color, background;
 
-        public MyViewHolder(View view) {
+        public EventViewHolder(View view) {
             super(view);
             //ownerName = (TextView) view.findViewById(R.id.textEventRowOwner);
             location = (TextView) view.findViewById(R.id.textEventRowLocation);
@@ -41,17 +41,17 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.MyViewHold
     }
 
     @Override
-    public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public EventViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.event_row, parent, false);
 
-        return new MyViewHolder(itemView);
+        return new EventViewHolder(itemView);
     }
 
-    public void onBindViewHolder(MyViewHolder holder, int position) {
+    public void onBindViewHolder(EventViewHolder holder, int position) {
         Event event = eventsList.get(position);
         //holder.ownerName.setText(event.getOwner().getfName());
-        holder.location.setText(event.getLoc());
+        holder.location.setText(event.generateLocString());
         holder.time.setText(event.getTime());
     }
 

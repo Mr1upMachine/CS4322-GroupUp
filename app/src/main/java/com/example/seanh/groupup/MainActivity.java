@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -42,16 +43,8 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(eAdapter);
 
-
-        //Test data TODO delete
-        User u = new User("id0","123fakeemail@rocketmail.com","John","Lebrowski");
-        eventList.add(new Event("Basketball pick-up", "title says it all", "10/9/17 5:00PM", "https://imgur.com/gallery/JgWznk4", 1.0, 1.1, u));
-        eventList.add(new Event("event2", "e2desc", "e2time", "e2pic", 2.0, 2.2, u));
-        eventList.add(new Event("event3", "e3desc", "e3time", "e3pic", 3.0, 3.3, u));
-        eventList.add(new Event("event4", "e4desc", "e4time", "e4pic", 4.0, 4.4, u));
-        eventList.add(new Event("event5", "e5desc", "e5time", "e5pic", 5.0, 5.5, u));
-        eventList.add(new Event("event6", "e6desc", "e6time", "e6pic", 6.0, 6.6, u));
-        eventList.add(new Event("event7", "e7desc", "e7time", "e7pic", 7.0, 7.7, u));
+        eventList = Database.getAllEvents();
+        Log.d("OUTPUT","data call");
 
         //Updates the RecycleView
         eAdapter.notifyDataSetChanged();
@@ -66,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
                 Event e = eventList.get(position);
                 Intent i = new Intent(MainActivity.this, EventViewActivity.class);
                 i.putExtra("Event", e.toString());
-                i.putExtra("Owner", e.getOwner().toString());
+                i.putExtra("Owner", e.getOwnerId());
                 startActivity(i);
             }
             @Override
@@ -76,8 +69,9 @@ public class MainActivity extends AppCompatActivity {
         }));
 
 
-        //Hides the progress bar
+        //Hides loading bar
         findViewById(R.id.progressBarMainActivity).setVisibility(View.GONE);
+
 
 
 
@@ -90,4 +84,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        //Updates the RecycleView
+        //eAdapter.notifyDataSetChanged();
+    }
+
+
 }
