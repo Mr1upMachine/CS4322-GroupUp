@@ -26,7 +26,8 @@
         </activity>
         <activity android:name=".MainActivity" />
         <activity android:name=".EventViewActivity" />
-        <activity android:name=".EventCreateActivity"></activity>
+        <activity android:name=".EventCreateActivity" />
+        <activity android:name=".RegisterActivity"></activity>
     </application>
 
 </manifest>
