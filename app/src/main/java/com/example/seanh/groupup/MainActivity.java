@@ -12,6 +12,11 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,11 +48,11 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(eAdapter);
 
-        eventList = Database.getAllEvents();
-        Log.d("OUTPUT","data call");
+        getAllEvents();
+        //Log.d("OUTPUT","data call");
 
         //Updates the RecycleView
-        eAdapter.notifyDataSetChanged();
+        //eAdapter.notifyDataSetChanged();
 
 
         //onClickListener for RecycleView elements
@@ -92,5 +97,38 @@ public class MainActivity extends AppCompatActivity {
         //eAdapter.notifyDataSetChanged();
     }
 
+
+
+
+
+
+
+    private final DatabaseReference dataRoot = FirebaseDatabase.getInstance().getReference();
+    private final DatabaseReference dataEvents = dataRoot.child("events");
+    public void getAllEvents(){ //TODO make better name
+        dataEvents.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                parseAllEvents(dataSnapshot);
+                Log.d("OUTPUT","data parse complete");
+                updateUI();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {  }
+        });
+    }
+    private void parseAllEvents(DataSnapshot dataSnapshot){
+        eventList.clear();//clears out old list
+        for (DataSnapshot ds : dataSnapshot.getChildren())
+        {
+            eventList.add(ds.getValue(Event.class));
+        }
+    }
+
+    public void updateUI(){
+        //Updates the RecycleView
+        eAdapter.notifyDataSetChanged();
+    }
 
 }

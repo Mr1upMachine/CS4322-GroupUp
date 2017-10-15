@@ -58,6 +58,7 @@ public class Database {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 parseAllEvents(dataSnapshot);
                 Log.d("OUTPUT","data parse complete");
+
             }
 
             @Override
