@@ -23,7 +23,7 @@ public class Database {
     private static Event tempEvent = new Event();
     private static User tempUser = new User();
 
-    private static List<Event> eventList = new ArrayList<>();
+    private static List<Event> eventList = new ArrayList<>()
 
     //Records new event into the database
     public static void createNewEvent(Event e) {
