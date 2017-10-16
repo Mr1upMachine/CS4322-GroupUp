@@ -2,7 +2,14 @@ package com.example.seanh.groupup;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.pm.PackageManager;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.DatePicker;
@@ -25,6 +32,11 @@ public class EventCreateActivity extends AppCompatActivity {
     int mYear, mMonth, mDay, mHour, mMinute;
     double numLocX = 0.0, numLocY = 0.0;
 
+    LocationManager locationManager;
+    String mprovider;
+    private static final int REQUEST_CODE_PERMISSION = 1;
+    String mPermission = android.Manifest.permission.ACCESS_FINE_LOCATION;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,6 +50,60 @@ public class EventCreateActivity extends AppCompatActivity {
         editWhen = (EditText) findViewById(R.id.editEventCreateWhen);
         editLocX = (EditText) findViewById(R.id.editEventCreateLocX);
         editLocY = (EditText) findViewById(R.id.editEventCreateLocY);
+
+
+
+
+
+        if(Build.VERSION.SDK_INT>= 23) {
+
+            if (checkSelfPermission(mPermission) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{mPermission,
+                        },
+                        REQUEST_CODE_PERMISSION);
+                return;
+            }
+
+            else
+            {
+            }
+        }
+
+
+        mprovider = locationManager.getBestProvider(new Criteria(), true);
+        if (mprovider != null && !mprovider.equals("")) {
+            if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                    && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                return;
+            }
+            Location location = locationManager.getLastKnownLocation(mprovider);
+            locationManager.requestLocationUpdates(mprovider, 1500, 1, new LocationListener() {
+                @Override
+                public void onLocationChanged(Location location) {
+                    numLocX = location.getLongitude();
+                    numLocY = location.getLatitude();
+                    locationManager.removeUpdates(this);
+                }
+
+                @Override
+                public void onStatusChanged(String provider, int status, Bundle extras) {  }
+
+                @Override
+                public void onProviderEnabled(String provider) {  }
+
+                @Override
+                public void onProviderDisabled(String provider) {  }
+            });
+
+        }
+        findViewById(R.id.buttonCreateEventGetloc).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                editLocX.setText(""+numLocX);
+                editLocY.setText(""+numLocY);
+            }
+        });
 
 
 
