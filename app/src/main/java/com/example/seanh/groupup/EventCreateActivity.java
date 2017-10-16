@@ -2,6 +2,7 @@ package com.example.seanh.groupup;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Criteria;
 import android.location.Location;
@@ -21,7 +22,8 @@ import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Calendar;
 
-public class EventCreateActivity extends AppCompatActivity {
+
+public class EventCreateActivity extends AppCompatActivity implements LocationListener {
 
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -32,9 +34,10 @@ public class EventCreateActivity extends AppCompatActivity {
     double numLocX = 0.0, numLocY = 0.0;
 
     LocationManager locationManager;
-    String mprovider;
+    String provider;
     private static final int REQUEST_CODE_PERMISSION = 1;
     String mPermission = android.Manifest.permission.ACCESS_FINE_LOCATION;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,61 +61,47 @@ public class EventCreateActivity extends AppCompatActivity {
 
 
 
-        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
-        final LocationListener locationListener = new LocationListener() {
-            @Override
-            public void onLocationChanged(Location location) {
-                numLocX = location.getLongitude();
-                numLocY = location.getLatitude();
-                editLocX.setText("" + numLocX);
-                editLocY.setText("" + numLocY);
-            }
 
-            @Override
-            public void onStatusChanged(String provider, int status, Bundle extras) {
-            }
 
-            @Override
-            public void onProviderEnabled(String provider) {
-            }
 
-            @Override
-            public void onProviderDisabled(String provider) {
-            }
-        };
 
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000,
-                1500, locationListener);
 
+
+        //TODO only gets location at the start of the app, refresh does not work, and fails to get it on my galaxy s7 entirely
         findViewById(R.id.buttonCreateEventGetloc).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mprovider = locationManager.getBestProvider(new Criteria(), true);
-                if (mprovider != null && !mprovider.equals("")) {
-                    if (ActivityCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                            && ActivityCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                        return;
-                    }
+
+                //Requests permission to use location if necessary
+                requestPermissions(new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION, android.Manifest.permission.ACCESS_FINE_LOCATION},1);
+
+                // Get the location manager
+                locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+                // Define the criteria how to select the location provider -> use default
+                Criteria criteria = new Criteria();
+                provider = locationManager.getBestProvider(criteria, true);
+                Location location = locationManager.getLastKnownLocation(provider);
+                if (ActivityCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                        && ActivityCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    return;
                 }
-                locationManager.requestSingleUpdate(new Criteria(), locationListener, null);
+                // Initialize the location fields
+                if (location != null) {
+                    System.out.println("Provider " + provider + " has been selected.");
+                    onLocationChanged(location);
+                } else {
+                    editLocX.setText("Location not available");
+                    editLocY.setText("Location not available");
+                }
             }
         });
 
 
-
-
-
-
-
-
-
         editWhen.setOnClickListener(new View.OnClickListener() {
-
             @Override
             public void onClick(View v) {
                 datePicker();
-
             }
         });
 
@@ -183,5 +172,31 @@ public class EventCreateActivity extends AppCompatActivity {
                     }
                 }, mHour, mMinute, false);
         timePickerDialog.show();
+    }
+
+
+
+    //LocationListener methods
+    @Override
+    public void onLocationChanged(Location location) {
+        //numLocX = location.getLongitude();
+        //numLocY = location.getLatitude();
+        editLocX.setText("" + location.getLongitude());
+        editLocY.setText("" + location.getLatitude());
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+
     }
 }
