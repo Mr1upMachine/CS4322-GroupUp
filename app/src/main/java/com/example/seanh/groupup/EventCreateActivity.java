@@ -7,7 +7,6 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -55,55 +54,56 @@ public class EventCreateActivity extends AppCompatActivity {
 
 
 
-        if(Build.VERSION.SDK_INT>= 23) {
 
-            if (checkSelfPermission(mPermission) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(this,
-                        new String[]{mPermission,
-                        },
-                        REQUEST_CODE_PERMISSION);
-                return;
+
+
+
+        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+
+        final LocationListener locationListener = new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+                numLocX = location.getLongitude();
+                numLocY = location.getLatitude();
+                editLocX.setText("" + numLocX);
+                editLocY.setText("" + numLocY);
             }
 
-            else
-            {
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) {
             }
-        }
 
-
-        mprovider = locationManager.getBestProvider(new Criteria(), true);
-        if (mprovider != null && !mprovider.equals("")) {
-            if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                    && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                return;
+            @Override
+            public void onProviderEnabled(String provider) {
             }
-            Location location = locationManager.getLastKnownLocation(mprovider);
-            locationManager.requestLocationUpdates(mprovider, 1500, 1, new LocationListener() {
-                @Override
-                public void onLocationChanged(Location location) {
-                    numLocX = location.getLongitude();
-                    numLocY = location.getLatitude();
-                    locationManager.removeUpdates(this);
-                }
 
-                @Override
-                public void onStatusChanged(String provider, int status, Bundle extras) {  }
+            @Override
+            public void onProviderDisabled(String provider) {
+            }
+        };
 
-                @Override
-                public void onProviderEnabled(String provider) {  }
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000,
+                1500, locationListener);
 
-                @Override
-                public void onProviderDisabled(String provider) {  }
-            });
-
-        }
         findViewById(R.id.buttonCreateEventGetloc).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                editLocX.setText(""+numLocX);
-                editLocY.setText(""+numLocY);
+                mprovider = locationManager.getBestProvider(new Criteria(), true);
+                if (mprovider != null && !mprovider.equals("")) {
+                    if (ActivityCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                            && ActivityCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                        return;
+                    }
+                }
+                locationManager.requestSingleUpdate(new Criteria(), locationListener, null);
             }
         });
+
+
+
+
+
+
 
 
 
