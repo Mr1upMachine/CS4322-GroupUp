@@ -69,9 +69,16 @@ public class EventCreateActivity extends AppCompatActivity {
         //sets location service
         mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
+        //fixes security issue TODO should work but doesn't
+        if (ActivityCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+
         //allegedly requests updates
         mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000,
                 0.0f, mLocationListener);
+
 
 
         //TODO only gets location at the start of the app, refresh does not work, and fails to get it on my galaxy s7 entirely
@@ -81,14 +88,6 @@ public class EventCreateActivity extends AppCompatActivity {
 
                 //Requests permission to use location if necessary
                 requestPermissions(new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION, android.Manifest.permission.ACCESS_FINE_LOCATION},1);
-
-
-                //fixes security issue TODO should work but doesn't
-                mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-                if (ActivityCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                        && ActivityCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    return;
-                }
 
                 editLocX.setText(""+numLocX);
                 editLocY.setText(""+numLocY);
