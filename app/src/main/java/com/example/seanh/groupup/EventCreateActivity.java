@@ -66,16 +66,12 @@ public class EventCreateActivity extends AppCompatActivity {
         editLocX = (EditText) findViewById(R.id.editEventCreateLocX);
         editLocY = (EditText) findViewById(R.id.editEventCreateLocY);
 
-        //fixes security issue
+        //sets location service
         mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return;
-        }
+
         //allegedly requests updates
         mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000,
                 0.0f, mLocationListener);
-        //mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER); //gets location the first time only on emulator IF loc push was first
 
 
         //TODO only gets location at the start of the app, refresh does not work, and fails to get it on my galaxy s7 entirely
@@ -93,10 +89,6 @@ public class EventCreateActivity extends AppCompatActivity {
                         && ActivityCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     return;
                 }
-                /*mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                */
-                mLocationManager.requestSingleUpdate(LocationManager.GPS_PROVIDER, mLocationListener, null);
-
 
                 editLocX.setText(""+numLocX);
                 editLocY.setText(""+numLocY);
