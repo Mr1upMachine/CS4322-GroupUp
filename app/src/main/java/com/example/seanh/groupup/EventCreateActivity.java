@@ -2,9 +2,7 @@ package com.example.seanh.groupup;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
-import android.content.Context;
 import android.content.pm.PackageManager;
-import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -23,7 +21,7 @@ import com.google.firebase.auth.FirebaseUser;
 import java.util.Calendar;
 
 
-public class EventCreateActivity extends AppCompatActivity implements LocationListener {
+public class EventCreateActivity extends AppCompatActivity {
 
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -37,7 +35,25 @@ public class EventCreateActivity extends AppCompatActivity implements LocationLi
     String provider;
     private static final int REQUEST_CODE_PERMISSION = 1;
     String mPermission = android.Manifest.permission.ACCESS_FINE_LOCATION;
+    private final LocationListener mLocationListener = new LocationListener() {
+        @Override
+        public void onLocationChanged(final Location location) {
+            numLocX = location.getLongitude();
+            numLocY = location.getLatitude();
+        }
 
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+        }
+
+        @Override
+        public void onProviderEnabled(String provider) {
+        }
+
+        @Override
+        public void onProviderDisabled(String provider) {
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,19 +69,16 @@ public class EventCreateActivity extends AppCompatActivity implements LocationLi
         editLocX = (EditText) findViewById(R.id.editEventCreateLocX);
         editLocY = (EditText) findViewById(R.id.editEventCreateLocY);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+        //fixes security issue
+        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        //allegedly requests updates
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000,
+                1.0f, mLocationListener);
+        locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER); //gets location the first time only on emulator IF loc push was first
 
 
         //TODO only gets location at the start of the app, refresh does not work, and fails to get it on my galaxy s7 entirely
@@ -76,24 +89,20 @@ public class EventCreateActivity extends AppCompatActivity implements LocationLi
                 //Requests permission to use location if necessary
                 requestPermissions(new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION, android.Manifest.permission.ACCESS_FINE_LOCATION},1);
 
-                // Get the location manager
-                locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-                // Define the criteria how to select the location provider -> use default
-                Criteria criteria = new Criteria();
-                provider = locationManager.getBestProvider(criteria, true);
-                Location location = locationManager.getLastKnownLocation(provider);
+
+                /*//fixes security issue TODO should work but doesn't
+                locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
                 if (ActivityCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                         && ActivityCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     return;
                 }
-                // Initialize the location fields
-                if (location != null) {
-                    System.out.println("Provider " + provider + " has been selected.");
-                    onLocationChanged(location);
-                } else {
-                    editLocX.setText("Location not available");
-                    editLocY.setText("Location not available");
-                }
+                locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                */
+
+
+
+                editLocX.setText(""+numLocX);
+                editLocY.setText(""+numLocY);
             }
         });
 
@@ -151,7 +160,6 @@ public class EventCreateActivity extends AppCompatActivity implements LocationLi
                 }, mYear, mMonth, mDay);
         datePickerDialog.show();
     }
-
     private void timePicker(){
         // Get Current Time
         final Calendar c = Calendar.getInstance();
@@ -174,29 +182,4 @@ public class EventCreateActivity extends AppCompatActivity implements LocationLi
         timePickerDialog.show();
     }
 
-
-
-    //LocationListener methods
-    @Override
-    public void onLocationChanged(Location location) {
-        //numLocX = location.getLongitude();
-        //numLocY = location.getLatitude();
-        editLocX.setText("" + location.getLongitude());
-        editLocY.setText("" + location.getLatitude());
-    }
-
-    @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-
-    }
-
-    @Override
-    public void onProviderEnabled(String provider) {
-
-    }
-
-    @Override
-    public void onProviderDisabled(String provider) {
-
-    }
 }
