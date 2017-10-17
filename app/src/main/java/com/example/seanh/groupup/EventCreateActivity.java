@@ -31,10 +31,7 @@ public class EventCreateActivity extends AppCompatActivity {
     int mYear, mMonth, mDay, mHour, mMinute;
     double numLocX = 0.0, numLocY = 0.0;
 
-    LocationManager locationManager;
-    String provider;
-    private static final int REQUEST_CODE_PERMISSION = 1;
-    String mPermission = android.Manifest.permission.ACCESS_FINE_LOCATION;
+    LocationManager mLocationManager;
     private final LocationListener mLocationListener = new LocationListener() {
         @Override
         public void onLocationChanged(final Location location) {
@@ -70,15 +67,15 @@ public class EventCreateActivity extends AppCompatActivity {
         editLocY = (EditText) findViewById(R.id.editEventCreateLocY);
 
         //fixes security issue
-        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
         //allegedly requests updates
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000,
-                1.0f, mLocationListener);
-        locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER); //gets location the first time only on emulator IF loc push was first
+        mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000,
+                0.0f, mLocationListener);
+        //mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER); //gets location the first time only on emulator IF loc push was first
 
 
         //TODO only gets location at the start of the app, refresh does not work, and fails to get it on my galaxy s7 entirely
@@ -90,15 +87,15 @@ public class EventCreateActivity extends AppCompatActivity {
                 requestPermissions(new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION, android.Manifest.permission.ACCESS_FINE_LOCATION},1);
 
 
-                /*//fixes security issue TODO should work but doesn't
-                locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+                //fixes security issue TODO should work but doesn't
+                mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
                 if (ActivityCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                         && ActivityCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     return;
                 }
-                locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                /*mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
                 */
-
+                mLocationManager.requestSingleUpdate(LocationManager.GPS_PROVIDER, mLocationListener, null);
 
 
                 editLocX.setText(""+numLocX);
