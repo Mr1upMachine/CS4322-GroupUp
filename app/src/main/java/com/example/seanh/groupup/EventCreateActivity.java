@@ -66,6 +66,13 @@ public class EventCreateActivity extends AppCompatActivity {
         editLocX = (EditText) findViewById(R.id.editEventCreateLocX);
         editLocY = (EditText) findViewById(R.id.editEventCreateLocY);
 
+
+        //fixes security issue TODO should work but doesn't
+        if (ActivityCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION, android.Manifest.permission.ACCESS_FINE_LOCATION},1);
+        }
+
         //sets location service
         mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
