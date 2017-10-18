@@ -3,12 +3,14 @@ package com.example.seanh.groupup;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.pm.PackageManager;
+import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -32,6 +34,7 @@ public class EventCreateActivity extends AppCompatActivity {
     double numLocX = 0.0, numLocY = 0.0;
 
     LocationManager mLocationManager;
+    String provider;
     private final LocationListener mLocationListener = new LocationListener() {
         @Override
         public void onLocationChanged(final Location location) {
@@ -88,13 +91,15 @@ public class EventCreateActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 //Requests permission to use location if necessary
-                requestPermissions(new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION, android.Manifest.permission.ACCESS_FINE_LOCATION},1);
+                requestPermissions(new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION, android.Manifest.permission.ACCESS_FINE_LOCATION}, 1);
 
                 //fixes security issue TODO should work but doesn't
                 if (ActivityCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                         && ActivityCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     return;
                 }
+
+                getLocation();
 
                 editLocX.setText(""+numLocX);
                 editLocY.setText(""+numLocY);
@@ -177,4 +182,26 @@ public class EventCreateActivity extends AppCompatActivity {
         timePickerDialog.show();
     }
 
+
+    public void getLocation(){
+        if (ActivityCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        try{
+            Criteria criteria = new Criteria();
+            criteria.setAccuracy(Criteria.ACCURACY_COARSE);
+            criteria.setAltitudeRequired(false);
+            criteria.setBearingRequired(false);
+            criteria.setCostAllowed(true);
+            criteria.setPowerRequirement(Criteria.POWER_LOW);
+            provider = mLocationManager.getBestProvider(criteria, true);
+            if(provider != null){
+                Location l = mLocationManager.getLastKnownLocation(provider);
+                numLocX = l.getLongitude();
+                numLocY = l.getLatitude();
+            }
+        }
+        catch(Exception e){ Log.d("EventCreateActivity","Get Location Failed"); }
+    }
 }
