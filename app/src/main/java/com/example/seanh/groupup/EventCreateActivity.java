@@ -1,6 +1,5 @@
 package com.example.seanh.groupup;
 
-import android.Manifest;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.pm.PackageManager;
@@ -162,22 +161,20 @@ public class EventCreateActivity extends AppCompatActivity {
         //security check if permission is not already granted
         if (ActivityCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
-            //if permission is not granted, try granting permission
-            requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+            findViewById(R.id.buttonCreateEventGetloc).setVisibility(View.GONE);
+            return;
         }
 
         //TODO prevent app from crashing if location permission is not granted
-
-        //sets up location manager
-        mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-
-        //updates location anytime the gps updates
-        mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000,
-                0.5f, mLocationListener);
-
         //sets up the location for the first time
         try {
+            //sets up location manager
+            mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+
+            //updates location anytime the gps updates
+            mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000,
+                    0.5f, mLocationListener);
+
             Criteria criteria = new Criteria();
             criteria.setAccuracy(Criteria.ACCURACY_COARSE);
             criteria.setAltitudeRequired(false);

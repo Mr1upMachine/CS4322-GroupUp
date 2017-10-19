@@ -39,6 +39,8 @@ public class MainActivity extends AppCompatActivity {
         setTitle(""+user.getEmail());
 
 
+        //if Location permission is not granted, try granting Location permission TODO replace this with better way
+        requestPermissions(new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION, android.Manifest.permission.ACCESS_FINE_LOCATION}, 1);
 
 
 
