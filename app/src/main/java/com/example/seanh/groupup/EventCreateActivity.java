@@ -167,7 +167,7 @@ public class EventCreateActivity extends AppCompatActivity {
 
         //TODO prevent app from crashing if location permission is not granted
         //sets up the location for the first time
-        try {
+
             //sets up location manager
             mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
@@ -175,6 +175,7 @@ public class EventCreateActivity extends AppCompatActivity {
             mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000,
                     0.5f, mLocationListener);
 
+            try {
             Criteria criteria = new Criteria();
             criteria.setAccuracy(Criteria.ACCURACY_COARSE);
             criteria.setAltitudeRequired(false);
@@ -184,8 +185,8 @@ public class EventCreateActivity extends AppCompatActivity {
             provider = mLocationManager.getBestProvider(criteria, true);
             if (provider != null) {
                 Location l = mLocationManager.getLastKnownLocation(provider);
-                numLocX = l.getLongitude();
-                numLocY = l.getLatitude();
+                numLocX = l.getLatitude();
+                numLocY = l.getLongitude();
             }
         } catch (Exception e) {
             Log.d("EventCreateActivity", "Get Location Failed");
