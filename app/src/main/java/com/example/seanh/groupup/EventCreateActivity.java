@@ -59,9 +59,7 @@ public class EventCreateActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_create);
-
-        //sets action bar to user's email (for testing)
-        setTitle("Create an Event:");
+        setTitle("Create an Event:"); //sets action bar to user's email (for testing)
 
         editName = (EditText) findViewById(R.id.editEventCreateName);
         editDesc = (EditText) findViewById(R.id.editEventCreateDescription);
@@ -69,38 +67,13 @@ public class EventCreateActivity extends AppCompatActivity {
         editLocX = (EditText) findViewById(R.id.editEventCreateLocX);
         editLocY = (EditText) findViewById(R.id.editEventCreateLocY);
 
+        //updates location first time
+        setupLocation();
 
-        //fixes security issue TODO should work but doesn't
-        if (ActivityCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION, android.Manifest.permission.ACCESS_FINE_LOCATION},1);
-        }
-
-        //sets location service
-        mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-
-        //allegedly requests updates
-        mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000,
-                0.0f, mLocationListener);
-
-
-
-        //TODO only gets location at the start of the app, refresh does not work, and fails to get it on my galaxy s7 entirely
+        //Sets the EditText to the current location
         findViewById(R.id.buttonCreateEventGetloc).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                //Requests permission to use location if necessary
-                requestPermissions(new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION, android.Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-
-                //fixes security issue TODO should work but doesn't
-                if (ActivityCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                        && ActivityCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    return;
-                }
-
-                getLocation();
-
                 editLocX.setText(""+numLocX);
                 editLocY.setText(""+numLocY);
             }
@@ -127,7 +100,7 @@ public class EventCreateActivity extends AppCompatActivity {
                 if(!strName.isEmpty() && !strDesc.isEmpty() && !strWhen.isEmpty() && numLocX!=0.0 && numLocY!=0.0){
                     Database.createNewEvent(new Event(strName, strDesc, strWhen, "Dummy pic URL here", numLocX, numLocY,
                             new User(user.getUid(), user.getEmail(), user.getDisplayName(), user.getDisplayName()) ));
-                    try{   Thread.sleep(250);   }catch(Exception e){} //Arbitrary waiting for design choice
+                    try{   Thread.sleep(250);   }catch(Exception e){} //Arbitrary waiting for design
                     Toast.makeText(getApplicationContext(), "Event created successfully",Toast.LENGTH_LONG).show();
                     finish();
                 }
@@ -183,11 +156,19 @@ public class EventCreateActivity extends AppCompatActivity {
     }
 
 
-    public void getLocation(){
+    public void setupLocation(){
         if (ActivityCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
+        //sets up location manager
+        mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+
+        //updates location anytime the gps updates
+        mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000,
+                0.0f, mLocationListener);
+
+        //sets up the location for the first time
         try{
             Criteria criteria = new Criteria();
             criteria.setAccuracy(Criteria.ACCURACY_COARSE);
