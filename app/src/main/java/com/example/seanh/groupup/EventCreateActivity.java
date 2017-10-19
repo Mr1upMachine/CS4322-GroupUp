@@ -175,7 +175,7 @@ public class EventCreateActivity extends AppCompatActivity {
             mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000,
                     0.5f, mLocationListener);
 
-            try {
+        try {
             Criteria criteria = new Criteria();
             criteria.setAccuracy(Criteria.ACCURACY_COARSE);
             criteria.setAltitudeRequired(false);
