@@ -9,7 +9,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -30,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
     private EventsAdapter eAdapter;
     SwipeRefreshLayout swipeContainer;
 
-    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    FirebaseUser fbuser = FirebaseAuth.getInstance().getCurrentUser();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,12 +37,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         //sets action bar to user's email (for testing)
-        setTitle(""+user.getEmail());
+        setTitle(""+fbuser.getEmail());
 
 
-        //if Location permission is not granted, try granting Location permission TODO replace this with better way
+        //if Location permission is not granted, try granting Location permission TODO replace this with better way (ie. better location)
         requestPermissions(new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION, android.Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-
 
 
         //Handles setup of RecyclerView
@@ -61,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
         //onClickListener for RecycleView elements
         recyclerView.addOnItemTouchListener(new RecyclerTouchListener(this, recyclerView, new ClickListener() {
             public void onClick(View view, final int position) {
-                Toast.makeText(MainActivity.this, "Single Click on position: " + position, Toast.LENGTH_SHORT).show();
+                //Toast.makeText(MainActivity.this, "Single Click on position: " + position, Toast.LENGTH_SHORT).show();
 
                 //passes through the information to the next activity about this event
                 Event e = eventList.get(position);
@@ -72,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
             }
             @Override
             public void onLongClick(View view, final int position) {
-                Toast.makeText(MainActivity.this, "Long press on position: "+position, Toast.LENGTH_LONG).show();
+                //Toast.makeText(MainActivity.this, "Long press on position: "+position, Toast.LENGTH_LONG).show();
             }
         }));
 

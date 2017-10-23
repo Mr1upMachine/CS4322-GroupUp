@@ -10,26 +10,35 @@
 
     <TextView
         android:id="@+id/textEventViewOwner"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:paddingBottom="8dp"
-        android:text="Owner: "
-        tools:layout_constraintTop_creator="1"
+        android:layout_marginEnd="10dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="8dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        tools:layout_constraintLeft_creator="1"
+        android:paddingBottom="8dp"
+        android:text="Owner: "
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_constraintLeft_creator="1"
+        tools:layout_constraintTop_creator="1" />
 
     <TextView
         android:id="@+id/textEventViewEvent"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="10dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="0dp"
         android:paddingBottom="8dp"
         android:text="Event: "
-        tools:layout_constraintTop_creator="1"
+        app:layout_constraintLeft_toLeftOf="@+id/textEventViewOwner"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textEventViewOwner"
         tools:layout_constraintLeft_creator="1"
-        app:layout_constraintLeft_toLeftOf="@+id/textEventViewOwner" />
+        tools:layout_constraintTop_creator="1" />
 
 </android.support.constraint.ConstraintLayout>

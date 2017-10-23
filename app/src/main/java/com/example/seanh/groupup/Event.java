@@ -84,6 +84,6 @@ public class Event {
     }
 
     public String toString(){
-        return "Event{id="+id+" name="+name+" desc="+description+" time="+time+" picURL="+picURL+" locX="+locX+" locY="+locY+"}";
+        return "Event{\nid="+id+"\nname="+name+"\ndesc="+description+"\ntime="+time+"\npicURL="+picURL+"\nlocX="+locX+"\nlocY="+locY+"\n}";
     }
 }

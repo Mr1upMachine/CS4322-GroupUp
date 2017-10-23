@@ -11,7 +11,7 @@
     tools:layout_editor_absoluteY="25dp">
 
     <EditText
-        android:id="@+id/editLoginEmail"
+        android:id="@+id/editRegisterEmail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="104dp"
@@ -26,15 +26,15 @@
         tools:layout_constraintTop_creator="1" />
 
     <EditText
-        android:id="@+id/editLoginPassword"
+        android:id="@+id/editRegisterPassword"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="11dp"
         android:ems="10"
         android:hint="Password"
         android:inputType="textPassword"
-        app:layout_constraintLeft_toLeftOf="@+id/editLoginEmail"
-        app:layout_constraintTop_toBottomOf="@+id/editLoginEmail"
+        app:layout_constraintLeft_toLeftOf="@+id/editRegisterEmail"
+        app:layout_constraintTop_toBottomOf="@+id/editRegisterEmail"
         tools:layout_constraintLeft_creator="1"
         tools:layout_constraintTop_creator="1" />
 
@@ -59,7 +59,7 @@
         android:text="Forgot password?"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editLoginPassword"
+        app:layout_constraintTop_toBottomOf="@+id/editRegisterPassword"
         tools:layout_constraintLeft_creator="1"
         tools:layout_constraintRight_creator="1"
         tools:layout_constraintTop_creator="1" />
@@ -68,11 +68,26 @@
         android:id="@+id/textNeedAccount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Need an Account?"
-        tools:layout_constraintTop_creator="1"
         android:layout_marginTop="14dp"
+        android:text="Need an Account?"
+        app:layout_constraintLeft_toLeftOf="@+id/textLoginForgot"
         app:layout_constraintTop_toBottomOf="@+id/textLoginForgot"
         tools:layout_constraintLeft_creator="1"
-        app:layout_constraintLeft_toLeftOf="@+id/textLoginForgot" />
+        tools:layout_constraintTop_creator="1" />
+
+    <!-- TODO Fix text appearance (make better looking) -->
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="17dp"
+        android:text="Sign In"
+        android:textAppearance="@android:style/TextAppearance.Large"
+        app:layout_constraintBottom_toTopOf="@+id/editRegisterEmail"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        tools:layout_constraintBottom_creator="1"
+        tools:layout_constraintLeft_creator="1"
+        tools:layout_constraintRight_creator="1" />
 
 </android.support.constraint.ConstraintLayout>
