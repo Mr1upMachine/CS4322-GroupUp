@@ -24,6 +24,7 @@ import java.util.Calendar;
 
 
 public class EventCreateActivity extends AppCompatActivity {
+    private final String LOGTAG = "EventCreateActivity";
 
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -43,16 +44,11 @@ public class EventCreateActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onStatusChanged(String provider, int status, Bundle extras) {
-        }
-
+        public void onStatusChanged(String provider, int status, Bundle extras) {  }
         @Override
-        public void onProviderEnabled(String provider) {
-        }
-
+        public void onProviderEnabled(String provider) {  }
         @Override
-        public void onProviderDisabled(String provider) {
-        }
+        public void onProviderDisabled(String provider) {  }
     };
 
     @Override
@@ -60,6 +56,8 @@ public class EventCreateActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_create);
         setTitle("Create an Event:"); //sets action bar to user's email (for testing)
+
+        Log.d(LOGTAG, "TEST");
 
         editName = (EditText) findViewById(R.id.editEventCreateName);
         editDesc = (EditText) findViewById(R.id.editEventCreateDescription);
@@ -165,7 +163,7 @@ public class EventCreateActivity extends AppCompatActivity {
             return;
         }
 
-        //TODO prevent app from crashing if location permission is not granted
+        //TODO properly prevent app from crashing if location permission is not granted
         //sets up the location for the first time
 
             //sets up location manager
@@ -189,7 +187,7 @@ public class EventCreateActivity extends AppCompatActivity {
                 numLocY = l.getLongitude();
             }
         } catch (Exception e) {
-            Log.d("EventCreateActivity", "Get Location Failed");
+            Log.d(LOGTAG, "Get Location Failed");
         }
     }
 }

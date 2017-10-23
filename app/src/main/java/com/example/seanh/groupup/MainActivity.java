@@ -23,6 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+    private final String LOGTAG = "MainActivity";
+
     private List<Event> eventList = new ArrayList<>();
     private RecyclerView recyclerView;
     private EventsAdapter eAdapter;
@@ -121,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 parseAllEvents(dataSnapshot);
-                Log.d("OUTPUT","data parse complete");
+                Log.d(LOGTAG,"data parse complete");
                 updateUI();
             }
 

@@ -1,5 +1,7 @@
 package com.example.seanh.groupup;
 
+import java.text.DecimalFormat;
+
 public class Event {
     private String id, name, description, time, picURL, ownerId;
     private double locX, locY;
@@ -61,7 +63,8 @@ public class Event {
     }
     public String generateLocString(){
         //TODO parse gps loc to city
-        return locX+" "+locY;
+        DecimalFormat df = new DecimalFormat("#.000");
+        return df.format(locX)+"  "+df.format(locY);
     }
     public void setLoc(double locX, double locY) {
         this.locX = locX;

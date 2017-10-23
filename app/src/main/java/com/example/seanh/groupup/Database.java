@@ -10,6 +10,7 @@ import com.google.firebase.storage.StorageReference;
 
 //TODO All data retrieval lags by one iteration (ie. returns null first time called). Why?
 public class Database {
+    private final String LOGTAG = "Database";
 
     private static final DatabaseReference dataRoot = FirebaseDatabase.getInstance().getReference();
     private static final DatabaseReference dataEvents = dataRoot.child("events");
@@ -52,7 +53,7 @@ public class Database {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 parseAllEvents(dataSnapshot);
-                Log.d("OUTPUT","data parse complete");
+                Log.d(LOGTAG,"data parse complete");
 
             }
 
