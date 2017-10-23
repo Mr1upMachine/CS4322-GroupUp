@@ -65,7 +65,7 @@ public class EventCreateActivity extends AppCompatActivity {
         editLocX = (EditText) findViewById(R.id.editEventCreateLocX);
         editLocY = (EditText) findViewById(R.id.editEventCreateLocY);
 
-        //updates location first time
+        //updates location first time TODO Doesn't work on API 26
         setupLocation();
 
         //Sets the EditText to the current location
