@@ -17,12 +17,11 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewH
     private List<Event> eventsList;
 
     public class EventViewHolder extends RecyclerView.ViewHolder {
-        public TextView ownerName, location, time;
+        public TextView location, time;
         public ImageView icon, color, background;
 
         public EventViewHolder(View view) {
             super(view);
-            //ownerName = (TextView) view.findViewById(R.id.textEventRowOwner);
             location = (TextView) view.findViewById(R.id.textEventRowLocation);
             time = (TextView) view.findViewById(R.id.textEventRowTime);
 
@@ -50,7 +49,6 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewH
 
     public void onBindViewHolder(EventViewHolder holder, int position) {
         Event event = eventsList.get(position);
-        //holder.ownerName.setText(event.getOwner().getfName());
         holder.location.setText(event.generateLocString());
         holder.time.setText(event.getTime());
     }
