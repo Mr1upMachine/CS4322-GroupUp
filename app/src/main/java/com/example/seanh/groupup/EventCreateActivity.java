@@ -19,16 +19,25 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.Calendar;
 
 
-public class EventCreateActivity extends AppCompatActivity {
+public class EventCreateActivity extends AppCompatActivity implements OnMapReadyCallback {
     private final String LOGTAG = "EventCreateActivity";
 
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
+    GoogleMap mMap;
+
     EditText editName, editDesc, editWhen, editLocX, editLocY;
+
 
     String date_time = "", strName = "", strDesc = "", strWhen = "";
     int mYear, mMonth, mDay, mHour, mMinute;
@@ -65,7 +74,7 @@ public class EventCreateActivity extends AppCompatActivity {
         editLocX = (EditText) findViewById(R.id.editEventCreateLocX);
         editLocY = (EditText) findViewById(R.id.editEventCreateLocY);
 
-        //updates location first time
+        //updates location first time TODO Doesn't work on API 26
         setupLocation();
 
         //Sets the EditText to the current location
@@ -106,7 +115,28 @@ public class EventCreateActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "Please fill all fields", Toast.LENGTH_SHORT).show();
                 }
             }
+
+
         });
+
+        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
+
+
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+
+
+        float zoomLevel = 14f;
+        LatLng appoint = new LatLng(32.546813,-82.957764);
+        // Add a marker in Appoint from database and move the camera
+        mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+        mMap.addMarker(new MarkerOptions().position(appoint).title("Where the wild gays are"));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(appoint,zoomLevel));
 
     }
 
@@ -190,4 +220,6 @@ public class EventCreateActivity extends AppCompatActivity {
             Log.d(LOGTAG, "Get Location Failed");
         }
     }
+
+
 }

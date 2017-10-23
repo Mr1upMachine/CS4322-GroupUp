@@ -103,4 +103,26 @@
         android:layout_marginBottom="16dp"
         app:layout_constraintLeft_toLeftOf="parent" />
 
+    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="58dp"
+        android:layout_marginEnd="27dp"
+        android:layout_marginStart="27dp"
+        android:layout_marginTop="58dp"
+        app:layout_constraintBottom_toBottomOf="@+id/buttonCreateEventSubmit"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/editEventCreateLocY"
+        app:layout_constraintVertical_bias="0.0"
+        tools:context="com.example.seanh.groupup.EventCreateActivity"
+        tools:layout_constraintBottom_creator="1"
+        tools:layout_constraintLeft_creator="1"
+        tools:layout_constraintRight_creator="1"
+        tools:layout_constraintTop_creator="1" />
+
+
 </android.support.constraint.ConstraintLayout>
