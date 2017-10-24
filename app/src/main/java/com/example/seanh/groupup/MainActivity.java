@@ -23,13 +23,13 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private final String LOGTAG = "MainActivity";
+    private final FirebaseUser fbUser = FirebaseAuth.getInstance().getCurrentUser();
 
     private List<Event> eventList = new ArrayList<>();
     private RecyclerView recyclerView;
     private EventsAdapter eAdapter;
-    SwipeRefreshLayout swipeContainer;
+    private SwipeRefreshLayout swipeContainer;
 
-    final FirebaseUser fbUser = FirebaseAuth.getInstance().getCurrentUser();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
