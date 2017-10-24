@@ -54,7 +54,12 @@ public class LoginActivity extends AppCompatActivity {
         findViewById(R.id.buttonLogin).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                signIn(editLoginEmail.getText().toString(), editLoginPassword.getText().toString());
+                if(!editLoginEmail.getText().toString().isEmpty() && !editLoginPassword.getText().toString().isEmpty()) {
+                    signIn(editLoginEmail.getText().toString(), editLoginPassword.getText().toString());
+                }
+                else{
+                    Toast.makeText(getApplicationContext(),"Fields are empty", Toast.LENGTH_LONG).show();
+                }
             }
         });
 

@@ -89,8 +89,8 @@ public class RegisterActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             Toast.makeText(RegisterActivity.this, "Account created successfully", Toast.LENGTH_SHORT).show();
 
-                            FirebaseUser fbUser = mAuth.getCurrentUser();
-                            User u = new User(fbUser.getUid(), fbUser.getEmail(), editFirstName.getText().toString(), editLastName.getText().toString());
+                            final FirebaseUser fbUser = mAuth.getCurrentUser();
+                            final User u = new User(fbUser.getUid(), fbUser.getEmail(), editFirstName.getText().toString(), editLastName.getText().toString());
                             Database.createNewUser(u);
                             startActivity(new Intent(RegisterActivity.this, MainActivity.class));
                         }
