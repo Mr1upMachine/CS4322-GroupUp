@@ -40,8 +40,8 @@ public class EventCreateActivity extends AppCompatActivity {
     private final LocationListener mLocationListener = new LocationListener() {
         @Override
         public void onLocationChanged(final Location location) {
-            numLocX = location.getLongitude();
-            numLocY = location.getLatitude();
+            numLocX = location.getLatitude();
+            numLocY = location.getLongitude();
         }
 
         @Override
