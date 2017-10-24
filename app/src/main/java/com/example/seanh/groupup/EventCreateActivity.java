@@ -24,6 +24,7 @@ import android.widget.Toast;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.text.DecimalFormat;
 import java.util.Calendar;
 
 
@@ -146,7 +147,8 @@ public class EventCreateActivity extends AppCompatActivity {
                         mHour = hourOfDay;
                         mMinute = minute;
 
-                        editWhen.setText(date_time+" "+hourOfDay + ":" + minute);
+                        DecimalFormat df = new DecimalFormat("00"); //makes minute have 2 digits
+                        editWhen.setText(date_time+" "+hourOfDay + ":" + df.format(minute));
                     }
                 }, mHour, mMinute, false);
         timePickerDialog.show();

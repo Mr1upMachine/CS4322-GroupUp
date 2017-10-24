@@ -28,7 +28,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         editLoginEmail = (EditText) findViewById(R.id.editRegisterEmail);
-        editLoginPassword = (EditText) findViewById(R.id.editRegisterPasswordReenter);
+        editLoginPassword = (EditText) findViewById(R.id.editRegisterPassword);
         mAuth = FirebaseAuth.getInstance();
 
 
