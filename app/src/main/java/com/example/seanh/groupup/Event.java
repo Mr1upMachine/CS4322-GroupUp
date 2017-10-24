@@ -9,16 +9,6 @@ public class Event {
 
     //Constructors
     Event(){}
-    Event(String name, String description, String time, String picURL, double locX, double locY, User owner){
-        //Used for the creation of new events
-        this.name = name;
-        this.description = description;
-        this.time = time;
-        this.picURL = picURL;
-        this.locX = locX;
-        this.locY = locY;
-        this.ownerId = owner.getId();
-    }
     Event(String name, String description, String time, String picURL, double locX, double locY, String ownerId){
         //Used for the creation of new events
         this.name = name;
@@ -61,11 +51,6 @@ public class Event {
     public double getLocY() {
         return locY;
     }
-    public String generateLocString(){
-        //TODO parse gps loc to city
-        DecimalFormat df = new DecimalFormat("#.000");
-        return df.format(locX)+"  "+df.format(locY);
-    }
     public void setLoc(double locX, double locY) {
         this.locX = locX;
         this.locY = locY;
@@ -81,6 +66,12 @@ public class Event {
     }
     public void setOwnerId(String ownerId) {
         this.ownerId = ownerId;
+    }
+
+    public String generateLocString(){
+        //TODO parse gps loc to city
+        DecimalFormat df = new DecimalFormat("#.000");
+        return df.format(locX)+"  "+df.format(locY);
     }
 
     public String toString(){

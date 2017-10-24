@@ -28,8 +28,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         editLoginEmail = (EditText) findViewById(R.id.editRegisterEmail);
-        editLoginPassword = (EditText) findViewById(R.id.editRegisterPassword);
-
+        editLoginPassword = (EditText) findViewById(R.id.editRegisterPasswordReenter);
         mAuth = FirebaseAuth.getInstance();
 
 
@@ -93,28 +92,7 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    //TODO add auto new entry to user database
-    public void createAccount(String email, String password){
-        mAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        Log.d(LOGTAG, "createUserWithEmail:onComplete:" + task.isSuccessful());
-
-                        // If sign in fails, display a message to the user. If sign in succeeds
-                        // the auth state listener will be notified and logic to handle the
-                        // signed in user can be handled in the listener.
-                        if (!task.isSuccessful()) {
-                            Toast.makeText(LoginActivity.this, R.string.auth_failed,
-                                    Toast.LENGTH_SHORT).show();
-                        }
-
-                        // ...
-                    }
-                });
-    }
-
-    public void signIn(String email, String password){
+    public void signIn(final String email, final String password){
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -124,16 +102,14 @@ public class LoginActivity extends AppCompatActivity {
                         // If sign in fails, display a message to the user. If sign in succeeds
                         // the auth state listener will be notified and logic to handle the
                         // signed in user can be handled in the listener.
-                        if (!task.isSuccessful()) {
-                            Log.w(LOGTAG, "signInWithEmail:failed", task.getException());
-                            Toast.makeText(LoginActivity.this, R.string.auth_failed,
-                                    Toast.LENGTH_SHORT).show();
+                        if (task.isSuccessful()) {
+                            LoginActivity.this.startActivity( new Intent(LoginActivity.this, MainActivity.class) );
+                            finish(); //ends current activity
                         }
                         else {
-                            LoginActivity.this.startActivity( new Intent(LoginActivity.this, MainActivity.class) );
-                            finish();
+                            Log.w(LOGTAG, "signInWithEmail:failed", task.getException());
+                            Toast.makeText(LoginActivity.this, R.string.auth_failed, Toast.LENGTH_SHORT).show();
                         }
-                        // ...
                     }
                 });
     }

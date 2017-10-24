@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
     private EventsAdapter eAdapter;
     SwipeRefreshLayout swipeContainer;
 
-    FirebaseUser fbuser = FirebaseAuth.getInstance().getCurrentUser();
+    final FirebaseUser fbUser = FirebaseAuth.getInstance().getCurrentUser();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         //sets action bar to user's email (for testing)
-        setTitle(""+fbuser.getEmail());
+        setTitle(""+fbUser.getEmail());
 
 
         //if Location permission is not granted, try granting Location permission TODO replace this with better way (ie. better location)
@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
         //Handles setup of RecyclerView
         recyclerView = (RecyclerView) findViewById(R.id.recycleViewEventList);
         eAdapter = new EventsAdapter(eventList);
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
+        final RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(eAdapter);
@@ -102,6 +102,8 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+
+
     //Back button currently signs users out TODO change so pressing back 3 times instead
     @Override
     public void onBackPressed(){
@@ -136,7 +138,6 @@ public class MainActivity extends AppCompatActivity {
             eventList.add(ds.getValue(Event.class));
         }
     }
-
     public void updateUI(){
         //Updates the RecycleView
         eAdapter.notifyDataSetChanged();

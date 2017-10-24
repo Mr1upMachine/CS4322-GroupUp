@@ -26,7 +26,7 @@
         tools:layout_constraintTop_creator="1" />
 
     <EditText
-        android:id="@+id/editRegisterPassword"
+        android:id="@+id/editRegisterPasswordReenter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="11dp"
@@ -59,7 +59,7 @@
         android:text="Forgot password?"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editRegisterPassword"
+        app:layout_constraintTop_toBottomOf="@+id/editRegisterPasswordReenter"
         tools:layout_constraintLeft_creator="1"
         tools:layout_constraintRight_creator="1"
         tools:layout_constraintTop_creator="1" />

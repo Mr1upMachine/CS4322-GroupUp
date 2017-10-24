@@ -2,25 +2,26 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layoutEventCreate"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.seanh.groupup.EventCreateActivity"
-    tools:layout_editor_absoluteY="81dp"
-    tools:layout_editor_absoluteX="0dp">
+    tools:layout_editor_absoluteX="0dp"
+    tools:layout_editor_absoluteY="81dp">
 
     <EditText
         android:id="@+id/editEventCreateName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
         android:ems="10"
         android:hint="Event Name"
         android:inputType="textPersonName"
-        tools:layout_constraintTop_creator="1"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        tools:layout_constraintLeft_creator="1"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_constraintLeft_creator="1"
+        tools:layout_constraintTop_creator="1" />
 
     <EditText
         android:id="@+id/editEventCreateDescription"
@@ -29,12 +30,12 @@
         android:ems="10"
         android:hint="Description"
         android:inputType="textMultiLine"
-        tools:layout_constraintTop_creator="1"
-        tools:layout_constraintRight_creator="1"
+        app:layout_constraintLeft_toLeftOf="@+id/editEventCreateName"
         app:layout_constraintRight_toRightOf="@+id/editEventCreateName"
         app:layout_constraintTop_toBottomOf="@+id/editEventCreateName"
         tools:layout_constraintLeft_creator="1"
-        app:layout_constraintLeft_toLeftOf="@+id/editEventCreateName" />
+        tools:layout_constraintRight_creator="1"
+        tools:layout_constraintTop_creator="1" />
 
     <EditText
         android:id="@+id/editEventCreateWhen"
@@ -43,12 +44,12 @@
         android:ems="10"
         android:hint="When"
         android:inputType="none"
-        tools:layout_constraintTop_creator="1"
-        tools:layout_constraintRight_creator="1"
+        app:layout_constraintLeft_toLeftOf="@+id/editEventCreateDescription"
         app:layout_constraintRight_toRightOf="@+id/editEventCreateDescription"
         app:layout_constraintTop_toBottomOf="@+id/editEventCreateDescription"
         tools:layout_constraintLeft_creator="1"
-        app:layout_constraintLeft_toLeftOf="@+id/editEventCreateDescription" />
+        tools:layout_constraintRight_creator="1"
+        tools:layout_constraintTop_creator="1" />
 
     <Button
         android:id="@+id/buttonCreateEventGetloc"
@@ -56,11 +57,11 @@
         android:layout_height="wrap_content"
         android:text="Current Loc"
         app:layout_constraintBottom_toBottomOf="@+id/editEventCreateLocX"
-        tools:layout_constraintTop_creator="1"
-        tools:layout_constraintBottom_creator="1"
+        app:layout_constraintLeft_toRightOf="@+id/editEventCreateLocX"
         app:layout_constraintTop_toBottomOf="@+id/editEventCreateLocX"
+        tools:layout_constraintBottom_creator="1"
         tools:layout_constraintLeft_creator="1"
-        app:layout_constraintLeft_toRightOf="@+id/editEventCreateLocX" />
+        tools:layout_constraintTop_creator="1" />
 
     <EditText
         android:id="@+id/editEventCreateLocY"
@@ -69,12 +70,12 @@
         android:ems="10"
         android:hint="LocY"
         android:inputType="numberDecimal"
-        tools:layout_constraintTop_creator="1"
-        tools:layout_constraintRight_creator="1"
+        app:layout_constraintLeft_toLeftOf="@+id/editEventCreateLocX"
         app:layout_constraintRight_toRightOf="@+id/editEventCreateLocX"
         app:layout_constraintTop_toBottomOf="@+id/editEventCreateLocX"
         tools:layout_constraintLeft_creator="1"
-        app:layout_constraintLeft_toLeftOf="@+id/editEventCreateLocX" />
+        tools:layout_constraintRight_creator="1"
+        tools:layout_constraintTop_creator="1" />
 
     <EditText
         android:id="@+id/editEventCreateLocX"
@@ -83,24 +84,24 @@
         android:ems="10"
         android:hint="LocX"
         android:inputType="numberDecimal"
-        tools:layout_constraintTop_creator="1"
-        tools:layout_constraintRight_creator="1"
+        app:layout_constraintLeft_toLeftOf="@+id/editEventCreateWhen"
         app:layout_constraintRight_toRightOf="@+id/editEventCreateWhen"
         app:layout_constraintTop_toBottomOf="@+id/editEventCreateWhen"
         tools:layout_constraintLeft_creator="1"
-        app:layout_constraintLeft_toLeftOf="@+id/editEventCreateWhen" />
+        tools:layout_constraintRight_creator="1"
+        tools:layout_constraintTop_creator="1" />
 
     <Button
         android:id="@+id/buttonCreateEventSubmit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Submit"
-        tools:layout_constraintRight_creator="1"
-        tools:layout_constraintBottom_creator="1"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        tools:layout_constraintLeft_creator="1"
         android:layout_marginBottom="16dp"
-        app:layout_constraintLeft_toLeftOf="parent" />
+        android:text="Submit"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        tools:layout_constraintBottom_creator="1"
+        tools:layout_constraintLeft_creator="1"
+        tools:layout_constraintRight_creator="1" />
 
 </android.support.constraint.ConstraintLayout>

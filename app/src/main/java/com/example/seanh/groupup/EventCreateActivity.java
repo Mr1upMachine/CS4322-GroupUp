@@ -1,5 +1,6 @@
 package com.example.seanh.groupup;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.pm.PackageManager;
@@ -11,7 +12,10 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TimePicker;
@@ -25,17 +29,13 @@ import java.util.Calendar;
 
 public class EventCreateActivity extends AppCompatActivity {
     private final String LOGTAG = "EventCreateActivity";
-
-    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
-    EditText editName, editDesc, editWhen, editLocX, editLocY;
-
-    String date_time = "", strName = "", strDesc = "", strWhen = "";
-    int mYear, mMonth, mDay, mHour, mMinute;
-    double numLocX = 0.0, numLocY = 0.0;
-
-    LocationManager mLocationManager;
-    String provider;
+    private final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    private EditText editName, editDesc, editWhen, editLocX, editLocY;
+    private String date_time = "", strName = "", strDesc = "", strWhen = "";
+    private int mYear, mMonth, mDay, mHour, mMinute;
+    private double numLocX = 0.0, numLocY = 0.0;
+    private LocationManager mLocationManager;
+    private String provider;
     private final LocationListener mLocationListener = new LocationListener() {
         @Override
         public void onLocationChanged(final Location location) {
@@ -55,17 +55,17 @@ public class EventCreateActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_create);
-        setTitle("Create an Event:"); //sets action bar to user's email (for testing)
+        setupKeyboardHide(findViewById(R.id.layoutEventCreate)); //This auto-hides the keyboard
+        setTitle("Create an Event:");
 
-        Log.d(LOGTAG, "TEST");
-
+        //continuation of value setup from above
         editName = (EditText) findViewById(R.id.editEventCreateName);
         editDesc = (EditText) findViewById(R.id.editEventCreateDescription);
         editWhen = (EditText) findViewById(R.id.editEventCreateWhen);
         editLocX = (EditText) findViewById(R.id.editEventCreateLocX);
         editLocY = (EditText) findViewById(R.id.editEventCreateLocY);
 
-        //updates location first time TODO Doesn't work on API 26
+        //updates location first time TODO Doesn't work on API 26 Why?
         setupLocation();
 
         //Sets the EditText to the current location
@@ -85,6 +85,7 @@ public class EventCreateActivity extends AppCompatActivity {
             }
         });
 
+        //Code for Submit button
         findViewById(R.id.buttonCreateEventSubmit).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -95,10 +96,8 @@ public class EventCreateActivity extends AppCompatActivity {
                 numLocY = Double.parseDouble(editLocY.getText().toString());
 
                 //Verifies all data fields are filled
-                if(!strName.isEmpty() && !strDesc.isEmpty() && !strWhen.isEmpty() && numLocX!=0.0 && numLocY!=0.0){
-                    Database.createNewEvent(new Event(strName, strDesc, strWhen, "Dummy pic URL here", numLocX, numLocY,
-                            new User(user.getUid(), user.getEmail(), user.getDisplayName(), user.getDisplayName()) ));
-                    try{   Thread.sleep(250);   }catch(Exception e){} //Arbitrary waiting for design
+                if(!strName.isEmpty() && !strDesc.isEmpty() && !strWhen.isEmpty() && numLocX!=0.0 && numLocY!=0.0 && user!=null){
+                    Database.createNewEvent(new Event(strName, strDesc, strWhen, "Dummy pic URL here", numLocX, numLocY, user.getUid()));
                     Toast.makeText(getApplicationContext(), "Event created successfully",Toast.LENGTH_LONG).show();
                     finish();
                 }
@@ -188,6 +187,40 @@ public class EventCreateActivity extends AppCompatActivity {
             }
         } catch (Exception e) {
             Log.d(LOGTAG, "Get Location Failed");
+        }
+    }
+
+
+
+
+
+
+    //This auto-hides the keyboard
+    public static void hideSoftKeyboard(Activity activity) {
+        InputMethodManager inputMethodManager =
+                (InputMethodManager) activity.getSystemService(
+                        Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(
+                activity.getCurrentFocus().getWindowToken(), 0);
+    }
+    public void setupKeyboardHide(View view) {
+
+        // Set up touch listener for non-text box views to hide keyboard.
+        if (!(view instanceof EditText)) {
+            view.setOnTouchListener(new View.OnTouchListener() {
+                public boolean onTouch(View v, MotionEvent event) {
+                    hideSoftKeyboard(EventCreateActivity.this);
+                    return false;
+                }
+            });
+        }
+
+        //If a layout container, iterate over children and seed recursion.
+        if (view instanceof ViewGroup) {
+            for (int i = 0; i < ((ViewGroup) view).getChildCount(); i++) {
+                View innerView = ((ViewGroup) view).getChildAt(i);
+                setupKeyboardHide(innerView);
+            }
         }
     }
 }

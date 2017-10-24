@@ -6,10 +6,16 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+
+        <item name="colorControlNormal">#e5e5e5</item>
+        <item name="colorControlActivated">#e5e5e5</item>
+        <item name="colorControlHighlight">#e5e5e5</item>
     </style>
 
-    <style name="AppTheme.NoActionBar" parent="Theme.AppCompat.NoActionBar">
-    </style>
 
+    <style name="TextAppearence.App.TextInputLayout" parent="@android:style/TextAppearance">
+    <item name="android:textColor">#e5e5e5</item>
+        <item name="android:textSize">12sp</item>
+    </style>
 
 </resources>
