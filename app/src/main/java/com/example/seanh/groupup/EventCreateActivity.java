@@ -27,7 +27,7 @@ import com.google.firebase.auth.FirebaseUser;
 import java.text.DecimalFormat;
 import java.util.Calendar;
 
-
+//TODO Micah stuff here
 public class EventCreateActivity extends AppCompatActivity {
     private final String LOGTAG = "EventCreateActivity";
     private final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
