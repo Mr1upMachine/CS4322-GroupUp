@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
     private List<Event> eventList = new ArrayList<>();
     private RecyclerView recyclerView;
     private EventsAdapter eAdapter;
-    private SwipeRefreshLayout swipeContainer;
+    private SwipeRefreshLayout swipeRefreshContainer;
 
 
     @Override
@@ -75,15 +75,15 @@ public class MainActivity extends AppCompatActivity {
         }));
 
         //Makes refreshing the event list easy
-        swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
-        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        swipeRefreshContainer = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshContainer);
+        swipeRefreshContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 fetchAllEvents();
             }
         });
         // Configure the refreshing colors
-        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+        swipeRefreshContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
                 android.R.color.holo_green_light,
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
@@ -143,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
         eAdapter.notifyDataSetChanged();
         //Hides loading bar
         findViewById(R.id.progressBarMainActivity).setVisibility(View.GONE);
-        swipeContainer.setRefreshing(false);
+        swipeRefreshContainer.setRefreshing(false);
 
     }
 
