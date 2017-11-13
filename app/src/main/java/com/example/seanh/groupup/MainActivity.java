@@ -7,8 +7,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -26,18 +33,25 @@ public class MainActivity extends AppCompatActivity {
     private final FirebaseUser fbUser = FirebaseAuth.getInstance().getCurrentUser();
 
     private List<Event> eventList = new ArrayList<>();
+    private List<Event> tempList;
     private RecyclerView recyclerView;
     private EventsAdapter eAdapter;
     private SwipeRefreshLayout swipeRefreshContainer;
 
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //sets action bar to user's email (for testing)
-        setTitle(""+fbUser.getEmail());
+        toolbar = (Toolbar) findViewById(R.id.toolbarMain);
+        setSupportActionBar(toolbar);
+        toolbar.setTitle(fbUser.getEmail());
+        toolbar.setNavigationIcon(R.drawable.ic_menu);
+        toolbar.inflateMenu(R.menu.main);
+        //getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
 
 
         //if Location permission is not granted, try granting Location permission TODO replace this with better way (ie. better location)
@@ -102,7 +116,76 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
 
+
+        //All for SearchView (search button at top)
+        final MenuItem searchMenu = menu.findItem(R.id.main_search);
+        final SearchView searchView = (SearchView) searchMenu.getActionView();
+        searchView.setOnSearchClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Saves original values as temp
+                tempList = new ArrayList<>(eventList);
+            }
+        });
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                eventList.clear();
+                callSearch(query);
+                return true;
+            }
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                eventList.clear();
+                callSearch(newText);
+                return true;
+            }
+            void callSearch(String query) {
+                for (Event e : tempList) {
+                    if (e.getName().toLowerCase().contains( query.toLowerCase() )) {
+                        eventList.add(e);
+                    }
+                }
+                eAdapter.notifyDataSetChanged();
+            }
+        });
+        ImageView closeButton = searchView.findViewById(R.id.search_close_btn);
+        closeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                eventList.addAll(tempList);
+                eAdapter.notifyDataSetChanged();
+
+                EditText et = (EditText) findViewById(R.id.search_src_text); //Find EditText view
+                et.setText(""); //Clear the text from EditText view
+                searchView.setQuery("", false); //Clear query
+                searchView.onActionViewCollapsed(); //Collapse the action view
+                searchMenu.collapseActionView(); //Collapse the search widget
+            }
+        });
+
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        Toast.makeText(this,item.getTitle()+" selected", Toast.LENGTH_SHORT).show();
+
+        if (id == R.id.main_search) {
+
+        }
+        else if (id == R.id.main_item2) {
+
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     //Back button currently signs users out TODO change so pressing back 3 times instead
     @Override
@@ -111,6 +194,8 @@ public class MainActivity extends AppCompatActivity {
         startActivity(new Intent(MainActivity.this, LoginActivity.class));
         finish();
     }
+
+
 
 
 
