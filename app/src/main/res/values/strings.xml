@@ -1,4 +1,12 @@
 <resources>
     <string name="app_name">GroupUp</string>
     <string name="auth_failed">Auth. Failed</string>
+    <string-array name="eventTypesArray">
+        <item>Event Type</item>
+        <item>Olympics</item>
+        <item>Sportsball</item>
+        <item>Distance Spitting</item>
+        <item>Other Sports Examples</item>
+    </string-array>
+    <string name="cap_init">"Initial\nAttendees"</string>
 </resources>

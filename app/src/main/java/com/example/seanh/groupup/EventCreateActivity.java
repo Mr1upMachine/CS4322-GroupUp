@@ -20,6 +20,10 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TimePicker;
 import android.widget.Toast;
+import android.widget.Spinner;
+import android.widget.ArrayAdapter;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -31,12 +35,13 @@ import java.util.Calendar;
 public class EventCreateActivity extends AppCompatActivity {
     private final String LOGTAG = "EventCreateActivity";
     private final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-    private EditText editName, editDesc, editWhen, editLocX, editLocY;
-    private String date_time = "", strName = "", strDesc = "", strWhen = "";
+    private EditText editName, editDesc, editTime, editDate, editWhere, editLocX, editLocY;
+    private String date_time = "", strName = "", strDesc = "", strDate = "", strTime = "", strWhere = "";
     private int mYear, mMonth, mDay, mHour, mMinute;
     private double numLocX = 0.0, numLocY = 0.0;
     private LocationManager mLocationManager;
     private String provider;
+    private Spinner spinnerType;
     private final LocationListener mLocationListener = new LocationListener() {
         @Override
         public void onLocationChanged(final Location location) {
@@ -56,33 +61,47 @@ public class EventCreateActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_create);
+
         setupKeyboardHide(findViewById(R.id.layoutEventCreate)); //This auto-hides the keyboard
         setTitle("Create an Event:");
 
         //continuation of value setup from above
         editName = (EditText) findViewById(R.id.editEventCreateName);
         editDesc = (EditText) findViewById(R.id.editEventCreateDescription);
-        editWhen = (EditText) findViewById(R.id.editEventCreateWhen);
-        editLocX = (EditText) findViewById(R.id.editEventCreateLocX);
-        editLocY = (EditText) findViewById(R.id.editEventCreateLocY);
+        editTime = (EditText) findViewById(R.id.editEventCreateTime);
+        editDate = (EditText) findViewById(R.id.editEventCreateDate);
+        editWhere = (EditText) findViewById(R.id.editEventAddress);
+
+        //not sure how this'll fit in with GoogleMaps, or if it'll just get replaced with eric's code
+
+//        editLocX = (EditText) findViewById(R.id.editEventCreateLocX);
+//        editLocY = (EditText) findViewById(R.id.editEventCreateLocY);
 
         //updates location first time TODO Doesn't work on API 26 Why?
         setupLocation();
 
-        //Sets the EditText to the current location
-        findViewById(R.id.buttonCreateEventGetloc).setOnClickListener(new View.OnClickListener() {
+        //Button for Google Maps extension, currently just sets address to current Latitude and Longitude
+        findViewById(R.id.buttonEventCreateMaps).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                editLocX.setText(""+numLocX);
-                editLocY.setText(""+numLocY);
+                editWhere.setText(""+numLocX+", ");
+                editWhere.setText(""+numLocY);
+                Toast.makeText(getApplicationContext(), "Right now I just populate the current Lat/Lon!", Toast.LENGTH_LONG).show();
             }
         });
 
 
-        editWhen.setOnClickListener(new View.OnClickListener() {
+        editDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 datePicker();
+            }
+        });
+
+        editTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                timePicker();
             }
         });
 
@@ -92,13 +111,17 @@ public class EventCreateActivity extends AppCompatActivity {
             public void onClick(View v) {
                 strName = editName.getText().toString();
                 strDesc = editDesc.getText().toString();
-                strWhen = editWhen.getText().toString();
-                numLocX = Double.parseDouble(editLocX.getText().toString());
-                numLocY = Double.parseDouble(editLocY.getText().toString());
+                strDate = editDate.getText().toString();
+                strTime = editTime.getText().toString();
+                strWhere = editWhere.getText().toString();
+
+
+//                numLocX = Double.parseDouble(editLocX.getText().toString());
+//                numLocY = Double.parseDouble(editLocY.getText().toString());
 
                 //Verifies all data fields are filled
-                if(!strName.isEmpty() && !strDesc.isEmpty() && !strWhen.isEmpty() && numLocX!=0.0 && numLocY!=0.0 && user!=null){
-                    Database.createNewEvent(new Event(strName, strDesc, strWhen, "Dummy pic URL here", numLocX, numLocY, user.getUid()));
+                if(!strName.isEmpty() && !strDesc.isEmpty() && !strDate.isEmpty() && !strTime.isEmpty() && !strWhere.isEmpty() && user!=null){
+                    Database.createNewEvent(new Event(strName, strDesc, strTime, strDate, "Dummy pic URL here", strWhere, user.getUid()));
                     Toast.makeText(getApplicationContext(), "Event created successfully",Toast.LENGTH_LONG).show();
                     finish();
                 }
@@ -124,9 +147,7 @@ public class EventCreateActivity extends AppCompatActivity {
                     @Override
                     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
 
-                        date_time = dayOfMonth + "-" + (monthOfYear + 1) + "-" + year;
-                        //*************Call Time Picker Here ********************
-                        timePicker();
+                        editDate.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
                     }
                 }, mYear, mMonth, mDay);
         datePickerDialog.show();
@@ -148,7 +169,7 @@ public class EventCreateActivity extends AppCompatActivity {
                         mMinute = minute;
 
                         DecimalFormat df = new DecimalFormat("00"); //makes minute have 2 digits
-                        editWhen.setText(date_time+" "+hourOfDay + ":" + df.format(minute));
+                        editTime.setText(date_time+" "+hourOfDay + ":" + df.format(minute));
                     }
                 }, mHour, mMinute, false);
         timePickerDialog.show();
