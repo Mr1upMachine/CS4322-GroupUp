@@ -38,6 +38,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 import java.text.DecimalFormat;
 import java.util.Calendar;
+import java.util.Objects;
 
 //TODO Micah stuff here
 public class EventCreateActivity extends AppCompatActivity {
@@ -45,7 +46,7 @@ public class EventCreateActivity extends AppCompatActivity {
     private final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     private EditText editName, editDesc, editStartTime, editEndTime, editStartDate, editEndDate, editWhere, editLocX, editLocY;
     private ImageView eventPicture;
-    private String date_time = "", strName = "", strDesc = "", strStartDate = "", strEndDate = "", strStartTime = "", strEndTime = "", strWhere = "", strType = "";
+    private String date_time = "", strName = "", strDesc = "", strStartDate = "", strEndDate = "", strStartTime = "", strEndTime = "", strWhere = "", strType = "", strSpinnerInit = "";
     private Bitmap bitMapEventImage;
     private int mYear, mMonth, mDay, mHour, mMinute;
     private double numLocX = 0.0, numLocY = 0.0;
@@ -86,6 +87,7 @@ public class EventCreateActivity extends AppCompatActivity {
         editWhere = (EditText) findViewById(R.id.editEventCreateAddress);
         eventPicture = null;
         editSpinner = (Spinner) findViewById(R.id.editEventCreateTypeSpinner);
+        strSpinnerInit = "Event Type";
 
         //not sure how this'll fit in with GoogleMaps, or if it'll just get replaced with eric's code
 
@@ -152,13 +154,35 @@ public class EventCreateActivity extends AppCompatActivity {
 //                numLocY = Double.parseDouble(editLocY.getText().toString());
 
                 //Verifies all data fields are filled
-                if(!strName.isEmpty() && !strDesc.isEmpty() && !strStartDate.isEmpty() && !strEndDate.isEmpty() && !strStartTime.isEmpty() && !strEndTime.isEmpty() && !strWhere.isEmpty() && user!=null && strType != "Event Type"){
-                    Database.createNewEvent(new Event(strName, strDesc, strStartTime, strEndTime, strStartDate, strEndDate, bitMapEventImage, strWhere, user.getUid(), strType));
-                    Toast.makeText(getApplicationContext(), "Event created successfully",Toast.LENGTH_LONG).show();
+                if  (
+                    !strName.isEmpty() &&
+                    !strDesc.isEmpty() &&
+                    !strStartDate.isEmpty() &&
+                    !strEndDate.isEmpty() &&
+                    !strStartTime.isEmpty() &&
+                    !strEndTime.isEmpty() &&
+                    !strWhere.isEmpty() &&
+                    user!=null &&
+                    !Objects.equals(strType, strSpinnerInit)
+                    ) {
+
+                    Database.createNewEvent(new Event(
+                            strName, strDesc,
+                            strStartTime, strEndTime,
+                            strStartDate, strEndDate,
+                            strWhere, strType,
+                            bitMapEventImage,
+                            user.getUid()));
+
+                    Toast.makeText(getApplicationContext(), "Event created successfully",
+                            Toast.LENGTH_LONG).show();
+
                     finish();
                 }
+
                 else{
-                    Toast.makeText(getApplicationContext(), "Please fill all fields", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Please fill all fields",
+                            Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -310,7 +334,7 @@ public class EventCreateActivity extends AppCompatActivity {
         //security check if permission is not already granted
         if (ActivityCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            findViewById(R.id.buttonCreateEventGetloc).setVisibility(View.GONE);
+            findViewById(R.id.buttonEventCreateMaps).setVisibility(View.GONE);
             return;
         }
 

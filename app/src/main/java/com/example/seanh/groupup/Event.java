@@ -11,7 +11,7 @@ public class Event {
 
     //Constructors
     Event(){}
-    Event(String name, String description, String startTime, String endTime, String startDate, String endDate, Bitmap bitMapEventImage, String where, String ownerId, String type){
+    Event(String name, String description, String startTime, String endTime, String startDate, String endDate, String where, String type, Bitmap bitMapEventImage, String ownerId){
         //Used for the creation of new events
         this.name = name;
         this.description = description;

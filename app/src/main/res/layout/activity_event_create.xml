@@ -34,9 +34,8 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_row="0"
-            android:background="@android:color/holo_blue_light"
+            android:background="@android:drawable/ic_input_add"
             android:scaleType="fitXY"
-            android:src="@drawable/pictureAdd"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
@@ -69,8 +68,8 @@
             android:layout_marginBottom="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
+            android:background="@android:drawable/btn_star_big_on"
             android:scaleType="fitXY"
-            android:src="@drawable/okButton"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintRight_toRightOf="parent" />
 
