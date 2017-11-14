@@ -9,7 +9,7 @@
         app:actionViewClass="android.support.v7.widget.SearchView"
         app:showAsAction="always" />
     <item
-        android:id="@+id/main_item2"
-        android:title="Item2"
+        android:id="@+id/main_share_test"
+        android:title="Share Test"
         app:showAsAction="never"/>
 </menu>

@@ -50,8 +50,6 @@ public class MainActivity extends AppCompatActivity {
         toolbar.setTitle(fbUser.getEmail());
         toolbar.setNavigationIcon(R.drawable.ic_menu);
         toolbar.inflateMenu(R.menu.main);
-        //getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
 
 
         //if Location permission is not granted, try granting Location permission TODO replace this with better way (ie. better location)
@@ -73,8 +71,6 @@ public class MainActivity extends AppCompatActivity {
         //onClickListener for RecycleView elements
         recyclerView.addOnItemTouchListener(new RecyclerTouchListener(this, recyclerView, new ClickListener() {
             public void onClick(View view, final int position) {
-                //Toast.makeText(MainActivity.this, "Single Click on position: " + position, Toast.LENGTH_SHORT).show();
-
                 //passes through the information to the next activity about this event
                 Event e = eventList.get(position);
                 Intent i = new Intent(MainActivity.this, EventViewActivity.class);
@@ -83,9 +79,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(i);
             }
             @Override
-            public void onLongClick(View view, final int position) {
-                //Toast.makeText(MainActivity.this, "Long press on position: "+position, Toast.LENGTH_LONG).show();
-            }
+            public void onLongClick(View view, final int position) { }
         }));
 
         //Makes refreshing the event list easy
@@ -178,10 +172,7 @@ public class MainActivity extends AppCompatActivity {
 
         Toast.makeText(this,item.getTitle()+" selected", Toast.LENGTH_SHORT).show();
 
-        if (id == R.id.main_search) {
-
-        }
-        else if (id == R.id.main_item2) {
+        if (id == R.id.main_share_test) {
 
         }
         return super.onOptionsItemSelected(item);
