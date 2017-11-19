@@ -40,7 +40,7 @@ import java.text.DecimalFormat;
 import java.util.Calendar;
 import java.util.Objects;
 
-//TODO Micah stuff here
+
 public class EventCreateActivity extends AppCompatActivity {
     private final String LOGTAG = "EventCreateActivity";
     private final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -80,8 +80,8 @@ public class EventCreateActivity extends AppCompatActivity {
         //continuation of value setup from above
         editName = (EditText) findViewById(R.id.editEventCreateName);
         editDesc = (EditText) findViewById(R.id.editEventCreateDescription);
-        editStartTime = (EditText) findViewById(R.id.editEventCreateStartTime);
-        editEndTime = (EditText) findViewById(R.id.editEventCreateEndTime);
+        editStartTime = (EditText) findViewById(R.id.textEventViewStartTime);
+        editEndTime = (EditText) findViewById(R.id.textEventViewEndTime);
         editStartDate = (EditText) findViewById(R.id.editEventCreateStartDate);
         editEndDate = (EditText) findViewById(R.id.editEventCreateEndDate);
         editWhere = (EditText) findViewById(R.id.editEventCreateAddress);
@@ -230,6 +230,12 @@ public class EventCreateActivity extends AppCompatActivity {
 
         }
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
     }
 
     private Bitmap getBitmapFromUri(Uri uri) throws IOException {
