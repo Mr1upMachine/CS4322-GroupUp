@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     tools:context="com.example.seanh.groupup.MainActivity">
 
-    <!-- The main content view -->
+    <!-- menu_mainmain content view -->
     <include
         android:id="@+id/includeMain"
         layout="@layout/content_main"

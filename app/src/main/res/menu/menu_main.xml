@@ -5,20 +5,12 @@
     <item
         android:id="@+id/main_search"
         android:title="Search"
-        android:orderInCategory="100"
         app:actionViewClass="android.support.v7.widget.SearchView"
         app:showAsAction="always" />
     <item
-        android:id="@+id/main_view_map"
+        android:id="@+id/main_view_switch"
         android:title="View Map"
-        app:showAsAction="never"/>
-    <item
-        android:id="@+id/main_view_list"
-        android:title="View List"
-        android:visible="false"
-        app:showAsAction="never" />
-    <item
-        android:id="@+id/main_share_test"
-        android:title="Share Test"
-        app:showAsAction="never"/>
+        android:icon="@drawable/ic_map_white_18dp"
+        app:showAsAction="always"/>
+
 </menu>

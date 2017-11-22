@@ -27,10 +27,9 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        editLoginEmail = (EditText) findViewById(R.id.editRegisterEmail);
-        editLoginPassword = (EditText) findViewById(R.id.editRegisterPassword);
+        editLoginEmail = findViewById(R.id.editRegisterEmail);
+        editLoginPassword = findViewById(R.id.editRegisterPassword);
         mAuth = FirebaseAuth.getInstance();
-
 
         //Auto sign in
         mAuthListener = new FirebaseAuth.AuthStateListener() {
@@ -50,6 +49,8 @@ public class LoginActivity extends AppCompatActivity {
             }
         };
 
+        //if Location permission is not granted, try granting Location permission TODO replace this with better way (ie. better location)
+        requestPermissions(new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION, android.Manifest.permission.ACCESS_FINE_LOCATION}, 1);
 
         findViewById(R.id.buttonLogin).setOnClickListener(new View.OnClickListener() {
             @Override

@@ -15,7 +15,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -39,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
     private SwipeRefreshLayout swipeRefreshContainer;
 
     private Toolbar toolbar;
-    private boolean menuViewListMap = false; //alternates which menu option is visible
+    private boolean menuViewSwitch = true; //alternates which menu option is visible
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         toolbar.setTitle("GroupUp");
         toolbar.setNavigationIcon(R.drawable.ic_menu_white);
-        toolbar.inflateMenu(R.menu.main);
+        toolbar.inflateMenu(R.menu.menu_main);
 
 
         //if Location permission is not granted, try granting Location permission TODO replace this with better way (ie. better location)
@@ -113,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
+        getMenuInflater().inflate(R.menu.menu_main, menu);
 
         //All for SearchView (search button at top)
         final MenuItem searchMenu = menu.findItem(R.id.main_search);
@@ -167,32 +166,25 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        //alternates which menu option is visible
-        menu.findItem(R.id.main_view_map).setVisible(!menuViewListMap);
-        menu.findItem(R.id.main_view_list).setVisible(menuViewListMap);
-        return super.onPrepareOptionsMenu(menu);
-    }
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        Toast.makeText(this,item.getTitle()+" selected", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this,item.getTitle()+" selected", Toast.LENGTH_SHORT).show();
 
-        if (id == R.id.main_share_test) {
+        if (id == R.id.main_view_switch) {
+            if(menuViewSwitch) {
+                recyclerView.setVisibility(View.GONE);
+                findViewById(R.id.constraintLayoutEventMap).setVisibility(View.VISIBLE);
+                item.setIcon(R.drawable.ic_format_list_bulleted_white_18dp);
+            }
+            else{
+                findViewById(R.id.constraintLayoutEventMap).setVisibility(View.GONE);
+                recyclerView.setVisibility(View.VISIBLE);
+                item.setIcon(R.drawable.ic_map_white_18dp);
+            }
+            menuViewSwitch = !menuViewSwitch; //alternates which menu option is visible
+        }
 
-        }
-        else if (id == R.id.main_view_map) {
-            recyclerView.setVisibility(View.GONE);
-            findViewById(R.id.constraintLayoutEventMap).setVisibility(View.VISIBLE);
-            menuViewListMap = !menuViewListMap; //alternates which menu option is visible
-        }
-        else if (id == R.id.main_view_list) {
-            findViewById(R.id.constraintLayoutEventMap).setVisibility(View.GONE);
-            recyclerView.setVisibility(View.VISIBLE);
-            menuViewListMap = !menuViewListMap; //alternates which menu option is visible
-        }
         return super.onOptionsItemSelected(item);
     }
 
