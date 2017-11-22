@@ -25,6 +25,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -229,6 +230,9 @@ public class EventCreateActivity extends AppCompatActivity {
             bitMapEventImage = bmp;
             eventPicture.setImageBitmap(bmp);
 
+            //TODO sets plus button to 20% opacity, change value to like 1% later
+            ImageButton ib = findViewById(R.id.buttonCreateEventPicture);
+            ib.setAlpha(0.2f);
         }
 
     }

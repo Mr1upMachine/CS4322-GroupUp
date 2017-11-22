@@ -22,32 +22,32 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <ImageButton
-            android:id="@+id/buttonCreateEventPicture"
-            android:layout_width="134dp"
-            android:layout_height="134dp"
-            android:layout_column="7"
-            android:layout_marginBottom="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_row="0"
-            android:background="@drawable/ic_add_circle_outline_white"
-            android:scaleType="fitXY"
-            app:layout_constraintBottom_toBottomOf="@+id/imageViewCreateEventPicture"
-            app:layout_constraintEnd_toEndOf="@+id/imageViewCreateEventPicture"
-            app:layout_constraintStart_toStartOf="@+id/imageViewCreateEventPicture"
-            app:layout_constraintTop_toTopOf="@+id/imageViewCreateEventPicture" />
-
         <ImageView
             android:id="@+id/imageViewCreateEventPicture"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:adjustViewBounds="true"
+            android:scaleType="fitXY"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.25"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-             />
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:id="@+id/buttonCreateEventPicture"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/ic_add_circle_outline_white"
+            android:elevation="12dp"
+            app:layout_constraintBottom_toBottomOf="@+id/imageViewCreateEventPicture"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/imageViewCreateEventPicture" />
 
     </android.support.constraint.ConstraintLayout>
 
@@ -197,6 +197,8 @@
             android:layout_marginEnd="16dp"
             android:clickable="true"
             app:backgroundTint="@android:color/holo_blue_dark"
+            app:elevation="8dp"
+            app:fabSize="mini"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:srcCompat="@drawable/ic_check_white_18dp" />

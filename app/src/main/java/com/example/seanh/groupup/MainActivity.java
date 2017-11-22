@@ -189,7 +189,6 @@ public class MainActivity extends AppCompatActivity {
             menuViewListMap = !menuViewListMap; //alternates which menu option is visible
         }
         else if (id == R.id.main_view_list) {
-
             findViewById(R.id.constraintLayoutEventMap).setVisibility(View.GONE);
             recyclerView.setVisibility(View.VISIBLE);
             menuViewListMap = !menuViewListMap; //alternates which menu option is visible
