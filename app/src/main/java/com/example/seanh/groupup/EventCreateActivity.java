@@ -138,7 +138,7 @@ public class EventCreateActivity extends AppCompatActivity {
         });
 
         //Code for Submit button
-        findViewById(R.id.buttonCreateEventSubmit).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.fabCreateEventSubmit).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 strName = editName.getText().toString();
@@ -300,7 +300,7 @@ public class EventCreateActivity extends AppCompatActivity {
                         mMinute = minute;
 
                         DecimalFormat df = new DecimalFormat("00"); //makes minute have 2 digits
-                        textStartTime.setText(date_time+" "+hourOfDay + ":" + df.format(minute));
+                        textStartTime.setText(hourOfDay + ":" + df.format(minute));
                     }
                 }, mHour, mMinute, false);
         timePickerDialog.show();
@@ -323,7 +323,7 @@ public class EventCreateActivity extends AppCompatActivity {
                         mMinute = minute;
 
                         DecimalFormat df = new DecimalFormat("00"); //makes minute have 2 digits
-                        textEndTime.setText(date_time+" "+hourOfDay + ":" + df.format(minute));
+                        textEndTime.setText(hourOfDay + ":" + df.format(minute));
                     }
                 }, mHour, mMinute, false);
         timePickerDialog.show();

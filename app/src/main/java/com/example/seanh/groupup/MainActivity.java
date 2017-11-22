@@ -45,10 +45,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbarMain);
+        toolbar = findViewById(R.id.toolbarMain);
         setSupportActionBar(toolbar);
-        toolbar.setTitle(fbUser.getEmail());
-        toolbar.setNavigationIcon(R.drawable.ic_menu);
+        toolbar.setTitle("GroupUp");
+        toolbar.setNavigationIcon(R.drawable.ic_menu_white);
         toolbar.inflateMenu(R.menu.main);
 
 
@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         //Handles setup of RecyclerView
-        recyclerView = (RecyclerView) findViewById(R.id.recycleViewEventList);
+        recyclerView = findViewById(R.id.recycleViewEventList);
         eAdapter = new EventsAdapter(eventList);
         final RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(mLayoutManager);
@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
         }));
 
         //Makes refreshing the event list easy
-        swipeRefreshContainer = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshContainer);
+        swipeRefreshContainer = findViewById(R.id.swipeRefreshContainer);
         swipeRefreshContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -154,7 +154,7 @@ public class MainActivity extends AppCompatActivity {
                 eventList.addAll(tempList);
                 eAdapter.notifyDataSetChanged();
 
-                EditText et = (EditText) findViewById(R.id.search_src_text); //Find EditText view
+                EditText et = findViewById(R.id.search_src_text); //Find EditText view
                 et.setText(""); //Clear the text from EditText view
                 searchView.setQuery("", false); //Clear query
                 searchView.onActionViewCollapsed(); //Collapse the action view

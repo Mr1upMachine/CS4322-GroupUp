@@ -13,7 +13,7 @@
 
 
     <android.support.constraint.ConstraintLayout
-        android:id="@+id/constraintLayoutTop"
+        android:id="@+id/constraintEventCreateTop"
         android:layout_width="0dp"
         android:layout_height="150dp"
         android:background="@android:color/holo_blue_light"
@@ -32,7 +32,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_row="0"
-            android:background="@android:drawable/ic_input_add"
+            android:background="@drawable/ic_add_circle_outline_white"
             android:scaleType="fitXY"
             app:layout_constraintBottom_toBottomOf="@+id/imageViewCreateEventPicture"
             app:layout_constraintEnd_toEndOf="@+id/imageViewCreateEventPicture"
@@ -46,33 +46,21 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+             />
 
     </android.support.constraint.ConstraintLayout>
 
     <android.support.constraint.ConstraintLayout
-        android:id="@+id/constraintLayoutBottom"
+        android:id="@+id/constraintEventCreateBottom"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayoutTop"
+        app:layout_constraintTop_toBottomOf="@+id/constraintEventCreateTop"
         app:layout_constraintVertical_bias="1.0">
-
-        <ImageButton
-            android:id="@+id/buttonCreateEventSubmit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp"
-            android:layout_marginEnd="24dp"
-            android:background="@android:drawable/btn_star_big_on"
-            android:scaleType="fitXY"
-            android:scaleX="2"
-            android:scaleY="2"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
 
         <EditText
             android:id="@+id/editEventCreateName"
@@ -200,6 +188,18 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/editEventCreateName"
             app:layout_constraintTop_toTopOf="@+id/editEventCreateName" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fabCreateEventSubmit"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginBottom="24dp"
+            android:layout_marginEnd="16dp"
+            android:clickable="true"
+            app:backgroundTint="@android:color/holo_blue_dark"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:srcCompat="@drawable/ic_check_white_18dp" />
 
     </android.support.constraint.ConstraintLayout>
 

@@ -45,6 +45,17 @@
             android:layout_marginStart="8dp"
             android:paddingLeft="8dp"
             android:paddingRight="8dp" />
+
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/constraintLayoutEventMap"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp">
+
+        </android.support.constraint.ConstraintLayout>
     </android.support.v4.widget.SwipeRefreshLayout>
 
     <android.support.design.widget.FloatingActionButton
