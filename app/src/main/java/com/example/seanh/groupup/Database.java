@@ -76,7 +76,7 @@ public class Database {
 
     //Records new user into the database
     public static void createNewUser(User u) {
-        dataUsers.child(u.getId()).setValue(u);
+        updateUser(u);
     }
     public static User getUserById(String id){
         // Read from the database
@@ -91,8 +91,8 @@ public class Database {
         });
         return tempUser;
     }
-    public static void updateUser(User newUser){
-        //TODO write method
+    public static void updateUser(User u){
+        dataUsers.child(u.getId()).setValue(u);
     }
 
 

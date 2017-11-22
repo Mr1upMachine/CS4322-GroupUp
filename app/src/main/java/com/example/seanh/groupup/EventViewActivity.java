@@ -3,18 +3,9 @@ package com.example.seanh.groupup;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ImageView;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import java.io.IOException;
-import java.io.FileDescriptor;
-import android.os.ParcelFileDescriptor;
-import android.net.Uri;
-import android.provider.MediaStore;
-import android.database.Cursor;
-import android.view.inputmethod.InputMethodManager;
 
 public class EventViewActivity extends AppCompatActivity {
     //TODO Micah stuff here
@@ -23,7 +14,7 @@ public class EventViewActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_view);
 
-        final String eventString = getIntent().getStringExtra("Title");
+        final String eventString = getIntent().getStringExtra("Event");
         final String ownerString = getIntent().getStringExtra("Owner");
         final String startTimeString = getIntent().getStringExtra("Start Time");
         final String endTimeString = getIntent().getStringExtra("End Time");

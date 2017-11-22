@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         //sets action bar to user's email (for testing)
         setTitle(""+fbUser.getEmail());
 
@@ -66,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
                 Intent i = new Intent(MainActivity.this, EventViewActivity.class);
                 i.putExtra("Event", e.toString());
                 i.putExtra("Owner", e.getOwnerId());
+                i.putExtra("Description", e.getDescription());
                 startActivity(i);
             }
             @Override
