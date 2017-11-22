@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
     private SwipeRefreshLayout swipeRefreshContainer;
 
     private Toolbar toolbar;
+    private boolean menuViewListMap = false; //alternates which menu option is visible
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,7 +115,6 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
 
-
         //All for SearchView (search button at top)
         final MenuItem searchMenu = menu.findItem(R.id.main_search);
         final SearchView searchView = (SearchView) searchMenu.getActionView();
@@ -167,6 +167,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        //alternates which menu option is visible
+        menu.findItem(R.id.main_view_map).setVisible(!menuViewListMap);
+        menu.findItem(R.id.main_view_list).setVisible(menuViewListMap);
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
@@ -174,6 +182,17 @@ public class MainActivity extends AppCompatActivity {
 
         if (id == R.id.main_share_test) {
 
+        }
+        else if (id == R.id.main_view_map) {
+            recyclerView.setVisibility(View.GONE);
+            findViewById(R.id.constraintLayoutEventMap).setVisibility(View.VISIBLE);
+            menuViewListMap = !menuViewListMap; //alternates which menu option is visible
+        }
+        else if (id == R.id.main_view_list) {
+
+            findViewById(R.id.constraintLayoutEventMap).setVisibility(View.GONE);
+            recyclerView.setVisibility(View.VISIBLE);
+            menuViewListMap = !menuViewListMap; //alternates which menu option is visible
         }
         return super.onOptionsItemSelected(item);
     }
