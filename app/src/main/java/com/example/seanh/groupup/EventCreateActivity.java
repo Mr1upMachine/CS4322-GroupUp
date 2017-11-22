@@ -27,6 +27,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -43,7 +44,8 @@ import java.util.Objects;
 public class EventCreateActivity extends AppCompatActivity {
     private final String LOGTAG = "EventCreateActivity";
     private final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-    private EditText editName, editDesc, editStartTime, editEndTime, editStartDate, editEndDate, editWhere, editLocX, editLocY;
+    private EditText editName, editDesc, editWhere;
+    TextView textStartTime, textEndTime, textStartDate, textEndDate;
     private ImageView eventPicture;
     private String date_time = "", strName = "", strDesc = "", strStartDate = "", strEndDate = "", strStartTime = "", strEndTime = "", strWhere = "", strType = "", strSpinnerInit = "";
     private Bitmap bitMapEventImage;
@@ -79,10 +81,10 @@ public class EventCreateActivity extends AppCompatActivity {
         //continuation of value setup from above
         editName = findViewById(R.id.editEventCreateName);
         editDesc = findViewById(R.id.editEventCreateDescription);
-        editStartTime = findViewById(R.id.editEventCreateStartTime);
-        editEndTime = findViewById(R.id.editEventCreateEndTime);
-        editStartDate = findViewById(R.id.editEventCreateStartDate);
-        editEndDate = findViewById(R.id.editEventCreateEndDate);
+        textStartTime = findViewById(R.id.textEventCreateStartTime);
+        textEndTime = findViewById(R.id.textEventCreateEndTime);
+        textStartDate = findViewById(R.id.textEventCreateStartDate);
+        textEndDate = findViewById(R.id.textEventCreateEndDate);
         editWhere = findViewById(R.id.editEventCreateAddress);
         eventPicture = null;
         editSpinner = findViewById(R.id.editEventCreateTypeSpinner);
@@ -107,28 +109,28 @@ public class EventCreateActivity extends AppCompatActivity {
         });
 
 
-        editStartDate.setOnClickListener(new View.OnClickListener() {
+        textStartDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 datePickerStart();
             }
         });
 
-        editEndDate.setOnClickListener(new View.OnClickListener() {
+        textEndDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 datePickerEnd();
             }
         });
 
-        editStartTime.setOnClickListener(new View.OnClickListener() {
+        textStartTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 timePickerStart();
             }
         });
 
-        editEndTime.setOnClickListener(new View.OnClickListener() {
+        textEndTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 timePickerEnd();
@@ -141,10 +143,10 @@ public class EventCreateActivity extends AppCompatActivity {
             public void onClick(View v) {
                 strName = editName.getText().toString();
                 strDesc = editDesc.getText().toString();
-                strStartDate = editStartDate.getText().toString();
-                strEndDate = editEndDate.getText().toString();
-                strStartTime = editStartTime.getText().toString();
-                strEndTime = editEndTime.getText().toString();
+                strStartDate = textStartDate.getText().toString();
+                strEndDate = textEndDate.getText().toString();
+                strStartTime = textStartTime.getText().toString();
+                strEndTime = textEndTime.getText().toString();
                 strWhere = editWhere.getText().toString();
                 strType = editSpinner.getSelectedItem().toString();
 
@@ -255,7 +257,7 @@ public class EventCreateActivity extends AppCompatActivity {
                     @Override
                     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
 
-                        editStartDate.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
+                        textStartDate.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
                     }
                 }, mYear, mMonth, mDay);
         datePickerDialog.show();
@@ -275,7 +277,7 @@ public class EventCreateActivity extends AppCompatActivity {
                     @Override
                     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
 
-                        editEndDate.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
+                        textEndDate.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
                     }
                 }, mYear, mMonth, mDay);
         datePickerDialog.show();
@@ -298,7 +300,7 @@ public class EventCreateActivity extends AppCompatActivity {
                         mMinute = minute;
 
                         DecimalFormat df = new DecimalFormat("00"); //makes minute have 2 digits
-                        editStartTime.setText(date_time+" "+hourOfDay + ":" + df.format(minute));
+                        textStartTime.setText(date_time+" "+hourOfDay + ":" + df.format(minute));
                     }
                 }, mHour, mMinute, false);
         timePickerDialog.show();
@@ -321,7 +323,7 @@ public class EventCreateActivity extends AppCompatActivity {
                         mMinute = minute;
 
                         DecimalFormat df = new DecimalFormat("00"); //makes minute have 2 digits
-                        editEndTime.setText(date_time+" "+hourOfDay + ":" + df.format(minute));
+                        textEndTime.setText(date_time+" "+hourOfDay + ":" + df.format(minute));
                     }
                 }, mHour, mMinute, false);
         timePickerDialog.show();

@@ -1,6 +1,13 @@
 <resources>
     <string name="app_name">GroupUp</string>
     <string name="auth_failed">Auth. Failed</string>
-    <string name="openDrawer">Drawer opened</string>
-    <string name="closeDrawer">Drawer closed</string>
+    <string-array name="eventTypesArray">
+        <item>Event Type</item>
+        <item>Olympics</item>
+        <item>Sportsball</item>
+        <item>Distance Spitting</item>
+        <item>Pig Racing</item>
+        <item>Other Sports Examples</item>
+    </string-array>
+    <string name="cap_init">"Initial\nAttendees"</string>
 </resources>

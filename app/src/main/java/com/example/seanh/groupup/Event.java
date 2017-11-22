@@ -98,6 +98,10 @@ public class Event {
     public String getType() {return type;}
     public void setType(String type) {this.type = type;}
 
+    public String getTime(){
+        return startDate+" "+startTime;
+    }
+
     public String generateLocString(){
         //TODO parse gps loc to city
         DecimalFormat df = new DecimalFormat("#.000");

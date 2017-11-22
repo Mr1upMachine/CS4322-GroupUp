@@ -114,27 +114,6 @@
             app:layout_constraintTop_toBottomOf="@+id/editEventCreateDescription" />
 
         <EditText
-            android:id="@+id/editEventCreateStartDate"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="1dp"
-            android:ems="10"
-            android:inputType="date"
-            android:text="Start Date"
-            app:layout_constraintStart_toStartOf="@+id/editEventCreateStartTime"
-            app:layout_constraintTop_toBottomOf="@+id/editEventCreateStartTime" />
-
-        <EditText
-            android:id="@+id/editEventCreateEndDate"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="date"
-            android:text="End Date"
-            app:layout_constraintStart_toEndOf="@+id/editEventCreateStartDate"
-            app:layout_constraintTop_toBottomOf="@+id/editEventCreateEndTime" />
-
-        <EditText
             android:id="@+id/editEventCreateInitialAttenders"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -158,26 +137,48 @@
             app:layout_constraintStart_toEndOf="@+id/editEventCreateInitialAttenders"
             app:layout_constraintTop_toTopOf="@+id/editEventCreateInitialAttenders" />
 
-        <EditText
-            android:id="@+id/editEventCreateStartTime"
-            android:layout_width="100dp"
+        <TextView
+            android:id="@+id/textEventCreateStartTime"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:ems="10"
-            android:inputType="time"
+            android:background="?attr/editTextBackground"
+            android:ems="5"
             android:text="Start Time"
             app:layout_constraintStart_toStartOf="@+id/editEventCreateInitialAttenders"
             app:layout_constraintTop_toBottomOf="@+id/editEventCreateInitialAttenders" />
 
-        <EditText
-            android:id="@+id/editEventCreateEndTime"
-            android:layout_width="100dp"
+        <TextView
+            android:id="@+id/textEventCreateEndTime"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="time"
+            android:layout_marginStart="8dp"
+            android:background="?attr/editTextBackground"
+            android:ems="5"
             android:text="End Time"
-            app:layout_constraintLeft_toRightOf="@+id/editEventCreateStartTime"
-            app:layout_constraintTop_toTopOf="@+id/editEventCreateStartTime" />
+            app:layout_constraintStart_toEndOf="@+id/textEventCreateStartTime"
+            app:layout_constraintTop_toTopOf="@+id/textEventCreateStartTime" />
+
+        <TextView
+            android:id="@+id/textEventCreateStartDate"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="1dp"
+            android:background="?attr/editTextBackground"
+            android:text="Start Date"
+            app:layout_constraintEnd_toEndOf="@+id/textEventCreateStartTime"
+            app:layout_constraintStart_toStartOf="@+id/textEventCreateStartTime"
+            app:layout_constraintTop_toBottomOf="@+id/textEventCreateStartTime" />
+
+        <TextView
+            android:id="@+id/textEventCreateEndDate"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="?attr/editTextBackground"
+            android:text="End Date"
+            app:layout_constraintEnd_toEndOf="@+id/textEventCreateEndTime"
+            app:layout_constraintStart_toStartOf="@+id/textEventCreateEndTime"
+            app:layout_constraintTop_toBottomOf="@+id/textEventCreateEndTime" />
 
         <Button
             android:id="@+id/buttonEventCreateMaps"
