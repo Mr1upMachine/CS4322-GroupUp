@@ -30,7 +30,8 @@
         <activity android:name=".MainActivity"
             android:theme="@style/AppTheme"
             />
-        <activity android:name=".EventViewActivity" />
+        <activity android:name=".EventViewActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar"/>
         <activity android:name=".EventCreateActivity" />
         <activity
             android:name=".RegisterActivity"

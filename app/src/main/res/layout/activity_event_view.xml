@@ -73,24 +73,27 @@
             android:id="@+id/textEventViewDescription"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
+            android:layout_marginEnd="16dp"
             android:layout_marginTop="16dp"
             android:ems="10"
             android:singleLine="false"
             android:text="This is a description of the event that is happening. It may have a lot of words or almost none, so the layout must look good for both. This example if for a lot of words."
             android:textAlignment="center"
-            app:layout_constraintEnd_toEndOf="@+id/textEventViewName"
+            app:layout_constraintEnd_toEndOf="@+id/textEventViewStartDate"
             app:layout_constraintStart_toStartOf="@+id/textEventViewName"
             app:layout_constraintTop_toBottomOf="@+id/textEventViewOwner" />
 
         <TextView
             android:id="@+id/textEventViewAddress"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="20dp"
             android:ems="10"
-            android:text="Event Address"
+            android:text="123 Main Street ButtsTown, AS 01248"
             android:textAlignment="center"
+            app:layout_constraintEnd_toEndOf="@+id/textEventViewEndDate"
             app:layout_constraintStart_toStartOf="@+id/textEventViewDescription"
             app:layout_constraintTop_toBottomOf="@+id/textEventViewDescription" />
 
@@ -137,9 +140,10 @@
             android:id="@+id/buttonViewEventShare"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
             android:layout_marginEnd="8dp"
             android:text="Share"
-            app:layout_constraintBottom_toBottomOf="@+id/buttonViewEventMaps"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
         <Button
@@ -152,16 +156,15 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
-        <Button
-            android:id="@+id/buttonViewEventMaps"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
-            android:text="View on Map"
-            app:layout_constraintBottom_toBottomOf="@+id/buttonViewEventJoin"
-            app:layout_constraintEnd_toStartOf="@+id/buttonViewEventShare"
-            app:layout_constraintStart_toEndOf="@+id/buttonViewEventJoin" />
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/constraintLayoutEventViewMap"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="#472386"
+            app:layout_constraintBottom_toTopOf="@+id/buttonViewEventJoin"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textEventViewAddress"></android.support.constraint.ConstraintLayout>
 
         <android.support.constraint.ConstraintLayout
             android:id="@+id/constraintLayoutCapacity"
