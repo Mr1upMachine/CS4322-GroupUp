@@ -3,12 +3,19 @@ package com.example.seanh.groupup;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.ParcelFileDescriptor;
+import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -18,25 +25,33 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.io.FileDescriptor;
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.Calendar;
+import java.util.Objects; 
 
 //TODO Micah stuff here
 public class EventCreateActivity extends AppCompatActivity {
     private final String LOGTAG = "EventCreateActivity";
     private final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-    private EditText editName, editDesc, editWhen, editLocX, editLocY;
-    private String date_time = "", strName = "", strDesc = "", strWhen = "";
+    private EditText editName, editDesc, editStartTime, editEndTime, editStartDate, editEndDate, editWhere, editLocX, editLocY;
+    private ImageView eventPicture;
+    private String date_time = "", strName = "", strDesc = "", strStartDate = "", strEndDate = "", strStartTime = "", strEndTime = "", strWhere = "", strType = "", strSpinnerInit = "";
+    private Bitmap bitMapEventImage;
     private int mYear, mMonth, mDay, mHour, mMinute;
     private double numLocX = 0.0, numLocY = 0.0;
     private LocationManager mLocationManager;
     private String provider;
+    private Spinner editSpinner;
     private final LocationListener mLocationListener = new LocationListener() {
         @Override
         public void onLocationChanged(final Location location) {
@@ -51,38 +66,72 @@ public class EventCreateActivity extends AppCompatActivity {
         @Override
         public void onProviderDisabled(String provider) {  }
     };
+    private static int RESULT_LOAD_IMAGE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_create);
+
         setupKeyboardHide(findViewById(R.id.layoutEventCreate)); //This auto-hides the keyboard
         setTitle("Create an Event:");
 
         //continuation of value setup from above
-        editName = (EditText) findViewById(R.id.editEventCreateName);
-        editDesc = (EditText) findViewById(R.id.editEventCreateDescription);
-        editWhen = (EditText) findViewById(R.id.editEventCreateWhen);
-        editLocX = (EditText) findViewById(R.id.editEventCreateLocX);
-        editLocY = (EditText) findViewById(R.id.editEventCreateLocY);
+        editName = findViewById(R.id.editEventCreateName);
+        editDesc = findViewById(R.id.editEventCreateDescription);
+        editStartTime = findViewById(R.id.editEventCreateStartTime);
+        editEndTime = findViewById(R.id.editEventCreateEndTime);
+        editStartDate = findViewById(R.id.editEventCreateStartDate);
+        editEndDate = findViewById(R.id.editEventCreateEndDate);
+        editWhere = findViewById(R.id.editEventCreateAddress);
+        eventPicture = null;
+        editSpinner = findViewById(R.id.editEventCreateTypeSpinner);
+        strSpinnerInit = "Event Type";
+
+        //not sure how this'll fit in with GoogleMaps, or if it'll just get replaced with eric's code
+
+//        editLocX = (EditText) findViewById(R.id.editEventCreateLocX);
+//        editLocY = (EditText) findViewById(R.id.editEventCreateLocY);
 
         //updates location first time TODO Doesn't work on API 26 Why?
         setupLocation();
 
-        //Sets the EditText to the current location
-        findViewById(R.id.buttonCreateEventGetloc).setOnClickListener(new View.OnClickListener() {
+        //Button for Google Maps extension, currently just sets address to current Latitude and Longitude
+        findViewById(R.id.buttonEventCreateMaps).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                editLocX.setText(""+numLocX);
-                editLocY.setText(""+numLocY);
+                editWhere.setText(""+numLocX+", ");
+                editWhere.setText(""+numLocY);
+                Toast.makeText(getApplicationContext(), "Right now I just populate the current Lat/Lon!", Toast.LENGTH_LONG).show();
             }
         });
 
 
-        editWhen.setOnClickListener(new View.OnClickListener() {
+        editStartDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                datePicker();
+                datePickerStart();
+            }
+        });
+
+        editEndDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                datePickerEnd();
+            }
+        });
+
+        editStartTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                timePickerStart();
+            }
+        });
+
+        editEndTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                timePickerEnd();
             }
         });
 
@@ -92,25 +141,107 @@ public class EventCreateActivity extends AppCompatActivity {
             public void onClick(View v) {
                 strName = editName.getText().toString();
                 strDesc = editDesc.getText().toString();
-                strWhen = editWhen.getText().toString();
-                numLocX = Double.parseDouble(editLocX.getText().toString());
-                numLocY = Double.parseDouble(editLocY.getText().toString());
+                strStartDate = editStartDate.getText().toString();
+                strEndDate = editEndDate.getText().toString();
+                strStartTime = editStartTime.getText().toString();
+                strEndTime = editEndTime.getText().toString();
+                strWhere = editWhere.getText().toString();
+                strType = editSpinner.getSelectedItem().toString();
+
+
+//                numLocX = Double.parseDouble(editLocX.getText().toString());
+//                numLocY = Double.parseDouble(editLocY.getText().toString());
 
                 //Verifies all data fields are filled
-                if(!strName.isEmpty() && !strDesc.isEmpty() && !strWhen.isEmpty() && numLocX!=0.0 && numLocY!=0.0 && user!=null){
-                    Database.createNewEvent(new Event(strName, strDesc, strWhen, "Dummy pic URL here", numLocX, numLocY, user.getUid()));
-                    Toast.makeText(getApplicationContext(), "Event created successfully",Toast.LENGTH_LONG).show();
+                if  (
+                    !strName.isEmpty() &&
+                    !strDesc.isEmpty() &&
+                    !strStartDate.isEmpty() &&
+                    !strEndDate.isEmpty() &&
+                    !strStartTime.isEmpty() &&
+                    !strEndTime.isEmpty() &&
+                    !strWhere.isEmpty() &&
+                    user!=null &&
+                    !Objects.equals(strType, strSpinnerInit)
+                    ) {
+
+                    Database.createNewEvent(new Event(
+                            strName, strDesc,
+                            strStartTime, strEndTime,
+                            strStartDate, strEndDate,
+                            strWhere, strType,
+                            bitMapEventImage,
+                            user.getUid()));
+
+                    Toast.makeText(getApplicationContext(), "Event created successfully",
+                            Toast.LENGTH_LONG).show();
+
                     finish();
                 }
+
                 else{
-                    Toast.makeText(getApplicationContext(), "Please fill all fields", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Please fill all fields",
+                            Toast.LENGTH_SHORT).show();
                 }
+            }
+        });
+
+        findViewById(R.id.buttonCreateEventPicture).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View w) {
+                Intent i = new Intent(
+                        Intent.ACTION_PICK,
+                        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+
+                startActivityForResult(i, RESULT_LOAD_IMAGE);
+
             }
         });
 
     }
 
-    private void datePicker(){
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && null != data) {
+            Uri selectedImage = data.getData();
+            String[] filePathColumn = { MediaStore.Images.Media.DATA };
+
+            Cursor cursor = getContentResolver().query(selectedImage,
+                    filePathColumn, null, null, null);
+            cursor.moveToFirst();
+
+            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+            String picturePath = cursor.getString(columnIndex);
+            cursor.close();
+
+            eventPicture = findViewById(R.id.imageViewCreateEventPicture);
+
+            Bitmap bmp = null;
+            try {
+                bmp = getBitmapFromUri(selectedImage);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            bitMapEventImage = bmp;
+            eventPicture.setImageBitmap(bmp);
+
+        }
+
+    }
+
+    private Bitmap getBitmapFromUri(Uri uri) throws IOException {
+        ParcelFileDescriptor parcelFileDescriptor =
+                getContentResolver().openFileDescriptor(uri, "r");
+        FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
+        Bitmap image = BitmapFactory.decodeFileDescriptor(fileDescriptor);
+        parcelFileDescriptor.close();
+
+        return image;
+    }
+
+    private void datePickerStart(){
 
         // Get Current Date
         final Calendar c = Calendar.getInstance();
@@ -124,14 +255,33 @@ public class EventCreateActivity extends AppCompatActivity {
                     @Override
                     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
 
-                        date_time = dayOfMonth + "-" + (monthOfYear + 1) + "-" + year;
-                        //*************Call Time Picker Here ********************
-                        timePicker();
+                        editStartDate.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
                     }
                 }, mYear, mMonth, mDay);
         datePickerDialog.show();
     }
-    private void timePicker(){
+
+    private void datePickerEnd(){
+
+        // Get Current Date
+        final Calendar c = Calendar.getInstance();
+        mYear = c.get(Calendar.YEAR);
+        mMonth = c.get(Calendar.MONTH);
+        mDay = c.get(Calendar.DAY_OF_MONTH);
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(this,
+                new DatePickerDialog.OnDateSetListener() {
+
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+
+                        editEndDate.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
+                    }
+                }, mYear, mMonth, mDay);
+        datePickerDialog.show();
+    }
+
+    private void timePickerStart(){
         // Get Current Time
         final Calendar c = Calendar.getInstance();
         mHour = c.get(Calendar.HOUR_OF_DAY);
@@ -148,7 +298,30 @@ public class EventCreateActivity extends AppCompatActivity {
                         mMinute = minute;
 
                         DecimalFormat df = new DecimalFormat("00"); //makes minute have 2 digits
-                        editWhen.setText(date_time+" "+hourOfDay + ":" + df.format(minute));
+                        editStartTime.setText(date_time+" "+hourOfDay + ":" + df.format(minute));
+                    }
+                }, mHour, mMinute, false);
+        timePickerDialog.show();
+    }
+
+    private void timePickerEnd(){
+        // Get Current Time
+        final Calendar c = Calendar.getInstance();
+        mHour = c.get(Calendar.HOUR_OF_DAY);
+        mMinute = c.get(Calendar.MINUTE);
+
+        // Launch Time Picker Dialog
+        TimePickerDialog timePickerDialog = new TimePickerDialog(this,
+                new TimePickerDialog.OnTimeSetListener() {
+
+                    @Override
+                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+
+                        mHour = hourOfDay;
+                        mMinute = minute;
+
+                        DecimalFormat df = new DecimalFormat("00"); //makes minute have 2 digits
+                        editEndTime.setText(date_time+" "+hourOfDay + ":" + df.format(minute));
                     }
                 }, mHour, mMinute, false);
         timePickerDialog.show();
@@ -160,7 +333,7 @@ public class EventCreateActivity extends AppCompatActivity {
         //security check if permission is not already granted
         if (ActivityCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            findViewById(R.id.buttonCreateEventGetloc).setVisibility(View.GONE);
+            findViewById(R.id.buttonEventCreateMaps).setVisibility(View.GONE);
             return;
         }
 

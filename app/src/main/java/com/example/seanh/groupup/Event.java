@@ -1,23 +1,29 @@
 package com.example.seanh.groupup;
 
+import android.graphics.Bitmap;
+
 import java.text.DecimalFormat;
 
 public class Event {
-    private String id, name, description, time, picURL, ownerId;
+    private String id, name, startDate, endDate, description, startTime, endTime, picURL, ownerId, where, type;
     private double locX, locY;
+    private Bitmap bitMapEventImage;
     //private User owner;
 
     //Constructors
-    Event(){}
-    Event(String name, String description, String time, String picURL, double locX, double locY, String ownerId){
+    Event(){} 
+    Event(String name, String description, String startTime, String endTime, String startDate, String endDate, String where, String type, Bitmap bitMapEventImage, String ownerId){
         //Used for the creation of new events
         this.name = name;
         this.description = description;
-        this.time = time;
-        this.picURL = picURL;
-        this.locX = locX;
-        this.locY = locY;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.bitMapEventImage = bitMapEventImage;
+        this.where = where;
         this.ownerId = ownerId;
+        this.type = type;
     }
 
     //Getter & setters
@@ -39,6 +45,26 @@ public class Event {
     public void setDescription(String description) {
         this.description = description;
     }
+    public String getStartDate() {
+        return startDate;
+    }
+    public String getEndDate() {
+        return endDate;
+    }
+    public void setStartDate(String startDate) {this.startDate = startDate;}
+    public void setEndDate(String endDate) {this.endDate = endDate;}
+    public String getStartTime() {
+        return startTime;
+    }
+    public String getEndTime() {
+        return endTime;
+    }
+    public void setStartTime(String startTime) {
+        this.startTime = startTime;
+    }
+    public void setEndTime(String endTime) {
+        this.endTime = endTime;
+    }
     public String getPicURL() {
         return picURL;
     }
@@ -55,11 +81,11 @@ public class Event {
         this.locX = locX;
         this.locY = locY;
     }
-    public String getTime() {
-        return time;
+    public String getWhere() {
+        return where;
     }
-    public void setTime(String time) {
-        this.time = time;
+    public void setWhere(String where) {
+        this.where = where;
     }
     public String getOwnerId() {
         return ownerId;
@@ -67,6 +93,10 @@ public class Event {
     public void setOwnerId(String ownerId) {
         this.ownerId = ownerId;
     }
+    public void setBitMapEventImage(Bitmap bitMapEventImage) {this.bitMapEventImage=bitMapEventImage;}
+    public Bitmap getBitMapEventImage() {return bitMapEventImage;}
+    public String getType() {return type;}
+    public void setType(String type) {this.type = type;}
 
     public String generateLocString(){
         //TODO parse gps loc to city
@@ -75,6 +105,6 @@ public class Event {
     }
 
     public String toString(){
-        return "Event{\nid="+id+"\nname="+name+"\ndesc="+description+"\ntime="+time+"\npicURL="+picURL+"\nlocX="+locX+"\nlocY="+locY+"\n}";
+        return "Event{\nid="+id+"\nname="+name+"\ndesc="+description+"\nstartTime="+startTime+"\nendTime="+endTime+"\nstartDate="+startDate+"\nendDate="+endDate+"\naddress="+where+"\npicURL="+picURL+"}";
     }
 }

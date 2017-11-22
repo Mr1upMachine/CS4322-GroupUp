@@ -5,103 +5,204 @@
     android:id="@+id/layoutEventCreate"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:backgroundTint="@android:color/darker_gray"
+    android:visibility="visible"
     tools:context="com.example.seanh.groupup.EventCreateActivity"
     tools:layout_editor_absoluteX="0dp"
     tools:layout_editor_absoluteY="81dp">
 
-    <EditText
-        android:id="@+id/editEventCreateName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:ems="10"
-        android:hint="Event Name"
-        android:inputType="textPersonName"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:layout_constraintLeft_creator="1"
-        tools:layout_constraintTop_creator="1" />
 
-    <EditText
-        android:id="@+id/editEventCreateDescription"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="Description"
-        android:inputType="textMultiLine"
-        app:layout_constraintLeft_toLeftOf="@+id/editEventCreateName"
-        app:layout_constraintRight_toRightOf="@+id/editEventCreateName"
-        app:layout_constraintTop_toBottomOf="@+id/editEventCreateName"
-        tools:layout_constraintLeft_creator="1"
-        tools:layout_constraintRight_creator="1"
-        tools:layout_constraintTop_creator="1" />
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/constraintLayoutTop"
+        android:layout_width="0dp"
+        android:layout_height="150dp"
+        android:background="@android:color/holo_blue_light"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-    <EditText
-        android:id="@+id/editEventCreateWhen"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="When"
-        android:inputType="none"
-        app:layout_constraintLeft_toLeftOf="@+id/editEventCreateDescription"
-        app:layout_constraintRight_toRightOf="@+id/editEventCreateDescription"
-        app:layout_constraintTop_toBottomOf="@+id/editEventCreateDescription"
-        tools:layout_constraintLeft_creator="1"
-        tools:layout_constraintRight_creator="1"
-        tools:layout_constraintTop_creator="1" />
+        <ImageButton
+            android:id="@+id/buttonCreateEventPicture"
+            android:layout_width="134dp"
+            android:layout_height="134dp"
+            android:layout_column="7"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_row="0"
+            android:background="@android:drawable/ic_input_add"
+            android:scaleType="fitXY"
+            app:layout_constraintBottom_toBottomOf="@+id/imageViewCreateEventPicture"
+            app:layout_constraintEnd_toEndOf="@+id/imageViewCreateEventPicture"
+            app:layout_constraintStart_toStartOf="@+id/imageViewCreateEventPicture"
+            app:layout_constraintTop_toTopOf="@+id/imageViewCreateEventPicture" />
 
-    <Button
-        android:id="@+id/buttonCreateEventGetloc"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Current Loc"
-        app:layout_constraintBottom_toBottomOf="@+id/editEventCreateLocX"
-        app:layout_constraintLeft_toRightOf="@+id/editEventCreateLocX"
-        app:layout_constraintTop_toBottomOf="@+id/editEventCreateLocX"
-        tools:layout_constraintBottom_creator="1"
-        tools:layout_constraintLeft_creator="1"
-        tools:layout_constraintTop_creator="1" />
+        <ImageView
+            android:id="@+id/imageViewCreateEventPicture"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <EditText
-        android:id="@+id/editEventCreateLocY"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="LocY"
-        android:inputType="numberDecimal"
-        app:layout_constraintLeft_toLeftOf="@+id/editEventCreateLocX"
-        app:layout_constraintRight_toRightOf="@+id/editEventCreateLocX"
-        app:layout_constraintTop_toBottomOf="@+id/editEventCreateLocX"
-        tools:layout_constraintLeft_creator="1"
-        tools:layout_constraintRight_creator="1"
-        tools:layout_constraintTop_creator="1" />
+    </android.support.constraint.ConstraintLayout>
 
-    <EditText
-        android:id="@+id/editEventCreateLocX"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="LocX"
-        android:inputType="numberDecimal"
-        app:layout_constraintLeft_toLeftOf="@+id/editEventCreateWhen"
-        app:layout_constraintRight_toRightOf="@+id/editEventCreateWhen"
-        app:layout_constraintTop_toBottomOf="@+id/editEventCreateWhen"
-        tools:layout_constraintLeft_creator="1"
-        tools:layout_constraintRight_creator="1"
-        tools:layout_constraintTop_creator="1" />
-
-    <Button
-        android:id="@+id/buttonCreateEventSubmit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:text="Submit"
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/constraintLayoutBottom"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        tools:layout_constraintBottom_creator="1"
-        tools:layout_constraintLeft_creator="1"
-        tools:layout_constraintRight_creator="1" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayoutTop"
+        app:layout_constraintVertical_bias="1.0">
+
+        <ImageButton
+            android:id="@+id/buttonCreateEventSubmit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:layout_marginEnd="24dp"
+            android:background="@android:drawable/btn_star_big_on"
+            android:scaleType="fitXY"
+            android:scaleX="2"
+            android:scaleY="2"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <EditText
+            android:id="@+id/editEventCreateName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:ems="10"
+            android:hint="Event Title"
+            android:inputType="textPersonName"
+            app:layout_constraintEnd_toStartOf="@+id/editEventCreateTypeSpinner"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <EditText
+            android:id="@+id/editEventCreateDescription"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:ems="10"
+            android:hint="Event Description"
+            android:inputType="textMultiLine"
+            android:singleLine="false"
+            app:layout_constraintEnd_toEndOf="@+id/editEventCreateTypeSpinner"
+            app:layout_constraintStart_toStartOf="@+id/editEventCreateName"
+            app:layout_constraintTop_toBottomOf="@+id/editEventCreateName" />
+
+        <EditText
+            android:id="@+id/editEventCreateAddress"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="8dp"
+            android:ems="10"
+            android:hint="Event Address"
+            android:inputType="textPostalAddress"
+            app:layout_constraintEnd_toStartOf="@+id/buttonEventCreateMaps"
+            app:layout_constraintStart_toStartOf="@+id/editEventCreateDescription"
+            app:layout_constraintTop_toBottomOf="@+id/editEventCreateDescription" />
+
+        <EditText
+            android:id="@+id/editEventCreateStartDate"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="1dp"
+            android:ems="10"
+            android:inputType="date"
+            android:text="Start Date"
+            app:layout_constraintStart_toStartOf="@+id/editEventCreateStartTime"
+            app:layout_constraintTop_toBottomOf="@+id/editEventCreateStartTime" />
+
+        <EditText
+            android:id="@+id/editEventCreateEndDate"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="date"
+            android:text="End Date"
+            app:layout_constraintStart_toEndOf="@+id/editEventCreateStartDate"
+            app:layout_constraintTop_toBottomOf="@+id/editEventCreateEndTime" />
+
+        <EditText
+            android:id="@+id/editEventCreateInitialAttenders"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="8dp"
+            android:ems="10"
+            android:hint="Initial Attendees"
+            android:inputType="number"
+            app:layout_constraintEnd_toStartOf="@+id/editMaximumAttenders"
+            app:layout_constraintStart_toStartOf="@+id/editEventCreateAddress"
+            app:layout_constraintTop_toBottomOf="@+id/editEventCreateAddress" />
+
+        <EditText
+            android:id="@+id/editMaximumAttenders"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="Max Attendees"
+            android:inputType="number"
+            app:layout_constraintEnd_toEndOf="@+id/buttonEventCreateMaps"
+            app:layout_constraintStart_toEndOf="@+id/editEventCreateInitialAttenders"
+            app:layout_constraintTop_toTopOf="@+id/editEventCreateInitialAttenders" />
+
+        <EditText
+            android:id="@+id/editEventCreateStartTime"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:ems="10"
+            android:inputType="time"
+            android:text="Start Time"
+            app:layout_constraintStart_toStartOf="@+id/editEventCreateInitialAttenders"
+            app:layout_constraintTop_toBottomOf="@+id/editEventCreateInitialAttenders" />
+
+        <EditText
+            android:id="@+id/editEventCreateEndTime"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="time"
+            android:text="End Time"
+            app:layout_constraintLeft_toRightOf="@+id/editEventCreateStartTime"
+            app:layout_constraintTop_toTopOf="@+id/editEventCreateStartTime" />
+
+        <Button
+            android:id="@+id/buttonEventCreateMaps"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Maps"
+            app:layout_constraintBottom_toBottomOf="@+id/editEventCreateAddress"
+            app:layout_constraintEnd_toEndOf="@+id/editEventCreateDescription"
+            app:layout_constraintTop_toTopOf="@+id/editEventCreateAddress"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <Spinner
+            android:id="@+id/editEventCreateTypeSpinner"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:entries="@array/eventTypesArray"
+            app:layout_constraintBottom_toBottomOf="@+id/editEventCreateName"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/editEventCreateName"
+            app:layout_constraintTop_toTopOf="@+id/editEventCreateName" />
+
+    </android.support.constraint.ConstraintLayout>
+
 
 </android.support.constraint.ConstraintLayout>
+
+
