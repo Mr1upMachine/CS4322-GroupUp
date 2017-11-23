@@ -110,12 +110,12 @@
             android:ems="10"
             android:hint="Initial Attendees"
             android:inputType="number"
-            app:layout_constraintEnd_toStartOf="@+id/editMaximumAttenders"
+            app:layout_constraintEnd_toStartOf="@+id/editEventCreateCapacity"
             app:layout_constraintStart_toStartOf="@+id/editEventCreateAddress"
             app:layout_constraintTop_toBottomOf="@+id/editEventCreateAddress" />
 
         <EditText
-            android:id="@+id/editMaximumAttenders"
+            android:id="@+id/editEventCreateCapacity"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:ems="10"
@@ -148,31 +148,22 @@
             app:layout_constraintTop_toTopOf="@+id/textEventCreateStartTime" />
 
         <TextView
-            android:id="@+id/textEventCreateStartDate"
-            android:layout_width="0dp"
+            android:id="@+id/textEventCreateDate"
+            android:layout_width="80dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="1dp"
             android:background="?attr/editTextBackground"
-            android:text="Start Date"
-            app:layout_constraintEnd_toEndOf="@+id/textEventCreateStartTime"
+            android:gravity="center"
+            android:text="Date"
+            app:layout_constraintEnd_toEndOf="@+id/textEventCreateEndTime"
             app:layout_constraintStart_toStartOf="@+id/textEventCreateStartTime"
             app:layout_constraintTop_toBottomOf="@+id/textEventCreateStartTime" />
-
-        <TextView
-            android:id="@+id/textEventCreateEndDate"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:background="?attr/editTextBackground"
-            android:text="End Date"
-            app:layout_constraintEnd_toEndOf="@+id/textEventCreateEndTime"
-            app:layout_constraintStart_toStartOf="@+id/textEventCreateEndTime"
-            app:layout_constraintTop_toBottomOf="@+id/textEventCreateEndTime" />
 
         <Button
             android:id="@+id/buttonEventCreateMaps"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Maps"
+            android:text="G Maps"
             app:layout_constraintBottom_toBottomOf="@+id/editEventCreateAddress"
             app:layout_constraintEnd_toEndOf="@+id/editEventCreateDescription"
             app:layout_constraintTop_toTopOf="@+id/editEventCreateAddress"

@@ -97,8 +97,9 @@ public class MainActivity extends AppCompatActivity {
                 //passes through the information to the next activity about this event
                 Event e = eventList.get(position);
                 Intent i = new Intent(MainActivity.this, EventViewActivity.class);
-                i.putExtra("Event", e.toString());
-                i.putExtra("Owner", e.getOwnerId());
+                Bundle b = new Bundle();
+                b.putParcelable("myEvent", e);
+                i.putExtras(b);
                 startActivity(i);
             }
             @Override

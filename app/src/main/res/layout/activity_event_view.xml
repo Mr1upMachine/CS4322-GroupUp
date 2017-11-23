@@ -51,11 +51,12 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:ems="10"
+            android:layout_marginTop="4dp"
+            android:ems="5"
             android:text="Event Title"
             android:textAppearance="@android:style/TextAppearance.Large"
-            app:layout_constraintEnd_toStartOf="@+id/textEventViewStartDate"
+            android:textSize="30sp"
+            app:layout_constraintEnd_toStartOf="@+id/textEventViewStartTime"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -64,7 +65,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
-            android:layout_marginTop="4dp"
             android:text="By Owner Mcgee"
             app:layout_constraintEnd_toEndOf="@+id/textEventViewName"
             app:layout_constraintTop_toBottomOf="@+id/textEventViewName" />
@@ -79,87 +79,86 @@
             android:singleLine="false"
             android:text="This is a description of the event that is happening. It may have a lot of words or almost none, so the layout must look good for both. This example if for a lot of words."
             android:textAlignment="center"
-            app:layout_constraintEnd_toEndOf="@+id/textEventViewStartDate"
+            app:layout_constraintEnd_toStartOf="@+id/constraintLayoutCapacity"
             app:layout_constraintStart_toStartOf="@+id/textEventViewName"
             app:layout_constraintTop_toBottomOf="@+id/textEventViewOwner" />
-
-        <TextView
-            android:id="@+id/textEventViewAddress"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="20dp"
-            android:ems="10"
-            android:text="123 Main Street ButtsTown, AS 01248"
-            android:textAlignment="center"
-            app:layout_constraintEnd_toEndOf="@+id/textEventViewEndDate"
-            app:layout_constraintStart_toStartOf="@+id/textEventViewDescription"
-            app:layout_constraintTop_toBottomOf="@+id/textEventViewDescription" />
-
-        <TextView
-            android:id="@+id/textEventViewStartDate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:layout_marginEnd="16dp"
-            android:text="St/00/00"
-            app:layout_constraintBottom_toBottomOf="@+id/textEventViewName"
-            app:layout_constraintEnd_toStartOf="@+id/textEventViewEndDate"
-            app:layout_constraintTop_toTopOf="@+id/textEventViewName" />
-
-        <TextView
-            android:id="@+id/textEventViewEndTime"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Ed:00 PM"
-            app:layout_constraintEnd_toEndOf="@+id/textEventViewEndDate"
-            app:layout_constraintStart_toStartOf="@+id/textEventViewEndDate"
-            app:layout_constraintTop_toTopOf="@+id/textEventViewStartTime" />
 
         <TextView
             android:id="@+id/textEventViewStartTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="St:00 AM"
-            app:layout_constraintEnd_toEndOf="@+id/textEventViewStartDate"
-            app:layout_constraintStart_toStartOf="@+id/textEventViewStartDate"
-            app:layout_constraintTop_toBottomOf="@+id/textEventViewStartDate" />
+            android:layout_marginEnd="4dp"
+            android:text="St:00AM"
+            app:layout_constraintEnd_toStartOf="@+id/textEventViewDash"
+            app:layout_constraintTop_toTopOf="@+id/textEventViewName" />
 
         <TextView
-            android:id="@+id/textEventViewEndDate"
+            android:id="@+id/textEventViewDash"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="4dp"
+            android:text="-"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="@+id/textEventViewStartTime"
+            app:layout_constraintEnd_toStartOf="@+id/textEventViewEndTime"
+            app:layout_constraintTop_toTopOf="@+id/textEventViewStartTime" />
+
+        <TextView
+            android:id="@+id/textEventViewEndTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
-            android:text="Ed/00/00"
+            android:text="Ed:00PM"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/textEventViewStartDate" />
+            app:layout_constraintTop_toTopOf="@+id/textEventViewStartTime" />
+
+        <TextView
+            android:id="@+id/textEventViewDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:text="Dt/00/00"
+            app:layout_constraintEnd_toEndOf="@+id/textEventViewEndTime"
+            app:layout_constraintStart_toStartOf="@+id/textEventViewStartTime"
+            app:layout_constraintTop_toBottomOf="@+id/textEventViewStartTime" />
+
+        <TextView
+            android:id="@+id/textEventViewAddress"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginStart="24dp"
+            android:ems="10"
+            android:text="123 Main Street ButtsTown, AS 01248"
+            android:textAlignment="center"
+            app:layout_constraintBottom_toTopOf="@+id/constraintLayoutEventViewMap"
+            app:layout_constraintEnd_toEndOf="@+id/constraintLayoutEventViewMap"
+            app:layout_constraintStart_toStartOf="@+id/constraintLayoutEventViewMap" />
 
         <android.support.constraint.ConstraintLayout
             android:id="@+id/constraintLayoutEventViewMap"
             android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_height="150dp"
             android:background="#472386"
             app:layout_constraintBottom_toTopOf="@+id/linearLayout"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textEventViewAddress">
+            app:layout_constraintStart_toStartOf="parent">
 
         </android.support.constraint.ConstraintLayout>
 
         <android.support.constraint.ConstraintLayout
             android:id="@+id/constraintLayoutCapacity"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toEndOf="@+id/textEventViewStartDate"
-            app:layout_constraintTop_toBottomOf="@+id/textEventViewEndTime">
+            app:layout_constraintStart_toStartOf="@+id/textEventViewDate"
+            app:layout_constraintTop_toBottomOf="@+id/textEventViewDate">
 
             <TextView
-                android:id="@+id/textEventViewCapacity"
+                android:id="@+id/textEventViewAttendance"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="12dp"
@@ -185,7 +184,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/textEventViewAttenders"
+                android:id="@+id/textEventViewCapacity"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="12dp"

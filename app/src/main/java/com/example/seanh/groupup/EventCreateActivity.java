@@ -45,10 +45,12 @@ import java.util.Objects;
 public class EventCreateActivity extends AppCompatActivity {
     private final String LOGTAG = "EventCreateActivity";
     private final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-    private EditText editName, editDesc, editWhere;
-    TextView textStartTime, textEndTime, textStartDate, textEndDate;
+    private EditText editName, editDesc, editWhere, editAttendance, editCapacity;
+    TextView textStartTime, textEndTime, textDate;
     private ImageView eventPicture;
-    private String date_time = "", strName = "", strDesc = "", strStartDate = "", strEndDate = "", strStartTime = "", strEndTime = "", strWhere = "", strType = "", strSpinnerInit = "";
+    private String strName = "", strDesc = "", strDate = "",
+            strStartTime = "", strEndTime = "", strWhere = "", strType = "",
+            strSpinnerInit = "", strAttendance = "", strCapacity = "";
     private Bitmap bitMapEventImage;
     private int mYear, mMonth, mDay, mHour, mMinute;
     private double numLocX = 0.0, numLocY = 0.0;
@@ -84,9 +86,10 @@ public class EventCreateActivity extends AppCompatActivity {
         editDesc = findViewById(R.id.editEventCreateDescription);
         textStartTime = findViewById(R.id.textEventCreateStartTime);
         textEndTime = findViewById(R.id.textEventCreateEndTime);
-        textStartDate = findViewById(R.id.textEventCreateStartDate);
-        textEndDate = findViewById(R.id.textEventCreateEndDate);
+        textDate = findViewById(R.id.textEventCreateDate);
         editWhere = findViewById(R.id.editEventCreateAddress);
+        editAttendance = findViewById(R.id.editEventCreateInitialAttenders);
+        editCapacity = findViewById(R.id.editEventCreateCapacity);
         eventPicture = null;
         editSpinner = findViewById(R.id.editEventCreateTypeSpinner);
         strSpinnerInit = "Event Type";
@@ -103,34 +106,24 @@ public class EventCreateActivity extends AppCompatActivity {
         findViewById(R.id.buttonEventCreateMaps).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                editWhere.setText(""+numLocX+", ");
-                editWhere.setText(""+numLocY);
-                Toast.makeText(getApplicationContext(), "Right now I just populate the current Lat/Lon!", Toast.LENGTH_LONG).show();
+                editWhere.setText(numLocX+" "+numLocY);
+                Toast.makeText(getApplicationContext(), "Right now I just populate the current Lat/Lon!", Toast.LENGTH_SHORT).show();
             }
         });
 
 
-        textStartDate.setOnClickListener(new View.OnClickListener() {
+        textDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 datePickerStart();
             }
         });
-
-        textEndDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                datePickerEnd();
-            }
-        });
-
         textStartTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 timePickerStart();
             }
         });
-
         textEndTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -144,26 +137,28 @@ public class EventCreateActivity extends AppCompatActivity {
             public void onClick(View v) {
                 strName = editName.getText().toString();
                 strDesc = editDesc.getText().toString();
-                strStartDate = textStartDate.getText().toString();
-                strEndDate = textEndDate.getText().toString();
+                strDate = textDate.getText().toString();
                 strStartTime = textStartTime.getText().toString();
                 strEndTime = textEndTime.getText().toString();
                 strWhere = editWhere.getText().toString();
+                strAttendance = editAttendance.getText().toString();
+                strCapacity = editCapacity.getText().toString();
                 strType = editSpinner.getSelectedItem().toString();
 
 
-//                numLocX = Double.parseDouble(editLocX.getText().toString());
-//                numLocY = Double.parseDouble(editLocY.getText().toString());
+                //numLocX = Double.parseDouble(editLocX.getText().toString());
+                //numLocY = Double.parseDouble(editLocY.getText().toString());
 
                 //Verifies all data fields are filled
                 if  (
                     !strName.isEmpty() &&
                     !strDesc.isEmpty() &&
-                    !strStartDate.isEmpty() &&
-                    !strEndDate.isEmpty() &&
+                    !strDate.isEmpty() &&
                     !strStartTime.isEmpty() &&
                     !strEndTime.isEmpty() &&
                     !strWhere.isEmpty() &&
+                    !strAttendance.isEmpty() &&
+                    !strCapacity.isEmpty() &&
                     user!=null &&
                     !Objects.equals(strType, strSpinnerInit)
                     ) {
@@ -171,10 +166,11 @@ public class EventCreateActivity extends AppCompatActivity {
                     Database.createNewEvent(new Event(
                             strName, strDesc,
                             strStartTime, strEndTime,
-                            strStartDate, strEndDate,
+                            strDate,
                             strWhere, strType,
                             bitMapEventImage,
-                            user.getUid()));
+                            user.getUid(),
+                            Integer.parseInt(strAttendance), Integer.parseInt(strCapacity)));
 
                     Toast.makeText(getApplicationContext(), "Event created successfully",
                             Toast.LENGTH_LONG).show();
@@ -261,31 +257,12 @@ public class EventCreateActivity extends AppCompatActivity {
                     @Override
                     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
 
-                        textStartDate.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
+                        textDate.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
                     }
                 }, mYear, mMonth, mDay);
         datePickerDialog.show();
     }
 
-    private void datePickerEnd(){
-
-        // Get Current Date
-        final Calendar c = Calendar.getInstance();
-        mYear = c.get(Calendar.YEAR);
-        mMonth = c.get(Calendar.MONTH);
-        mDay = c.get(Calendar.DAY_OF_MONTH);
-
-        DatePickerDialog datePickerDialog = new DatePickerDialog(this,
-                new DatePickerDialog.OnDateSetListener() {
-
-                    @Override
-                    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-
-                        textEndDate.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
-                    }
-                }, mYear, mMonth, mDay);
-        datePickerDialog.show();
-    }
 
     private void timePickerStart(){
         // Get Current Time
