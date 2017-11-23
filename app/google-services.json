@@ -1,0 +1,82 @@
+{
+  "project_info": {
+    "project_number": "233944104287",
+    "firebase_url": "https://groupup-f9e17.firebaseio.com",
+    "project_id": "groupup-f9e17",
+    "storage_bucket": "groupup-f9e17.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:233944104287:android:57739c177d070112",
+        "android_client_info": {
+          "package_name": "com.example.seanh.groupup"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "233944104287-53ipkrql7otdheoob2u6dk6hf9trr65u.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.seanh.groupup",
+            "certificate_hash": "5a4b58ef38c2d40e6d2c8ae4c680ce8c3f38057d"
+          }
+        },
+        {
+          "client_id": "233944104287-8tu6c9lukohro6ah7g2m7eihpudijn63.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.seanh.groupup",
+            "certificate_hash": "76374bd8534cb084d40f86a424267f97af9fbd7b"
+          }
+        },
+        {
+          "client_id": "233944104287-1n5ajlajoc1rj92e40e3scr4pm646873.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.seanh.groupup",
+            "certificate_hash": "5b94a3539dcf59b25cad3926f304f49c8c53ab0a"
+          }
+        },
+        {
+          "client_id": "233944104287-98mfhihnqqh2qjge3bhv4smqgkbhvt1d.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.seanh.groupup",
+            "certificate_hash": "45e0a7ba34c5df8d23a86e476a4d229c6eb58e26"
+          }
+        },
+        {
+          "client_id": "233944104287-cggkqh7ekeo3jpd65gsrh3imak51h6ak.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBYAu6cUbyUDsZonxK9lQjbAaIEfpsmetc"
+        },
+        {
+          "current_key": "AIzaSyAejlo335TVabqYxmHH8J7WnLoBo1tXZrY"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "233944104287-cggkqh7ekeo3jpd65gsrh3imak51h6ak.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
