@@ -23,9 +23,17 @@
         tools:layout_constraintTop_creator="1" />
     <!-- The navigation drawer -->
     <android.support.design.widget.NavigationView
-        android:id="@+id/navigation"
+        android:id="@+id/navigationMain"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_gravity="start" />
+        android:layout_gravity="start"
+        app:headerLayout="@layout/content_main_drawer"
+        app:menu="@menu/menu_main_drawer">
+
+        <include
+            layout="@layout/content_main_drawer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </android.support.design.widget.NavigationView>
 
 </android.support.v4.widget.DrawerLayout>

@@ -72,13 +72,6 @@ public class EventViewActivity extends AppCompatActivity {
             }
         });
 
-        findViewById(R.id.buttonViewEventMaps).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //TODO open maps view
-            }
-        });
-
 
 
     }

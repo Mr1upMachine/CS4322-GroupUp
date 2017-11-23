@@ -2,6 +2,9 @@ package com.example.seanh.groupup;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -10,11 +13,13 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -38,6 +43,8 @@ public class MainActivity extends AppCompatActivity {
     private SwipeRefreshLayout swipeRefreshContainer;
 
     private Toolbar toolbar;
+    private DrawerLayout mDrawerLayout;
+    private NavigationView navigationView;
     private boolean menuViewSwitch = true; //alternates which menu option is visible
 
     @Override
@@ -49,7 +56,23 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         toolbar.setTitle("GroupUp");
         toolbar.setNavigationIcon(R.drawable.ic_menu_white);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mDrawerLayout.openDrawer(Gravity.START);
+            }
+        });
         toolbar.inflateMenu(R.menu.menu_main);
+        mDrawerLayout = findViewById(R.id.drawer_layout);
+        navigationView = findViewById(R.id.navigationMain);
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                Toast.makeText(MainActivity.this,item.getTitle()+" selected", Toast.LENGTH_SHORT).show();
+                mDrawerLayout.closeDrawer(Gravity.START);
+                return false;
+            }
+        });
 
 
         //if Location permission is not granted, try granting Location permission TODO replace this with better way (ie. better location)
@@ -169,8 +192,6 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        //Toast.makeText(this,item.getTitle()+" selected", Toast.LENGTH_SHORT).show();
-
         if (id == R.id.main_view_switch) {
             if(menuViewSwitch) {
                 recyclerView.setVisibility(View.GONE);
@@ -191,13 +212,20 @@ public class MainActivity extends AppCompatActivity {
     //Back button currently signs users out TODO change so pressing back 3 times instead
     @Override
     public void onBackPressed(){
-        FirebaseAuth.getInstance().signOut();
-        startActivity(new Intent(MainActivity.this, LoginActivity.class));
-        finish();
+        if(mDrawerLayout.isDrawerOpen(Gravity.START)) {
+            mDrawerLayout.closeDrawer(Gravity.START);
+        }
+        else {
+            FirebaseAuth.getInstance().signOut();
+            startActivity(new Intent(MainActivity.this, LoginActivity.class));
+            finish();
+        }
     }
 
 
+    private void setupDrawer() {
 
+    }
 
 
 
