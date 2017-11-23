@@ -8,7 +8,9 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Address;
 import android.location.Criteria;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -39,7 +41,9 @@ import java.io.FileDescriptor;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.Calendar;
-import java.util.Objects; 
+import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
 
 //TODO Micah stuff here
 public class EventCreateActivity extends AppCompatActivity {
@@ -51,7 +55,8 @@ public class EventCreateActivity extends AppCompatActivity {
     private String date_time = "", strName = "", strDesc = "", strStartDate = "", strEndDate = "", strStartTime = "", strEndTime = "", strWhere = "", strType = "", strSpinnerInit = "";
     private Bitmap bitMapEventImage;
     private int mYear, mMonth, mDay, mHour, mMinute;
-    private double numLocX = 0.0, numLocY = 0.0;
+    public static double numLocX = 0.0;
+    public static double numLocY = 0.0;
     private LocationManager mLocationManager;
     private String provider;
     private Spinner editSpinner;
@@ -86,7 +91,6 @@ public class EventCreateActivity extends AppCompatActivity {
         textEndTime = findViewById(R.id.textEventCreateEndTime);
         textStartDate = findViewById(R.id.textEventCreateStartDate);
         textEndDate = findViewById(R.id.textEventCreateEndDate);
-        editWhere = findViewById(R.id.editEventCreateAddress);
         eventPicture = null;
         editSpinner = findViewById(R.id.editEventCreateTypeSpinner);
         strSpinnerInit = "Event Type";
@@ -336,6 +340,11 @@ public class EventCreateActivity extends AppCompatActivity {
 
     public void setupLocation(){
 
+        TextView address;
+        Geocoder geocoder;
+        List<Address> addresses;
+
+
         //security check if permission is not already granted
         if (ActivityCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -369,10 +378,29 @@ public class EventCreateActivity extends AppCompatActivity {
         } catch (Exception e) {
             Log.d(LOGTAG, "Get Location Failed");
         }
+
+
+        ///Get Address Line From coordinates******************
+
+        address = (EditText) findViewById(R.id.editAddress);
+        geocoder = new Geocoder(this, Locale.getDefault());
+
+        try{
+            addresses = geocoder.getFromLocation(numLocX,numLocY,1);
+
+            String add = addresses.get(0).getAddressLine(0);
+            String area = addresses.get(0).getLocality();
+            String city = addresses.get(0).getAdminArea();
+            String postalCode = addresses.get(0).getPostalCode();
+
+            String FullAddress = add + ", " + area + ", " + city + ", " + postalCode;
+            address.setText(FullAddress);
+
+        }catch (Exception e) {
+            Log.d(LOGTAG, "Get Location Failed");
+        }
     }
-
-
-
+//*******************************************
 
 
 

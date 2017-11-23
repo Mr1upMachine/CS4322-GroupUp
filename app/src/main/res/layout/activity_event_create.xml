@@ -89,7 +89,7 @@
             app:layout_constraintTop_toBottomOf="@+id/editEventCreateName" />
 
         <EditText
-            android:id="@+id/editEventCreateAddress"
+            android:id="@+id/editAddress"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
@@ -111,8 +111,8 @@
             android:hint="Initial Attendees"
             android:inputType="number"
             app:layout_constraintEnd_toStartOf="@+id/editMaximumAttenders"
-            app:layout_constraintStart_toStartOf="@+id/editEventCreateAddress"
-            app:layout_constraintTop_toBottomOf="@+id/editEventCreateAddress" />
+            app:layout_constraintStart_toStartOf="@+id/editAddress"
+            app:layout_constraintTop_toBottomOf="@+id/editAddress" />
 
         <EditText
             android:id="@+id/editMaximumAttenders"
@@ -173,9 +173,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Maps"
-            app:layout_constraintBottom_toBottomOf="@+id/editEventCreateAddress"
+            app:layout_constraintBottom_toBottomOf="@+id/editAddress"
             app:layout_constraintEnd_toEndOf="@+id/editEventCreateDescription"
-            app:layout_constraintTop_toTopOf="@+id/editEventCreateAddress"
+            app:layout_constraintTop_toTopOf="@+id/editAddress"
             app:layout_constraintVertical_bias="0.0" />
 
         <Spinner
