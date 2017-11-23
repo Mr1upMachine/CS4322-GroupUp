@@ -393,14 +393,15 @@ public class EventCreateActivity extends AppCompatActivity {
             Log.d(LOGTAG, "Get Location Failed");
         }
 
-
+        //TODO Location**************************
         String FullAddress = GeoFull(numLocX, numLocY);
         address = findViewById(R.id.editAddress);
         address.setText(FullAddress);
 
     }
 
-    //Coordinates to the entire Address
+
+    //TODO Coordinates to the entire Address
     public String GeoFull(double xCord, double yCord) {
 
         Geocoder geocoder;
@@ -428,7 +429,7 @@ public class EventCreateActivity extends AppCompatActivity {
         return null;
     }
 
-    //Coordinates to Address
+    //TODO Coordinates to Address
     public String GeoAdd(double xCord, double yCord) {
 
         Geocoder geocoder;
@@ -454,7 +455,7 @@ public class EventCreateActivity extends AppCompatActivity {
         return null;
     }
 
-    //Coordinates to City, State
+    //TODO Coordinates to City, State
     public String GeoState(double xCord, double yCord) {
 
         Geocoder geocoder;
@@ -480,7 +481,7 @@ public class EventCreateActivity extends AppCompatActivity {
         return null;
     }
 
-    //Coordinates to Zipcode
+    //TODO Coordinates to Zipcode
     public String GeoZip(double xCord, double yCord) {
 
         Geocoder geocoder;
