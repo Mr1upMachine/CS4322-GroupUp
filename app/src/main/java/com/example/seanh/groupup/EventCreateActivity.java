@@ -68,11 +68,16 @@ public class EventCreateActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onStatusChanged(String provider, int status, Bundle extras) {  }
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+        }
+
         @Override
-        public void onProviderEnabled(String provider) {  }
+        public void onProviderEnabled(String provider) {
+        }
+
         @Override
-        public void onProviderDisabled(String provider) {  }
+        public void onProviderDisabled(String provider) {
+        }
     };
     private static int RESULT_LOAD_IMAGE = 1;
 
@@ -104,11 +109,11 @@ public class EventCreateActivity extends AppCompatActivity {
         setupLocation();
 
         //Button for Google Maps extension, currently just sets address to current Latitude and Longitude
-        findViewById(R.id.buttonEventCreateMaps).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.btnMap).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                editWhere.setText(""+numLocX+", ");
-                editWhere.setText(""+numLocY);
+                editWhere.setText("" + numLocX + ", ");
+                editWhere.setText("" + numLocY);
                 Toast.makeText(getApplicationContext(), "Right now I just populate the current Lat/Lon!", Toast.LENGTH_LONG).show();
             }
         });
@@ -142,6 +147,15 @@ public class EventCreateActivity extends AppCompatActivity {
             }
         });
 
+        //Go to EventCreateMap Activity
+
+        findViewById(R.id.btnMap).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(EventCreateActivity.this, EventCreateMap.class));
+            }
+        });
+
         //Code for Submit button
         findViewById(R.id.fabCreateEventSubmit).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -160,17 +174,17 @@ public class EventCreateActivity extends AppCompatActivity {
 //                numLocY = Double.parseDouble(editLocY.getText().toString());
 
                 //Verifies all data fields are filled
-                if  (
-                    !strName.isEmpty() &&
-                    !strDesc.isEmpty() &&
-                    !strStartDate.isEmpty() &&
-                    !strEndDate.isEmpty() &&
-                    !strStartTime.isEmpty() &&
-                    !strEndTime.isEmpty() &&
-                    !strWhere.isEmpty() &&
-                    user!=null &&
-                    !Objects.equals(strType, strSpinnerInit)
-                    ) {
+                if (
+                        !strName.isEmpty() &&
+                                !strDesc.isEmpty() &&
+                                !strStartDate.isEmpty() &&
+                                !strEndDate.isEmpty() &&
+                                !strStartTime.isEmpty() &&
+                                !strEndTime.isEmpty() &&
+                                !strWhere.isEmpty() &&
+                                user != null &&
+                                !Objects.equals(strType, strSpinnerInit)
+                        ) {
 
                     Database.createNewEvent(new Event(
                             strName, strDesc,
@@ -184,9 +198,7 @@ public class EventCreateActivity extends AppCompatActivity {
                             Toast.LENGTH_LONG).show();
 
                     finish();
-                }
-
-                else{
+                } else {
                     Toast.makeText(getApplicationContext(), "Please fill all fields",
                             Toast.LENGTH_SHORT).show();
                 }
@@ -207,13 +219,14 @@ public class EventCreateActivity extends AppCompatActivity {
 
     }
 
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && null != data) {
             Uri selectedImage = data.getData();
-            String[] filePathColumn = { MediaStore.Images.Media.DATA };
+            String[] filePathColumn = {MediaStore.Images.Media.DATA};
 
             Cursor cursor = getContentResolver().query(selectedImage,
                     filePathColumn, null, null, null);
@@ -251,7 +264,8 @@ public class EventCreateActivity extends AppCompatActivity {
         return image;
     }
 
-    private void datePickerStart(){
+
+    private void datePickerStart() {
 
         // Get Current Date
         final Calendar c = Calendar.getInstance();
@@ -271,7 +285,7 @@ public class EventCreateActivity extends AppCompatActivity {
         datePickerDialog.show();
     }
 
-    private void datePickerEnd(){
+    private void datePickerEnd() {
 
         // Get Current Date
         final Calendar c = Calendar.getInstance();
@@ -291,7 +305,7 @@ public class EventCreateActivity extends AppCompatActivity {
         datePickerDialog.show();
     }
 
-    private void timePickerStart(){
+    private void timePickerStart() {
         // Get Current Time
         final Calendar c = Calendar.getInstance();
         mHour = c.get(Calendar.HOUR_OF_DAY);
@@ -314,7 +328,7 @@ public class EventCreateActivity extends AppCompatActivity {
         timePickerDialog.show();
     }
 
-    private void timePickerEnd(){
+    private void timePickerEnd() {
         // Get Current Time
         final Calendar c = Calendar.getInstance();
         mHour = c.get(Calendar.HOUR_OF_DAY);
@@ -338,7 +352,7 @@ public class EventCreateActivity extends AppCompatActivity {
     }
 
 
-    public void setupLocation(){
+    public void setupLocation() {
 
         TextView address;
         Geocoder geocoder;
@@ -348,19 +362,19 @@ public class EventCreateActivity extends AppCompatActivity {
         //security check if permission is not already granted
         if (ActivityCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            findViewById(R.id.buttonEventCreateMaps).setVisibility(View.GONE);
+            findViewById(R.id.btnMap).setVisibility(View.GONE);
             return;
         }
 
         //TODO properly prevent app from crashing if location permission is not granted
         //sets up the location for the first time
 
-            //sets up location manager
-            mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        //sets up location manager
+        mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
-            //updates location anytime the gps updates
-            mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000,
-                    0.5f, mLocationListener);
+        //updates location anytime the gps updates
+        mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000,
+                0.5f, mLocationListener);
 
         try {
             Criteria criteria = new Criteria();
@@ -380,13 +394,23 @@ public class EventCreateActivity extends AppCompatActivity {
         }
 
 
-        ///Get Address Line From coordinates******************
+        String FullAddress = GeoFull(numLocX, numLocY);
+        address = findViewById(R.id.editAddress);
+        address.setText(FullAddress);
 
-        address = (EditText) findViewById(R.id.editAddress);
+    }
+
+    //Coordinates to the entire Address
+    public String GeoFull(double xCord, double yCord) {
+
+        Geocoder geocoder;
+        List<Address> addresses;
+
+
         geocoder = new Geocoder(this, Locale.getDefault());
 
-        try{
-            addresses = geocoder.getFromLocation(numLocX,numLocY,1);
+        try {
+            addresses = geocoder.getFromLocation(xCord, yCord, 1);
 
             String add = addresses.get(0).getAddressLine(0);
             String area = addresses.get(0).getLocality();
@@ -394,13 +418,93 @@ public class EventCreateActivity extends AppCompatActivity {
             String postalCode = addresses.get(0).getPostalCode();
 
             String FullAddress = add + ", " + area + ", " + city + ", " + postalCode;
-            address.setText(FullAddress);
 
-        }catch (Exception e) {
+
+            return FullAddress;
+
+        } catch (Exception e) {
             Log.d(LOGTAG, "Get Location Failed");
         }
+        return null;
     }
-//*******************************************
+
+    //Coordinates to Address
+    public String GeoAdd(double xCord, double yCord) {
+
+        Geocoder geocoder;
+        List<Address> addresses;
+
+
+        geocoder = new Geocoder(this, Locale.getDefault());
+
+        try {
+            addresses = geocoder.getFromLocation(xCord, yCord, 1);
+
+            String add = addresses.get(0).getAddressLine(0);
+
+
+            String FullAddress = add;
+
+
+            return FullAddress;
+
+        } catch (Exception e) {
+            Log.d(LOGTAG, "Get Location Failed");
+        }
+        return null;
+    }
+
+    //Coordinates to City, State
+    public String GeoState(double xCord, double yCord) {
+
+        Geocoder geocoder;
+        List<Address> addresses;
+
+
+        geocoder = new Geocoder(this, Locale.getDefault());
+
+        try {
+            addresses = geocoder.getFromLocation(xCord, yCord, 1);
+
+            String area = addresses.get(0).getLocality();
+            String city = addresses.get(0).getAdminArea();
+
+            String FullAddress = area + ", " + city;
+
+
+            return FullAddress;
+
+        } catch (Exception e) {
+            Log.d(LOGTAG, "Get Location Failed");
+        }
+        return null;
+    }
+
+    //Coordinates to Zipcode
+    public String GeoZip(double xCord, double yCord) {
+
+        Geocoder geocoder;
+        List<Address> addresses;
+
+
+        geocoder = new Geocoder(this, Locale.getDefault());
+
+        try {
+            addresses = geocoder.getFromLocation(xCord, yCord, 1);
+
+            String postalCode = addresses.get(0).getPostalCode();
+
+            String FullAddress = postalCode;
+
+
+            return FullAddress;
+
+        } catch (Exception e) {
+            Log.d(LOGTAG, "Get Location Failed");
+        }
+        return null;
+    }
+
 
 
 
@@ -432,4 +536,5 @@ public class EventCreateActivity extends AppCompatActivity {
             }
         }
     }
+
 }

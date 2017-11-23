@@ -97,7 +97,7 @@
             android:ems="10"
             android:hint="Event Address"
             android:inputType="textPostalAddress"
-            app:layout_constraintEnd_toStartOf="@+id/buttonEventCreateMaps"
+            app:layout_constraintEnd_toStartOf="@+id/btnMap"
             app:layout_constraintStart_toStartOf="@+id/editEventCreateDescription"
             app:layout_constraintTop_toBottomOf="@+id/editEventCreateDescription" />
 
@@ -121,7 +121,7 @@
             android:ems="10"
             android:hint="Max Attendees"
             android:inputType="number"
-            app:layout_constraintEnd_toEndOf="@+id/buttonEventCreateMaps"
+            app:layout_constraintEnd_toEndOf="@+id/btnMap"
             app:layout_constraintStart_toEndOf="@+id/editEventCreateInitialAttenders"
             app:layout_constraintTop_toTopOf="@+id/editEventCreateInitialAttenders" />
 
@@ -169,7 +169,7 @@
             app:layout_constraintTop_toBottomOf="@+id/textEventCreateEndTime" />
 
         <Button
-            android:id="@+id/buttonEventCreateMaps"
+            android:id="@+id/btnMap"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Maps"

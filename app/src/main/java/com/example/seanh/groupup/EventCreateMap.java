@@ -36,6 +36,8 @@ public class EventCreateMap extends FragmentActivity implements OnMapReadyCallba
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+        Marker Event;
+
         findViewById(R.id.btnSearch).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -53,12 +55,16 @@ public class EventCreateMap extends FragmentActivity implements OnMapReadyCallba
 
                     Address address = addressList.get(0);
                     LatLng latLng = new LatLng(address.getLatitude(),address.getLongitude());
-                  //  mMap.addMarker(new MarkerOptions().position(latLng).draggable(true).title("Event"));
-                  //  mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
+                    Marker event = mMap.addMarker(new MarkerOptions().position(latLng).draggable(true).title("Event"));
+                    mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
                 }
             }
         });
+
+
     }
+
+
 
 
 
