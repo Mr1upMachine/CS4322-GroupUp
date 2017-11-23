@@ -4,15 +4,19 @@
 
     <item
         android:id="@+id/main_drawer_item1"
-        android:title="Item1"
+        android:title="Subscribed"
         android:icon="@drawable/ic_add_circle_outline_white"/>
     <item
         android:id="@+id/main_drawer_item2"
-        android:title="Item2"
+        android:title="Hosted Events"
         android:icon="@drawable/ic_map_white_18dp"/>
     <item
         android:id="@+id/main_drawer_item3"
         android:title="Item3"
+        android:icon="@drawable/ic_menu_white"/>
+    <item
+        android:id="@+id/main_drawer_item4"
+        android:title="Item4"
         android:icon="@drawable/ic_menu_white"/>
 
 </menu>
