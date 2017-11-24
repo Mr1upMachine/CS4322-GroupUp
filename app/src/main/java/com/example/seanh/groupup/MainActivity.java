@@ -2,6 +2,7 @@ package com.example.seanh.groupup;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
@@ -35,6 +36,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
     private final String LOGTAG = "MainActivity";
     private final FirebaseUser fbUser = FirebaseAuth.getInstance().getCurrentUser();
+    private User user;
 
     private List<Event> eventList = new ArrayList<>();
     private List<Event> tempList;
@@ -46,6 +48,8 @@ public class MainActivity extends AppCompatActivity {
     private DrawerLayout mDrawerLayout;
     private NavigationView navigationView;
     private boolean menuViewSwitch = true; //alternates which menu option is visible
+
+    boolean doubleBackToExitPressedOnce = false; //sign out pressing back twice
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +72,23 @@ public class MainActivity extends AppCompatActivity {
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                final int id = item.getItemId();
+
                 Toast.makeText(MainActivity.this,item.getTitle()+" selected", Toast.LENGTH_SHORT).show();
+
+                if(id == R.id.main_drawer_item1){
+
+                }
+                else if(id == R.id.main_drawer_item2){
+
+                }
+                else if(id == R.id.main_drawer_item3){
+
+                }
+                else if(id == R.id.main_drawer_item4){
+
+                }
+
                 mDrawerLayout.closeDrawer(Gravity.START);
                 return false;
             }
@@ -77,6 +97,7 @@ public class MainActivity extends AppCompatActivity {
 
         //if Location permission is not granted, try granting Location permission TODO replace this with better way (ie. better location)
         requestPermissions(new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION, android.Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+
 
 
         //Handles setup of RecyclerView
@@ -88,8 +109,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setAdapter(eAdapter);
 
         //loads events for the first time
-        fetchAllEvents();
-
+        fetchAllData();
 
         //onClickListener for RecycleView elements
         recyclerView.addOnItemTouchListener(new RecyclerTouchListener(this, recyclerView, new ClickListener() {
@@ -99,6 +119,7 @@ public class MainActivity extends AppCompatActivity {
                 Intent i = new Intent(MainActivity.this, EventViewActivity.class);
                 Bundle b = new Bundle();
                 b.putParcelable("myEvent", e);
+                b.putParcelable("myUser", user);
                 i.putExtras(b);
                 startActivity(i);
             }
@@ -106,12 +127,13 @@ public class MainActivity extends AppCompatActivity {
             public void onLongClick(View view, final int position) { }
         }));
 
+
         //Makes refreshing the event list easy
         swipeRefreshContainer = findViewById(R.id.swipeRefreshContainer);
         swipeRefreshContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                fetchAllEvents();
+                fetchAllData();
             }
         });
         // Configure the refreshing colors
@@ -152,30 +174,21 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 eventList.clear();
-                callSearch(query);
+                filterEventList(query);
                 return true;
             }
             @Override
             public boolean onQueryTextChange(String newText) {
                 eventList.clear();
-                callSearch(newText);
+                filterEventList(newText);
                 return true;
-            }
-            void callSearch(String query) {
-                for (Event e : tempList) {
-                    if (e.getName().toLowerCase().contains( query.toLowerCase() )) {
-                        eventList.add(e);
-                    }
-                }
-                eAdapter.notifyDataSetChanged();
             }
         });
         ImageView closeButton = searchView.findViewById(R.id.search_close_btn);
         closeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                eventList.addAll(tempList);
-                eAdapter.notifyDataSetChanged();
+                resetEventList();
 
                 EditText et = findViewById(R.id.search_src_text); //Find EditText view
                 et.setText(""); //Clear the text from EditText view
@@ -210,36 +223,43 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    //Back button currently signs users out TODO change so pressing back 3 times instead
     @Override
-    public void onBackPressed(){
-        if(mDrawerLayout.isDrawerOpen(Gravity.START)) {
+    public void onBackPressed() {
+        if (mDrawerLayout.isDrawerOpen(Gravity.START)) {
             mDrawerLayout.closeDrawer(Gravity.START);
-        }
-        else {
-            FirebaseAuth.getInstance().signOut();
-            startActivity(new Intent(MainActivity.this, LoginActivity.class));
-            finish();
+        } else {
+            if (doubleBackToExitPressedOnce) {
+                FirebaseAuth.getInstance().signOut();
+                startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                finish();
+                return;
+            }
+
+            this.doubleBackToExitPressedOnce = true;
+            Toast.makeText(this, "Please click BACK again to sign out", Toast.LENGTH_SHORT).show();
+
+            //after 2 seconds resets
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    doubleBackToExitPressedOnce=false;
+                }
+            }, 2000);
         }
     }
 
 
-    private void setupDrawer() {
 
-    }
-
-
-
-
+    //relevant database calls
     private final DatabaseReference dataRoot = FirebaseDatabase.getInstance().getReference();
-    private final DatabaseReference dataEvents = dataRoot.child("events");
-    public void fetchAllEvents(){
-        dataEvents.addListenerForSingleValueEvent(new ValueEventListener() {
+    public void fetchAllData(){
+        dataRoot.child("events").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 parseAllEvents(dataSnapshot);
+                fetchCurrentUser(fbUser.getUid());
                 Log.d(LOGTAG,"data parse complete");
-                updateUI();
+                showEventList();
             }
 
             @Override
@@ -253,13 +273,38 @@ public class MainActivity extends AppCompatActivity {
             eventList.add(ds.getValue(Event.class));
         }
     }
-    public void updateUI(){
+    public void fetchCurrentUser(String id){
+        // Read from the database
+        dataRoot.child("users").child(id).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                user = dataSnapshot.getValue(User.class);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {  }
+        });
+    }
+    public void showEventList(){
         //Updates the RecycleView
         eAdapter.notifyDataSetChanged();
         //Hides loading bar
         findViewById(R.id.progressBarMainActivity).setVisibility(View.GONE);
         swipeRefreshContainer.setRefreshing(false);
-
     }
 
+
+    //helper methods for altering the eventList
+    void filterEventList(String query) {
+        for (Event e : tempList) {
+            if (e.getName().toLowerCase().contains( query.toLowerCase() )) {
+                eventList.add(e);
+            }
+        }
+        eAdapter.notifyDataSetChanged();
+    }
+    void resetEventList(){
+        eventList.addAll(tempList);
+        eAdapter.notifyDataSetChanged();
+    }
 }

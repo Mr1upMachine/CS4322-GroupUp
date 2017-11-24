@@ -6,31 +6,41 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 public class EventViewActivity extends AppCompatActivity {
-    //TODO Micah stuff here
+    private TextView textEventViewName, textEventViewOwner, textEventViewStartTime, textEventViewEndTime, textEventViewDate, 
+            textEventViewDescription, textEventViewAddress, textEventViewAttendance, textEventViewCapacity;
+    private ImageView imageEventViewPicture;
+    private User owner;
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_view);
-
-        final TextView textEventViewName =  findViewById(R.id.textEventViewName);
-        final TextView textEventViewOwner =  findViewById(R.id.textEventViewOwner);
-        final TextView textEventViewStartTime =  findViewById(R.id.textEventViewStartTime);
-        final TextView textEventViewEndTime =  findViewById(R.id.textEventViewEndTime);
-        final TextView textEventViewDate =  findViewById(R.id.textEventViewDate);
-        final TextView textEventViewDescription = findViewById(R.id.textEventViewDescription);
-        final TextView textEventViewAddress =  findViewById(R.id.textEventViewAddress);
-        final TextView textEventViewAttendance =  findViewById(R.id.textEventViewAttendance);
-        final TextView textEventViewCapacity =  findViewById(R.id.textEventViewCapacity);
-        final ImageView imageEventViewPicture = findViewById(R.id.imageViewEventPicture);
+        
+        textEventViewName =  findViewById(R.id.textEventViewName);
+        textEventViewOwner =  findViewById(R.id.textEventViewOwner);
+        textEventViewStartTime =  findViewById(R.id.textEventViewStartTime);
+        textEventViewEndTime =  findViewById(R.id.textEventViewEndTime);
+        textEventViewDate =  findViewById(R.id.textEventViewDate);
+        textEventViewDescription = findViewById(R.id.textEventViewDescription);
+        textEventViewAddress =  findViewById(R.id.textEventViewAddress);
+        textEventViewAttendance =  findViewById(R.id.textEventViewAttendance);
+        textEventViewCapacity =  findViewById(R.id.textEventViewCapacity);
+        imageEventViewPicture = findViewById(R.id.imageViewEventPicture);
 
         //Gets Event object from Main Activity
         final Bundle b = getIntent().getExtras();
         final Event event = b.getParcelable("myEvent");
-
+        final User user = b.getParcelable("myUser");
+        fetchOwner(event.getOwnerId());
 
         textEventViewName.setText( event.getName() );
-        textEventViewOwner.setText( event.getOwnerId() ); //TODO change for owner name
         textEventViewStartTime.setText( event.getStartTime() );
         textEventViewEndTime.setText( event.getEndTime() );
         textEventViewDate.setText( event.getDate() );
@@ -67,5 +77,21 @@ public class EventViewActivity extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
         finish();
+    }
+
+    //relevant database calls
+    private final DatabaseReference dataRoot = FirebaseDatabase.getInstance().getReference();
+    public void fetchOwner(String id){
+        // Read from the database
+        dataRoot.child("users").child(id).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                owner = dataSnapshot.getValue(User.class);
+                textEventViewOwner.setText("Host: " + owner.getfName() + " " + owner.getlName() ); //TODO change for owner name
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {  }
+        });
     }
 }

@@ -1,11 +1,15 @@
 package com.example.seanh.groupup;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class User {
+public class User implements Parcelable{
     private String id, email, fName, lName;
-    private List<String> subscribedEvents = new ArrayList<>();
+    private List<String> subscribedEventIds = new ArrayList<>();
+    private List<String> createdEventIds = new ArrayList<>();
 
     //Constructors
     public User(){ }
@@ -15,6 +19,26 @@ public class User {
         this.fName = fName;
         this.lName = lName;
     }
+    protected User(Parcel in) {
+        id = in.readString();
+        email = in.readString();
+        fName = in.readString();
+        lName = in.readString();
+        subscribedEventIds = in.createStringArrayList();
+        createdEventIds = in.createStringArrayList();
+    }
+
+    public static final Creator<User> CREATOR = new Creator<User>() {
+        @Override
+        public User createFromParcel(Parcel in) {
+            return new User(in);
+        }
+
+        @Override
+        public User[] newArray(int size) {
+            return new User[size];
+        }
+    };
 
     //Getter & setters
     public String getId() {
@@ -41,17 +65,42 @@ public class User {
     public void setlName(String lName) {
         this.lName = lName;
     }
-    public void setSubscribedEvents(List<String> subscribedEvents) {
-        this.subscribedEvents = subscribedEvents;
-    }
     public List<String> getSubscribedEvents(){
-        return subscribedEvents;
+        return subscribedEventIds;
+    }
+    public void setSubscribedEvents(List<String> subscribedEvents) {
+        this.subscribedEventIds = subscribedEvents;
+    }
+    public List<String> getCreatedEventIds() {
+        return createdEventIds;
+    }
+    public void setCreatedEventIds(List<String> createdEventIds) {
+        this.createdEventIds = createdEventIds;
     }
 
-    public void addSubscribedEvent(String eventId){
-        subscribedEvents.add(eventId);
+    public void addSubscribedEvent(String eventId){ subscribedEventIds.add(eventId); }
+    public void addCreatedEvent(String eventId){ createdEventIds.add(eventId); }
+    public boolean removeSubscribedEvent(String eventId){ return subscribedEventIds.remove(eventId); }
+    public boolean removeCreatedEvent(String eventId){ return createdEventIds.remove(eventId); }
+
+
+
+
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
+        dest.writeString(email);
+        dest.writeString(fName);
+        dest.writeString(lName);
+        dest.writeStringList(subscribedEventIds);
+        dest.writeStringList(createdEventIds);
+    }
 
     @Override
     public String toString() {

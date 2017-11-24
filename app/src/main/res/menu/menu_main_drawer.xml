@@ -1,22 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-
     <item
         android:id="@+id/main_drawer_item1"
-        android:title="Subscribed"
-        android:icon="@drawable/ic_add_circle_outline_white"/>
+        android:icon="@drawable/ic_add_circle_outline_white"
+        android:title="Subscribed" />
     <item
         android:id="@+id/main_drawer_item2"
-        android:title="Hosted Events"
-        android:icon="@drawable/ic_map_white_18dp"/>
+        android:icon="@drawable/ic_map_white_18dp"
+        android:title="Hosted Events" />
     <item
         android:id="@+id/main_drawer_item3"
-        android:title="Item3"
-        android:icon="@drawable/ic_menu_white"/>
+        android:icon="@drawable/ic_menu_white"
+        android:title="Item3" />
     <item
         android:id="@+id/main_drawer_item4"
-        android:title="Item4"
-        android:icon="@drawable/ic_menu_white"/>
-
+        android:icon="@drawable/ic_menu_white"
+        android:title="Item4" />
 </menu>

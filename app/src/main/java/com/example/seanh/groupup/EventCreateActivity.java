@@ -2,6 +2,7 @@ package com.example.seanh.groupup;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -23,10 +24,12 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.NumberPicker;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -45,8 +48,8 @@ import java.util.Objects;
 public class EventCreateActivity extends AppCompatActivity {
     private final String LOGTAG = "EventCreateActivity";
     private final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-    private EditText editName, editDesc, editWhere, editAttendance, editCapacity;
-    TextView textStartTime, textEndTime, textDate;
+    private EditText editName, editDesc, editWhere;
+    TextView textStartTime, textEndTime, textDate, textEventCreateAttendance, textEventCreateCapacity;
     private ImageView eventPicture;
     private String strName = "", strDesc = "", strDate = "",
             strStartTime = "", strEndTime = "", strWhere = "", strType = "",
@@ -88,8 +91,8 @@ public class EventCreateActivity extends AppCompatActivity {
         textEndTime = findViewById(R.id.textEventCreateEndTime);
         textDate = findViewById(R.id.textEventCreateDate);
         editWhere = findViewById(R.id.editEventCreateAddress);
-        editAttendance = findViewById(R.id.editEventCreateInitialAttenders);
-        editCapacity = findViewById(R.id.editEventCreateCapacity);
+        textEventCreateAttendance = findViewById(R.id.textEventCreateAttendance);
+        textEventCreateCapacity = findViewById(R.id.textEventCreateCapacity);
         eventPicture = null;
         editSpinner = findViewById(R.id.editEventCreateTypeSpinner);
         strSpinnerInit = "Event Type";
@@ -111,23 +114,47 @@ public class EventCreateActivity extends AppCompatActivity {
             }
         });
 
+        //adds picture
+        findViewById(R.id.buttonCreateEventPicture).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View w) {
+                Intent i = new Intent(
+                        Intent.ACTION_PICK,
+                        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+
+                startActivityForResult(i, RESULT_LOAD_IMAGE);
+
+            }
+        });
 
         textDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                datePickerStart();
+                datePicker(textDate);
             }
         });
         textStartTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                timePickerStart();
+                timePicker(textStartTime);
             }
         });
         textEndTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                timePickerEnd();
+                timePicker(textEndTime);
+            }
+        });
+        textEventCreateAttendance.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                numberPickerDialog(textEventCreateAttendance);
+            }
+        });
+        textEventCreateCapacity.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                numberPickerDialog(textEventCreateCapacity);
             }
         });
 
@@ -141,8 +168,8 @@ public class EventCreateActivity extends AppCompatActivity {
                 strStartTime = textStartTime.getText().toString();
                 strEndTime = textEndTime.getText().toString();
                 strWhere = editWhere.getText().toString();
-                strAttendance = editAttendance.getText().toString();
-                strCapacity = editCapacity.getText().toString();
+                strAttendance = textEventCreateAttendance.getText().toString();
+                strCapacity = textEventCreateCapacity.getText().toString();
                 strType = editSpinner.getSelectedItem().toString();
 
 
@@ -159,9 +186,9 @@ public class EventCreateActivity extends AppCompatActivity {
                     !strWhere.isEmpty() &&
                     !strAttendance.isEmpty() &&
                     !strCapacity.isEmpty() &&
-                    user!=null &&
                     !Objects.equals(strType, strSpinnerInit)
-                    ) {
+                    )
+                {
 
                     Database.createNewEvent(new Event(
                             strName, strDesc,
@@ -184,19 +211,6 @@ public class EventCreateActivity extends AppCompatActivity {
                 }
             }
         });
-
-        findViewById(R.id.buttonCreateEventPicture).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View w) {
-                Intent i = new Intent(
-                        Intent.ACTION_PICK,
-                        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-
-                startActivityForResult(i, RESULT_LOAD_IMAGE);
-
-            }
-        });
-
     }
 
     @Override
@@ -243,7 +257,7 @@ public class EventCreateActivity extends AppCompatActivity {
         return image;
     }
 
-    private void datePickerStart(){
+    private void datePicker(final TextView tv){
 
         // Get Current Date
         final Calendar c = Calendar.getInstance();
@@ -257,14 +271,12 @@ public class EventCreateActivity extends AppCompatActivity {
                     @Override
                     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
 
-                        textDate.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
+                        tv.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
                     }
                 }, mYear, mMonth, mDay);
         datePickerDialog.show();
     }
-
-
-    private void timePickerStart(){
+    private void timePicker(final TextView tv){
         // Get Current Time
         final Calendar c = Calendar.getInstance();
         mHour = c.get(Calendar.HOUR_OF_DAY);
@@ -281,34 +293,38 @@ public class EventCreateActivity extends AppCompatActivity {
                         mMinute = minute;
 
                         DecimalFormat df = new DecimalFormat("00"); //makes minute have 2 digits
-                        textStartTime.setText(hourOfDay + ":" + df.format(minute));
+                        tv.setText(hourOfDay + ":" + df.format(minute));
                     }
                 }, mHour, mMinute, false);
         timePickerDialog.show();
     }
-
-    private void timePickerEnd(){
-        // Get Current Time
-        final Calendar c = Calendar.getInstance();
-        mHour = c.get(Calendar.HOUR_OF_DAY);
-        mMinute = c.get(Calendar.MINUTE);
-
-        // Launch Time Picker Dialog
-        TimePickerDialog timePickerDialog = new TimePickerDialog(this,
-                new TimePickerDialog.OnTimeSetListener() {
-
-                    @Override
-                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-
-                        mHour = hourOfDay;
-                        mMinute = minute;
-
-                        DecimalFormat df = new DecimalFormat("00"); //makes minute have 2 digits
-                        textEndTime.setText(hourOfDay + ":" + df.format(minute));
-                    }
-                }, mHour, mMinute, false);
-        timePickerDialog.show();
+    private void numberPickerDialog(final TextView tv) {
+        final Dialog d = new Dialog(this);
+        d.setTitle("NumberPicker");
+        d.setContentView(R.layout.dialog_number_picker);
+        Button b1 = d.findViewById(R.id.buttonDialogNPSet);
+        Button b2 = d.findViewById(R.id.buttonDialogNPCancel);
+        final NumberPicker np = d.findViewById(R.id.numberPicker1);
+        np.setMaxValue( tv.getId()==R.id.textEventCreateAttendance ? Integer.parseInt(textEventCreateCapacity.getText().toString()) : 99 ); // max value 100
+        np.setMinValue( tv.getId()==R.id.textEventCreateCapacity ? 1 : Integer.parseInt(textEventCreateAttendance.getText().toString()) );   // min value 0
+        np.setWrapSelectorWheel(false);
+        //np.setOnValueChangedListener(this);
+        b1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tv.setText(String.valueOf(np.getValue())); //set the value to textview
+                d.dismiss();
+            }
+        });
+        b2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                d.dismiss(); // dismiss the dialog
+            }
+        });
+        d.show();
     }
+
 
 
     public void setupLocation(){

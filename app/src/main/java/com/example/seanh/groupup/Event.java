@@ -5,13 +5,15 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Event implements Parcelable {
     private String id, name, description, date, startTime, endTime, picURL, ownerId, where, type;
     private int attendance, capacity;
     private double locX, locY;
     private Bitmap bitMapEventImage;
-    //private User owner;
+    private List<String> subscribedUserIds = new ArrayList<>();
 
     //Constructors
     Event(){} 
@@ -46,6 +48,7 @@ public class Event implements Parcelable {
         locY = in.readDouble();
         attendance = in.readInt();
         capacity = in.readInt();
+        in.readStringList(subscribedUserIds);
         //bitMapEventImage = in.readParcelable(Bitmap.class.getClassLoader());
     }
 
@@ -124,25 +127,31 @@ public class Event implements Parcelable {
     public void setOwnerId(String ownerId) {
         this.ownerId = ownerId;
     }
-    public void setBitMapEventImage(Bitmap bitMapEventImage) {this.bitMapEventImage=bitMapEventImage;}
-    public Bitmap getBitMapEventImage() {return bitMapEventImage;}
-    public String getType() {return type;}
-    public void setType(String type) {this.type = type;}
+    public void setBitMapEventImage(Bitmap bitMapEventImage) { this.bitMapEventImage=bitMapEventImage; }
+    public Bitmap getBitMapEventImage() { return bitMapEventImage; }
+    public String getType() { return type; }
+    public void setType(String type) { this.type = type; }
     public int getAttendance() { return attendance; }
     public void setAttendance(int attendance) { this.attendance = attendance; }
     public int getCapacity() { return capacity; }
     public void setCapacity(int capacity) { this.capacity = capacity; }
-
-    public String getTime(){
-        return date+" "+startTime;
+    public List<String> getSubscribedUserIds() {
+        return subscribedUserIds;
+    }
+    public void setSubscribedUserIds(List<String> subscribedUserIds) {
+        this.subscribedUserIds = subscribedUserIds;
     }
 
+    public String getDateTime(){
+        return date+" "+startTime;
+    }
     public String generateLocString(){
         //TODO parse gps loc to city
         DecimalFormat df = new DecimalFormat("#.000");
         return df.format(locX)+"  "+df.format(locY);
     }
-
+    public void addCreatedEvent(String userId){ subscribedUserIds.add(userId); }
+    public boolean removeSubscribedEvent(String userId){ return subscribedUserIds.remove(userId); }
 
 
 
@@ -154,20 +163,21 @@ public class Event implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.id);
-        dest.writeString(this.name);
-        dest.writeString(this.description);
-        dest.writeString(this.date);
-        dest.writeString(this.startTime);
-        dest.writeString(this.endTime);
-        dest.writeString(this.picURL);
-        dest.writeString(this.ownerId);
-        dest.writeString(this.where);
-        dest.writeString(this.type);
-        dest.writeDouble(this.locX);
-        dest.writeDouble(this.locY);
-        dest.writeInt(this.attendance);
-        dest.writeInt(this.capacity);
+        dest.writeString(id);
+        dest.writeString(name);
+        dest.writeString(description);
+        dest.writeString(date);
+        dest.writeString(startTime);
+        dest.writeString(endTime);
+        dest.writeString(picURL);
+        dest.writeString(ownerId);
+        dest.writeString(where);
+        dest.writeString(type);
+        dest.writeDouble(locX);
+        dest.writeDouble(locY);
+        dest.writeInt(attendance);
+        dest.writeInt(capacity);
+        dest.writeStringList(subscribedUserIds);
     }
 
     @Override
@@ -181,4 +191,6 @@ public class Event implements Parcelable {
                 +"\naddress="+where
                 +"\npicURL="+picURL+"}";
     }
+
+
 }

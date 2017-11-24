@@ -62,6 +62,81 @@
         app:layout_constraintTop_toBottomOf="@+id/constraintEventCreateTop"
         app:layout_constraintVertical_bias="1.0">
 
+        <TextView
+            android:id="@+id/textEventViewDash2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="-"
+            android:textSize="30sp"
+            app:layout_constraintBottom_toBottomOf="@+id/textEventCreateStartTime"
+            app:layout_constraintStart_toEndOf="@+id/textEventCreateStartTime"
+            app:layout_constraintTop_toTopOf="@+id/textEventCreateStartTime" />
+
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/constraintLayoutCapacity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toEndOf="@+id/buttonEventCreateMaps"
+            app:layout_constraintStart_toStartOf="@+id/buttonEventCreateMaps"
+            app:layout_constraintTop_toBottomOf="@+id/buttonEventCreateMaps">
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:text="Capacity:"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/textEventCreateAttendance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="12dp"
+                android:layout_marginTop="6dp"
+                android:background="?attr/editTextBackground"
+                android:gravity="center"
+                android:text="0"
+                android:textAppearance="@android:style/TextAppearance.Large"
+                app:layout_constraintEnd_toEndOf="@+id/textView2"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:text="/"
+                android:textAppearance="@android:style/TextAppearance.Large"
+                android:textSize="36sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.6" />
+
+            <TextView
+                android:id="@+id/textEventCreateCapacity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="32dp"
+                android:background="?attr/editTextBackground"
+                android:gravity="right"
+                android:text="1"
+                android:textAppearance="@android:style/TextAppearance.Large"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/textView2"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </android.support.constraint.ConstraintLayout>
+
         <EditText
             android:id="@+id/editEventCreateName"
             android:layout_width="0dp"
@@ -101,30 +176,6 @@
             app:layout_constraintStart_toStartOf="@+id/editEventCreateDescription"
             app:layout_constraintTop_toBottomOf="@+id/editEventCreateDescription" />
 
-        <EditText
-            android:id="@+id/editEventCreateInitialAttenders"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginTop="8dp"
-            android:ems="10"
-            android:hint="Initial Attendees"
-            android:inputType="number"
-            app:layout_constraintEnd_toStartOf="@+id/editEventCreateCapacity"
-            app:layout_constraintStart_toStartOf="@+id/editEventCreateAddress"
-            app:layout_constraintTop_toBottomOf="@+id/editEventCreateAddress" />
-
-        <EditText
-            android:id="@+id/editEventCreateCapacity"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="Max Attendees"
-            android:inputType="number"
-            app:layout_constraintEnd_toEndOf="@+id/buttonEventCreateMaps"
-            app:layout_constraintStart_toEndOf="@+id/editEventCreateInitialAttenders"
-            app:layout_constraintTop_toTopOf="@+id/editEventCreateInitialAttenders" />
-
         <TextView
             android:id="@+id/textEventCreateStartTime"
             android:layout_width="wrap_content"
@@ -132,19 +183,20 @@
             android:layout_marginTop="8dp"
             android:background="?attr/editTextBackground"
             android:ems="5"
+            android:gravity="center"
             android:text="Start Time"
-            app:layout_constraintStart_toStartOf="@+id/editEventCreateInitialAttenders"
-            app:layout_constraintTop_toBottomOf="@+id/editEventCreateInitialAttenders" />
+            app:layout_constraintStart_toStartOf="@+id/editEventCreateAddress"
+            app:layout_constraintTop_toBottomOf="@+id/editEventCreateAddress" />
 
         <TextView
             android:id="@+id/textEventCreateEndTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
             android:background="?attr/editTextBackground"
             android:ems="5"
+            android:gravity="center"
             android:text="End Time"
-            app:layout_constraintStart_toEndOf="@+id/textEventCreateStartTime"
+            app:layout_constraintStart_toEndOf="@+id/textEventViewDash2"
             app:layout_constraintTop_toTopOf="@+id/textEventCreateStartTime" />
 
         <TextView
