@@ -238,7 +238,7 @@ public class MainActivity extends AppCompatActivity {
 
             this.doubleBackToExitPressedOnce = true;
             Toast.makeText(this, "Please click BACK again to sign out", Toast.LENGTH_SHORT).show();
-
+          
             //after 2 seconds resets
             new Handler().postDelayed(new Runnable() {
                 @Override

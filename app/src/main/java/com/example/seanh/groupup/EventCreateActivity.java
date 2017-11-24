@@ -9,7 +9,9 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Address;
 import android.location.Criteria;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -42,7 +44,9 @@ import java.io.FileDescriptor;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.Calendar;
-import java.util.Objects; 
+import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
 
 //TODO Micah stuff here
 public class EventCreateActivity extends AppCompatActivity {
@@ -56,7 +60,8 @@ public class EventCreateActivity extends AppCompatActivity {
             strSpinnerInit = "", strAttendance = "", strCapacity = "";
     private Bitmap bitMapEventImage;
     private int mYear, mMonth, mDay, mHour, mMinute;
-    private double numLocX = 0.0, numLocY = 0.0;
+    public static double numLocX = 0.0;
+    public static double numLocY = 0.0;
     private LocationManager mLocationManager;
     private String provider;
     private Spinner editSpinner;
@@ -68,11 +73,16 @@ public class EventCreateActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onStatusChanged(String provider, int status, Bundle extras) {  }
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+        }
+
         @Override
-        public void onProviderEnabled(String provider) {  }
+        public void onProviderEnabled(String provider) {
+        }
+
         @Override
-        public void onProviderDisabled(String provider) {  }
+        public void onProviderDisabled(String provider) {
+        }
     };
     private static int RESULT_LOAD_IMAGE = 1;
 
@@ -119,7 +129,7 @@ public class EventCreateActivity extends AppCompatActivity {
         setupLocation();
 
         //Button for Google Maps extension, currently just sets address to current Latitude and Longitude
-        findViewById(R.id.buttonEventCreateMaps).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.btnMap).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 editWhere.setText(numLocX+" "+numLocY);
@@ -171,6 +181,15 @@ public class EventCreateActivity extends AppCompatActivity {
             }
         });
 
+        //Go to EventCreateMap Activity
+
+        findViewById(R.id.btnMap).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(EventCreateActivity.this, EventCreateMap.class));
+            }
+        });
+
         //Code for Submit button
         findViewById(R.id.fabCreateEventSubmit).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -216,9 +235,7 @@ public class EventCreateActivity extends AppCompatActivity {
                             Toast.LENGTH_LONG).show();
 
                     finish();
-                }
-
-                else{
+                } else {
                     Toast.makeText(getApplicationContext(), "Please fill all fields",
                             Toast.LENGTH_SHORT).show();
                 }
@@ -226,13 +243,14 @@ public class EventCreateActivity extends AppCompatActivity {
         });
     }
 
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && null != data) {
             Uri selectedImage = data.getData();
-            String[] filePathColumn = { MediaStore.Images.Media.DATA };
+            String[] filePathColumn = {MediaStore.Images.Media.DATA};
 
             Cursor cursor = getContentResolver().query(selectedImage,
                     filePathColumn, null, null, null);
@@ -270,8 +288,8 @@ public class EventCreateActivity extends AppCompatActivity {
         return image;
     }
 
-    private void datePicker(final TextView tv){
 
+    private void datePicker(final TextView tv){
         // Get Current Date
         final Calendar c = Calendar.getInstance();
         mYear = c.get(Calendar.YEAR);
@@ -289,6 +307,7 @@ public class EventCreateActivity extends AppCompatActivity {
                 }, mYear, mMonth, mDay);
         datePickerDialog.show();
     }
+
     private void timePicker(final TextView tv){
         // Get Current Time
         final Calendar c = Calendar.getInstance();
@@ -311,6 +330,7 @@ public class EventCreateActivity extends AppCompatActivity {
                 }, mHour, mMinute, false);
         timePickerDialog.show();
     }
+
     private void numberPickerDialog(final TextView tv) {
         final Dialog d = new Dialog(this);
         d.setTitle("NumberPicker");
@@ -341,23 +361,26 @@ public class EventCreateActivity extends AppCompatActivity {
 
 
     public void setupLocation(){
+        TextView address;
+        Geocoder geocoder;
+        List<Address> addresses;
 
         //security check if permission is not already granted
         if (ActivityCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            findViewById(R.id.buttonEventCreateMaps).setVisibility(View.GONE);
+            findViewById(R.id.btnMap).setVisibility(View.GONE);
             return;
         }
 
         //TODO properly prevent app from crashing if location permission is not granted
         //sets up the location for the first time
 
-            //sets up location manager
-            mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        //sets up location manager
+        mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
-            //updates location anytime the gps updates
-            mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000,
-                    0.5f, mLocationListener);
+        //updates location anytime the gps updates
+        mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000,
+                0.5f, mLocationListener);
 
         try {
             Criteria criteria = new Criteria();
@@ -375,9 +398,119 @@ public class EventCreateActivity extends AppCompatActivity {
         } catch (Exception e) {
             Log.d(LOGTAG, "Get Location Failed");
         }
+
+        //TODO Location**************************
+        String FullAddress = GeoFull(numLocX, numLocY);
+        address = findViewById(R.id.editAddress);
+        address.setText(FullAddress);
+
     }
 
 
+    //TODO Coordinates to the entire Address
+    public String GeoFull(double xCord, double yCord) {
+
+        Geocoder geocoder;
+        List<Address> addresses;
+
+
+        geocoder = new Geocoder(this, Locale.getDefault());
+
+        try {
+            addresses = geocoder.getFromLocation(xCord, yCord, 1);
+
+            String add = addresses.get(0).getAddressLine(0);
+            String area = addresses.get(0).getLocality();
+            String city = addresses.get(0).getAdminArea();
+            String postalCode = addresses.get(0).getPostalCode();
+
+            String FullAddress = add + ", " + area + ", " + city + ", " + postalCode;
+
+
+            return FullAddress;
+
+        } catch (Exception e) {
+            Log.d(LOGTAG, "Get Location Failed");
+        }
+        return null;
+    }
+
+    //TODO Coordinates to Address
+    public String GeoAdd(double xCord, double yCord) {
+
+        Geocoder geocoder;
+        List<Address> addresses;
+
+
+        geocoder = new Geocoder(this, Locale.getDefault());
+
+        try {
+            addresses = geocoder.getFromLocation(xCord, yCord, 1);
+
+            String add = addresses.get(0).getAddressLine(0);
+
+
+            String FullAddress = add;
+
+
+            return FullAddress;
+
+        } catch (Exception e) {
+            Log.d(LOGTAG, "Get Location Failed");
+        }
+        return null;
+    }
+
+    //TODO Coordinates to City, State
+    public String GeoState(double xCord, double yCord) {
+
+        Geocoder geocoder;
+        List<Address> addresses;
+
+
+        geocoder = new Geocoder(this, Locale.getDefault());
+
+        try {
+            addresses = geocoder.getFromLocation(xCord, yCord, 1);
+
+            String area = addresses.get(0).getLocality();
+            String city = addresses.get(0).getAdminArea();
+
+            String FullAddress = area + ", " + city;
+
+
+            return FullAddress;
+
+        } catch (Exception e) {
+            Log.d(LOGTAG, "Get Location Failed");
+        }
+        return null;
+    }
+
+    //TODO Coordinates to Zipcode
+    public String GeoZip(double xCord, double yCord) {
+
+        Geocoder geocoder;
+        List<Address> addresses;
+
+
+        geocoder = new Geocoder(this, Locale.getDefault());
+
+        try {
+            addresses = geocoder.getFromLocation(xCord, yCord, 1);
+
+            String postalCode = addresses.get(0).getPostalCode();
+
+            String FullAddress = postalCode;
+
+
+            return FullAddress;
+
+        } catch (Exception e) {
+            Log.d(LOGTAG, "Get Location Failed");
+        }
+        return null;
+    }
 
 
 
@@ -410,4 +543,5 @@ public class EventCreateActivity extends AppCompatActivity {
             }
         }
     }
+
 }
