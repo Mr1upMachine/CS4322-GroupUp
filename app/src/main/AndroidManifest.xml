@@ -17,8 +17,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat">
-        <activity
-            android:name=".LoginActivity"
+        <activity android:name=".LoginActivity"
             android:label="@string/app_name"
             android:theme="@style/Theme.AppCompat.NoActionBar">
             <intent-filter>
@@ -27,16 +26,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".MainActivity"
-            android:theme="@style/AppTheme" />
-        <activity
-            android:name=".EventViewActivity"
-            android:theme="@style/Theme.AppCompat.NoActionBar" />
-        <activity android:name=".EventCreateActivity" />
-        <activity
-            android:name=".RegisterActivity"
-            android:theme="@style/Theme.AppCompat.NoActionBar"></activity>
+
+        <activity android:name=".MainActivity"
+            android:theme="@style/AppTheme"
+            />
+        <activity android:name=".EventViewActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar"/>
+        <activity android:name=".EventCreateActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar"/>
+        <activity android:name=".RegisterActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar">
+        </activity>
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -45,12 +45,9 @@
              sign the APK for publishing.
              You can define the keys for the debug and release targets in src/debug/ and src/release/. 
         -->
-        <meta-data
-            android:name="com.google.android.geo.API_KEY"
+        <meta-data android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyDlRbdkCsK_I050580FrBHEz4tQqq4tDYw" />
-
-        <activity
-            android:name=".EventCreateMap"
+        <activity android:name=".EventCreateMap"
             android:label="@string/title_activity_event_create_map"></activity>
     </application>
 

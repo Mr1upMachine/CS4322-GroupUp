@@ -22,12 +22,12 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewH
 
         public EventViewHolder(View view) {
             super(view);
-            location = (TextView) view.findViewById(R.id.textEventRowLocation);
-            time = (TextView) view.findViewById(R.id.textEventRowTime);
+            location = view.findViewById(R.id.textEventRowLocation);
+            time = view.findViewById(R.id.textEventRowTime);
 
-            icon = (ImageView) view.findViewById(R.id.imageEventRowIcon);
-            color = (ImageView) view.findViewById(R.id.imageEventRowColor);
-            background = (ImageView) view.findViewById(R.id.imageEventRowBackground);
+            icon = view.findViewById(R.id.imageEventRowIcon);
+            color = view.findViewById(R.id.imageEventRowColor);
+            background = view.findViewById(R.id.imageEventRowBackground);
 
             //sets the color of the triangle to a random color
             Random rnd = new Random();
@@ -50,7 +50,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewH
     public void onBindViewHolder(EventViewHolder holder, int position) {
         Event event = eventsList.get(position);
         holder.location.setText(event.generateLocString());
-        holder.time.setText(event.getTime());
+        holder.time.setText(event.getDateTime());
     }
 
     @Override

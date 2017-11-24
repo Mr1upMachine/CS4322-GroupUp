@@ -1,30 +1,68 @@
 package com.example.seanh.groupup;
 
 import android.graphics.Bitmap;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 
-public class Event {
-    private String id, name, startDate, endDate, description, startTime, endTime, picURL, ownerId, where, type;
+public class Event implements Parcelable {
+    private String id, name, description, date, startTime, endTime, picURL, ownerId, where, type;
+    private int attendance, capacity;
     private double locX, locY;
     private Bitmap bitMapEventImage;
-    //private User owner;
+    private List<String> subscribedUserIds = new ArrayList<>();
 
     //Constructors
     Event(){} 
-    Event(String name, String description, String startTime, String endTime, String startDate, String endDate, String where, String type, Bitmap bitMapEventImage, String ownerId){
+    Event(String name, String description, String startTime, String endTime, String date, String where, String type, Bitmap bitMapEventImage, String ownerId, int attendance, int capacity){
         //Used for the creation of new events
         this.name = name;
         this.description = description;
         this.startTime = startTime;
         this.endTime = endTime;
-        this.startDate = startDate;
-        this.endDate = endDate;
+        this.date = date;
         this.bitMapEventImage = bitMapEventImage;
         this.where = where;
         this.ownerId = ownerId;
         this.type = type;
+        this.attendance = attendance;
+        this.capacity = capacity;
     }
+
+    //Parcelable stuff here
+    protected Event(Parcel in) {
+        id = in.readString();
+        name = in.readString();
+        description = in.readString();
+        date = in.readString();
+        startTime = in.readString();
+        endTime = in.readString();
+        picURL = in.readString();
+        ownerId = in.readString();
+        where = in.readString();
+        type = in.readString();
+        locX = in.readDouble();
+        locY = in.readDouble();
+        attendance = in.readInt();
+        capacity = in.readInt();
+        in.readStringList(subscribedUserIds);
+        //bitMapEventImage = in.readParcelable(Bitmap.class.getClassLoader());
+    }
+
+    public static final Creator<Event> CREATOR = new Creator<Event>() {
+        @Override
+        public Event createFromParcel(Parcel in) {
+            return new Event(in);
+        }
+
+        @Override
+        public Event[] newArray(int size) {
+            return new Event[size];
+        }
+    };
 
     //Getter & setters
     public String getId() {
@@ -45,14 +83,10 @@ public class Event {
     public void setDescription(String description) {
         this.description = description;
     }
-    public String getStartDate() {
-        return startDate;
+    public String getDate() {
+        return date;
     }
-    public String getEndDate() {
-        return endDate;
-    }
-    public void setStartDate(String startDate) {this.startDate = startDate;}
-    public void setEndDate(String endDate) {this.endDate = endDate;}
+    public void setDate(String date) {this.date = date;}
     public String getStartTime() {
         return startTime;
     }
@@ -93,22 +127,70 @@ public class Event {
     public void setOwnerId(String ownerId) {
         this.ownerId = ownerId;
     }
-    public void setBitMapEventImage(Bitmap bitMapEventImage) {this.bitMapEventImage=bitMapEventImage;}
-    public Bitmap getBitMapEventImage() {return bitMapEventImage;}
-    public String getType() {return type;}
-    public void setType(String type) {this.type = type;}
-
-    public String getTime(){
-        return startDate+" "+startTime;
+    public void setBitMapEventImage(Bitmap bitMapEventImage) { this.bitMapEventImage=bitMapEventImage; }
+    public Bitmap getBitMapEventImage() { return bitMapEventImage; }
+    public String getType() { return type; }
+    public void setType(String type) { this.type = type; }
+    public int getAttendance() { return attendance; }
+    public void setAttendance(int attendance) { this.attendance = attendance; }
+    public int getCapacity() { return capacity; }
+    public void setCapacity(int capacity) { this.capacity = capacity; }
+    public List<String> getSubscribedUserIds() {
+        return subscribedUserIds;
+    }
+    public void setSubscribedUserIds(List<String> subscribedUserIds) {
+        this.subscribedUserIds = subscribedUserIds;
     }
 
+    public String getDateTime(){
+        return date+" "+startTime;
+    }
     public String generateLocString(){
         //TODO parse gps loc to city
         DecimalFormat df = new DecimalFormat("#.000");
         return df.format(locX)+"  "+df.format(locY);
     }
+    public void addCreatedEvent(String userId){ subscribedUserIds.add(userId); }
+    public boolean removeSubscribedEvent(String userId){ return subscribedUserIds.remove(userId); }
 
-    public String toString(){
-        return "Event{\nid="+id+"\nname="+name+"\ndesc="+description+"\nstartTime="+startTime+"\nendTime="+endTime+"\nstartDate="+startDate+"\nendDate="+endDate+"\naddress="+where+"\npicURL="+picURL+"}";
+
+
+    //Parcelable part
+    @Override
+    public int describeContents() {
+        return 0;
     }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
+        dest.writeString(name);
+        dest.writeString(description);
+        dest.writeString(date);
+        dest.writeString(startTime);
+        dest.writeString(endTime);
+        dest.writeString(picURL);
+        dest.writeString(ownerId);
+        dest.writeString(where);
+        dest.writeString(type);
+        dest.writeDouble(locX);
+        dest.writeDouble(locY);
+        dest.writeInt(attendance);
+        dest.writeInt(capacity);
+        dest.writeStringList(subscribedUserIds);
+    }
+
+    @Override
+    public String toString(){
+        return "Event{\nid="+id
+                +"\nname="+name
+                +"\ndesc="+description
+                +"\nstartTime="+startTime
+                +"\nendTime="+endTime
+                +"\nstartDate="+date
+                +"\naddress="+where
+                +"\npicURL="+picURL+"}";
+    }
+
+
 }

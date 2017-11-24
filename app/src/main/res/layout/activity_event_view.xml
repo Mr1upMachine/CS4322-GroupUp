@@ -1,226 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layoutEventCreate"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:backgroundTint="@android:color/darker_gray"
-    android:visibility="visible"
-    tools:context="com.example.seanh.groupup.EventCreateActivity"
-    tools:layout_editor_absoluteX="0dp"
-    tools:layout_editor_absoluteY="81dp">
+    android:layout_height="match_parent">
 
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appbarEventView"
+        android:layout_width="match_parent"
+        android:layout_height="175dp">
 
-    <android.support.constraint.ConstraintLayout
-        android:id="@+id/constraintLayoutTop"
-        android:layout_width="0dp"
-        android:layout_height="150dp"
-        android:background="@android:color/holo_blue_light"
-        android:visibility="visible"
-        app:layout_constraintBottom_toTopOf="@+id/constraintEventViewBottom"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:contentScrim="?attr/colorPrimary"
+            app:layout_scrollInterpolator="@android:anim/decelerate_interpolator"
+            app:toolbarId="@+id/toolbarEventView">
 
-        <ImageView
-            android:id="@+id/imageViewEventPicture"
+            <ImageView
+                android:id="@+id/app_bar_image"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@android:drawable/sym_def_app_icon"
+                app:layout_collapseMode="parallax" />
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbarEventView"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"></android.support.v7.widget.Toolbar>
+
+        </android.support.design.widget.CollapsingToolbarLayout>
+
+    </android.support.design.widget.AppBarLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentBottom="@id/layoutEventCreate"
+        android:baselineAligned="false">
+
+        <include
+            layout="@layout/content_event_view"
             android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-    </android.support.constraint.ConstraintLayout>
-
-    <android.support.constraint.ConstraintLayout
-        android:id="@+id/constraintEventViewBottom"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayoutTop"
-        app:layout_constraintVertical_bias="0.0">
-
-        <TextView
-            android:id="@+id/textEventViewName"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:ems="10"
-            android:text="Event Title"
-            android:textAppearance="@android:style/TextAppearance.Large"
-            app:layout_constraintEnd_toStartOf="@+id/textEventViewStartDate"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/textEventViewOwner"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginTop="4dp"
-            android:text="By Owner Mcgee"
-            app:layout_constraintEnd_toEndOf="@+id/textEventViewName"
-            app:layout_constraintTop_toBottomOf="@+id/textEventViewName" />
-
-        <TextView
-            android:id="@+id/textEventViewDescription"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:layout_marginTop="16dp"
-            android:ems="10"
-            android:singleLine="false"
-            android:text="This is a description of the event that is happening. It may have a lot of words or almost none, so the layout must look good for both. This example if for a lot of words."
-            android:textAlignment="center"
-            app:layout_constraintEnd_toEndOf="@+id/textEventViewStartDate"
-            app:layout_constraintStart_toStartOf="@+id/textEventViewName"
-            app:layout_constraintTop_toBottomOf="@+id/textEventViewOwner" />
-
-        <TextView
-            android:id="@+id/textEventViewAddress"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="20dp"
-            android:ems="10"
-            android:text="123 Main Street ButtsTown, AS 01248"
-            android:textAlignment="center"
-            app:layout_constraintEnd_toEndOf="@+id/textEventViewEndDate"
-            app:layout_constraintStart_toStartOf="@+id/textEventViewDescription"
-            app:layout_constraintTop_toBottomOf="@+id/textEventViewDescription" />
-
-        <TextView
-            android:id="@+id/textEventViewStartDate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:layout_marginEnd="16dp"
-            android:text="St/00/00"
-            app:layout_constraintBottom_toBottomOf="@+id/textEventViewName"
-            app:layout_constraintEnd_toStartOf="@+id/textEventViewEndDate"
-            app:layout_constraintTop_toTopOf="@+id/textEventViewName" />
-
-        <TextView
-            android:id="@+id/textEventViewEndTime"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Ed:00 PM"
-            app:layout_constraintEnd_toEndOf="@+id/textEventViewEndDate"
-            app:layout_constraintStart_toStartOf="@+id/textEventViewEndDate"
-            app:layout_constraintTop_toTopOf="@+id/textEventViewStartTime" />
-
-        <TextView
-            android:id="@+id/textEventViewStartTime"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="St:00 AM"
-            app:layout_constraintEnd_toEndOf="@+id/textEventViewStartDate"
-            app:layout_constraintStart_toStartOf="@+id/textEventViewStartDate"
-            app:layout_constraintTop_toBottomOf="@+id/textEventViewStartDate" />
-
-        <TextView
-            android:id="@+id/textEventViewEndDate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:text="Ed/00/00"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/textEventViewStartDate" />
-
-        <Button
-            android:id="@+id/buttonViewEventShare"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:layout_marginEnd="8dp"
-            android:text="Share"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
-
-        <Button
-            android:id="@+id/buttonViewEventJoin"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:layout_marginStart="8dp"
-            android:text="Join"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
-
-        <android.support.constraint.ConstraintLayout
-            android:id="@+id/constraintLayoutEventViewMap"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:background="#472386"
-            app:layout_constraintBottom_toTopOf="@+id/buttonViewEventJoin"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textEventViewAddress"></android.support.constraint.ConstraintLayout>
-
-        <android.support.constraint.ConstraintLayout
-            android:id="@+id/constraintLayoutCapacity"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toEndOf="@+id/textEventViewStartDate"
-            app:layout_constraintTop_toBottomOf="@+id/textEventViewEndTime">
-
-            <TextView
-                android:id="@+id/textEventViewCapacity"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="12dp"
-                android:layout_marginTop="4dp"
-                android:gravity="center"
-                android:text="00"
-                android:textAppearance="@android:style/TextAppearance.Large"
-                app:layout_constraintEnd_toEndOf="@+id/textView2"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/textView2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:layout_marginStart="8dp"
-                android:text="/"
-                android:textAppearance="@android:style/TextAppearance.Large"
-                android:textSize="36sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/textEventViewAttenders"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
-                android:layout_marginTop="32dp"
-                android:gravity="right"
-                android:text="00"
-                android:textAppearance="@android:style/TextAppearance.Large"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/textView2"
-                app:layout_constraintTop_toTopOf="parent" />
-
-        </android.support.constraint.ConstraintLayout>
-
-
-    </android.support.constraint.ConstraintLayout>
-
-
-</android.support.constraint.ConstraintLayout>
+            android:layout_height="match_parent"
+            android:layout_marginTop="175dp"
+            android:layout_weight="1" />
+    </LinearLayout>
+</android.support.design.widget.CoordinatorLayout>
 
 
