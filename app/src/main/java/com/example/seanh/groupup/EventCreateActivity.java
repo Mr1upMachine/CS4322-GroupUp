@@ -80,6 +80,7 @@ public class EventCreateActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_create);
+        overridePendingTransition(R.anim.slide_in, R.anim.nothing);
 
         setupKeyboardHide(findViewById(R.id.layoutEventCreate)); //This auto-hides the keyboard
         setTitle("Create an Event:");
@@ -96,6 +97,18 @@ public class EventCreateActivity extends AppCompatActivity {
         eventPicture = null;
         editSpinner = findViewById(R.id.editEventCreateTypeSpinner);
         strSpinnerInit = "Event Type";
+
+        android.support.v7.widget.Toolbar tb = findViewById(R.id.toolbarEventCreate);
+        setSupportActionBar(tb);
+        //getSupportActionBar().setDisplayShowTitleEnabled(false);
+        tb.setNavigationIcon(R.drawable.ic_arrow_back_white_36dp);
+        tb.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+                overridePendingTransition(R.anim.nothing, R.anim.slide_out);
+            }
+        });
 
         //not sure how this'll fit in with GoogleMaps, or if it'll just get replaced with eric's code
 

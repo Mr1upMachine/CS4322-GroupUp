@@ -3,7 +3,6 @@ package com.example.seanh.groupup;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
@@ -13,17 +12,36 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 public class EventViewActivity extends AppCompatActivity {
-    private TextView textEventViewName, textEventViewOwner, textEventViewStartTime, textEventViewEndTime, textEventViewDate, 
+    private TextView textEventViewOwner, textEventViewStartTime, textEventViewEndTime, textEventViewDate,
             textEventViewDescription, textEventViewAddress, textEventViewAttendance, textEventViewCapacity;
-    private ImageView imageEventViewPicture;
     private User owner;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_view);
+        overridePendingTransition(R.anim.slide_in, R.anim.nothing);
+
+        //Gets Event object from Main Activity
+        final Bundle b = getIntent().getExtras();
+        final Event event = b.getParcelable("myEvent");
+        final User user = b.getParcelable("myUser");
+        fetchOwner(event.getOwnerId());
+
+        android.support.v7.widget.Toolbar tb = findViewById(R.id.toolbarEventView);
+        setSupportActionBar(tb);
+        //getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setTitle( event.getName() );
+        tb.setNavigationIcon(R.drawable.ic_arrow_back_white_36dp);
+        tb.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+                overridePendingTransition(R.anim.nothing, R.anim.slide_out);
+            }
+        });
         
-        textEventViewName =  findViewById(R.id.textEventViewName);
+        //textEventViewName =  findViewById(R.id.textEventViewName);
         textEventViewOwner =  findViewById(R.id.textEventViewOwner);
         textEventViewStartTime =  findViewById(R.id.textEventViewStartTime);
         textEventViewEndTime =  findViewById(R.id.textEventViewEndTime);
@@ -32,15 +50,8 @@ public class EventViewActivity extends AppCompatActivity {
         textEventViewAddress =  findViewById(R.id.textEventViewAddress);
         textEventViewAttendance =  findViewById(R.id.textEventViewAttendance);
         textEventViewCapacity =  findViewById(R.id.textEventViewCapacity);
-        imageEventViewPicture = findViewById(R.id.imageViewEventPicture);
 
-        //Gets Event object from Main Activity
-        final Bundle b = getIntent().getExtras();
-        final Event event = b.getParcelable("myEvent");
-        final User user = b.getParcelable("myUser");
-        fetchOwner(event.getOwnerId());
-
-        textEventViewName.setText( event.getName() );
+        //textEventViewName.setText( event.getName() );
         textEventViewStartTime.setText( event.getStartTime() );
         textEventViewEndTime.setText( event.getEndTime() );
         textEventViewDate.setText( event.getDate() );
@@ -77,6 +88,7 @@ public class EventViewActivity extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
         finish();
+        overridePendingTransition(R.anim.nothing, R.anim.slide_out);
     }
 
     //relevant database calls

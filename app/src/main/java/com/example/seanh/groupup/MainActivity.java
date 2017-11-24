@@ -51,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
 
     boolean doubleBackToExitPressedOnce = false; //sign out pressing back twice
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -201,7 +202,6 @@ public class MainActivity extends AppCompatActivity {
 
         return true;
     }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -228,6 +228,7 @@ public class MainActivity extends AppCompatActivity {
         if (mDrawerLayout.isDrawerOpen(Gravity.START)) {
             mDrawerLayout.closeDrawer(Gravity.START);
         } else {
+            //must press back twice to sign out
             if (doubleBackToExitPressedOnce) {
                 FirebaseAuth.getInstance().signOut();
                 startActivity(new Intent(MainActivity.this, LoginActivity.class));

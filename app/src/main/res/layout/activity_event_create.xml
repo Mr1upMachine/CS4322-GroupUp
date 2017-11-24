@@ -12,6 +12,14 @@
     tools:layout_editor_absoluteY="81dp">
 
 
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbarEventCreate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme" />
+
     <android.support.constraint.ConstraintLayout
         android:id="@+id/constraintEventCreateTop"
         android:layout_width="0dp"
@@ -20,7 +28,7 @@
         android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/toolbarEventCreate">
 
         <ImageView
             android:id="@+id/imageViewCreateEventPicture"
@@ -125,7 +133,7 @@
                 android:id="@+id/textEventCreateCapacity"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
+                android:layout_marginStart="12dp"
                 android:layout_marginTop="32dp"
                 android:background="?attr/editTextBackground"
                 android:gravity="right"
