@@ -99,34 +99,10 @@ public class MainActivity extends AppCompatActivity {
         //if Location permission is not granted, try granting Location permission TODO replace this with better way (ie. better location)
         requestPermissions(new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION, android.Manifest.permission.ACCESS_FINE_LOCATION}, 1);
 
-
-
-        //Handles setup of RecyclerView
-        recyclerView = findViewById(R.id.recycleViewEventList);
-        eAdapter = new EventsAdapter(eventList);
-        final RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
-        recyclerView.setLayoutManager(mLayoutManager);
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setAdapter(eAdapter);
-
         //loads events for the first time
         fetchAllData();
 
-        //onClickListener for RecycleView elements
-        recyclerView.addOnItemTouchListener(new RecyclerTouchListener(this, recyclerView, new ClickListener() {
-            public void onClick(View view, final int position) {
-                //passes through the information to the next activity about this event
-                Event e = eventList.get(position);
-                Intent i = new Intent(MainActivity.this, EventViewActivity.class);
-                Bundle b = new Bundle();
-                b.putParcelable("myEvent", e);
-                b.putParcelable("myUser", user);
-                i.putExtras(b);
-                startActivity(i);
-            }
-            @Override
-            public void onLongClick(View view, final int position) { }
-        }));
+
 
 
         //Makes refreshing the event list easy
@@ -174,13 +150,13 @@ public class MainActivity extends AppCompatActivity {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                eventList.clear();
+                eAdapter.clear();
                 filterEventList(query);
                 return true;
             }
             @Override
             public boolean onQueryTextChange(String newText) {
-                eventList.clear();
+                eAdapter.clear();
                 filterEventList(newText);
                 return true;
             }
@@ -259,8 +235,6 @@ public class MainActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 parseAllEvents(dataSnapshot);
                 fetchCurrentUser(fbUser.getUid());
-                Log.d(LOGTAG,"data parse complete");
-                showEventList();
             }
 
             @Override
@@ -280,6 +254,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 user = dataSnapshot.getValue(User.class);
+                Log.d(LOGTAG,"data parse complete");
+                showEventList();
             }
 
             @Override
@@ -287,9 +263,34 @@ public class MainActivity extends AppCompatActivity {
         });
     }
     public void showEventList(){
+        //Handles setup of RecyclerView
+        recyclerView = findViewById(R.id.recycleViewEventList);
+        eAdapter = new EventsAdapter(eventList, user);
+        final RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
+        recyclerView.setLayoutManager(mLayoutManager);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setAdapter(eAdapter);
+
         //Updates the RecycleView
         eAdapter.notifyDataSetChanged();
-        //Hides loading bar
+
+        //onClickListener for RecycleView elements
+        recyclerView.addOnItemTouchListener(new RecyclerTouchListener(this, recyclerView, new ClickListener() {
+            public void onClick(View view, final int position) {
+                //passes through the information to the next activity about this event
+                Event e = eventList.get(position);
+                Intent i = new Intent(MainActivity.this, EventViewActivity.class);
+                Bundle b = new Bundle();
+                b.putParcelable("myEvent", e);
+                b.putParcelable("myUser", user);
+                i.putExtras(b);
+                startActivity(i);
+            }
+            @Override
+            public void onLongClick(View view, final int position) { }
+        }));
+
+        //Hides loading bar(s)
         findViewById(R.id.progressBarMainActivity).setVisibility(View.GONE);
         swipeRefreshContainer.setRefreshing(false);
     }
@@ -305,7 +306,7 @@ public class MainActivity extends AppCompatActivity {
         eAdapter.notifyDataSetChanged();
     }
     void resetEventList(){
-        eventList.addAll(tempList);
-        eAdapter.notifyDataSetChanged();
+        eAdapter.clear();
+        eAdapter.addAll(tempList);
     }
 }

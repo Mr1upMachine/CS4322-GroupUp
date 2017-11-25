@@ -84,10 +84,12 @@
             android:id="@+id/constraintLayoutCapacity"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            app:layout_constraintEnd_toEndOf="@+id/buttonEventCreateMaps"
-            app:layout_constraintStart_toStartOf="@+id/buttonEventCreateMaps"
-            app:layout_constraintTop_toBottomOf="@+id/buttonEventCreateMaps">
+            app:layout_constraintEnd_toEndOf="@+id/btnMap"
+            app:layout_constraintStart_toStartOf="@+id/btnMap"
+            app:layout_constraintTop_toBottomOf="@+id/btnMap">
 
             <TextView
                 android:id="@+id/textView3"
@@ -154,7 +156,7 @@
             android:ems="10"
             android:hint="Event Title"
             android:inputType="textPersonName"
-            app:layout_constraintEnd_toStartOf="@+id/editEventCreateTypeSpinner"
+            app:layout_constraintEnd_toStartOf="@+id/buttonEventCreateColor"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -162,20 +164,20 @@
             android:id="@+id/editEventCreateDescription"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
             android:layout_marginTop="8dp"
             android:ems="10"
             android:hint="Event Description"
             android:inputType="textMultiLine"
             android:singleLine="false"
-            app:layout_constraintEnd_toEndOf="@+id/editEventCreateTypeSpinner"
+            app:layout_constraintEnd_toEndOf="@+id/buttonEventCreateColor"
             app:layout_constraintStart_toStartOf="@+id/editEventCreateName"
             app:layout_constraintTop_toBottomOf="@+id/editEventCreateName" />
 
         <EditText
-            android:id="@+id/editAddress"
+            android:id="@+id/editEventCreateAddress"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
             android:layout_marginTop="8dp"
             android:ems="10"
             android:hint="Event Address"
@@ -226,19 +228,8 @@
             android:text="G Maps"
             app:layout_constraintBottom_toBottomOf="@+id/editEventCreateAddress"
             app:layout_constraintEnd_toEndOf="@+id/editEventCreateDescription"
-            app:layout_constraintTop_toTopOf="@+id/editAddress"
+            app:layout_constraintTop_toTopOf="@+id/editEventCreateAddress"
             app:layout_constraintVertical_bias="0.0" />
-
-        <Spinner
-            android:id="@+id/editEventCreateTypeSpinner"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:entries="@array/eventTypesArray"
-            app:layout_constraintBottom_toBottomOf="@+id/editEventCreateName"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/editEventCreateName"
-            app:layout_constraintTop_toTopOf="@+id/editEventCreateName" />
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fabCreateEventSubmit"
@@ -253,6 +244,15 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:srcCompat="@drawable/ic_check_white_18dp" />
+
+        <Button
+            android:id="@+id/buttonEventCreateColor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:text="Set Color"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/editEventCreateName" />
 
     </android.support.constraint.ConstraintLayout>
 

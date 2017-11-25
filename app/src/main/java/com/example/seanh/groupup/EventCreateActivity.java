@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.location.Address;
 import android.location.Criteria;
 import android.location.Geocoder;
@@ -32,13 +33,13 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.NumberPicker;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.pes.androidmaterialcolorpickerdialog.ColorPicker;
 
 import java.io.FileDescriptor;
 import java.io.IOException;
@@ -46,25 +47,23 @@ import java.text.DecimalFormat;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 
 //TODO Micah stuff here
 public class EventCreateActivity extends AppCompatActivity {
     private final String LOGTAG = "EventCreateActivity";
     private final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     private EditText editName, editDesc, editWhere;
-    TextView textStartTime, textEndTime, textDate, textEventCreateAttendance, textEventCreateCapacity;
+    private TextView textStartTime, textEndTime, textDate, textEventCreateAttendance, textEventCreateCapacity;
     private ImageView eventPicture;
     private String strName = "", strDesc = "", strDate = "",
-            strStartTime = "", strEndTime = "", strWhere = "", strType = "",
-            strSpinnerInit = "", strAttendance = "", strCapacity = "";
+            strStartTime = "", strEndTime = "", strWhere = "",
+            strAttendance = "", strCapacity = "";
     private Bitmap bitMapEventImage;
     private int mYear, mMonth, mDay, mHour, mMinute;
-    public static double numLocX = 0.0;
-    public static double numLocY = 0.0;
+    public static double numLocX = 0.0, numLocY = 0.0;
     private LocationManager mLocationManager;
     private String provider;
-    private Spinner editSpinner;
+    private ColorPicker cp;
     private final LocationListener mLocationListener = new LocationListener() {
         @Override
         public void onLocationChanged(final Location location) {
@@ -105,10 +104,10 @@ public class EventCreateActivity extends AppCompatActivity {
         textEventCreateAttendance = findViewById(R.id.textEventCreateAttendance);
         textEventCreateCapacity = findViewById(R.id.textEventCreateCapacity);
         eventPicture = null;
-        editSpinner = findViewById(R.id.editEventCreateTypeSpinner);
-        strSpinnerInit = "Event Type";
+        cp = new ColorPicker(this, 127, 127, 127);
 
-        android.support.v7.widget.Toolbar tb = findViewById(R.id.toolbarEventCreate);
+
+        final android.support.v7.widget.Toolbar tb = findViewById(R.id.toolbarEventCreate);
         setSupportActionBar(tb);
         //getSupportActionBar().setDisplayShowTitleEnabled(false);
         tb.setNavigationIcon(R.drawable.ic_arrow_back_white_36dp);
@@ -120,10 +119,6 @@ public class EventCreateActivity extends AppCompatActivity {
             }
         });
 
-        //not sure how this'll fit in with GoogleMaps, or if it'll just get replaced with eric's code
-
-//        editLocX = (EditText) findViewById(R.id.editEventCreateLocX);
-//        editLocY = (EditText) findViewById(R.id.editEventCreateLocY);
 
         //updates location first time TODO Doesn't work on API 26 Why?
         setupLocation();
@@ -132,7 +127,7 @@ public class EventCreateActivity extends AppCompatActivity {
         findViewById(R.id.btnMap).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                editWhere.setText(numLocX+" "+numLocY);
+                editWhere.setText(numLocX + " " + numLocY);
                 Toast.makeText(getApplicationContext(), "Right now I just populate the current Lat/Lon!", Toast.LENGTH_SHORT).show();
             }
         });
@@ -182,11 +177,28 @@ public class EventCreateActivity extends AppCompatActivity {
         });
 
         //Go to EventCreateMap Activity
-
         findViewById(R.id.btnMap).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(EventCreateActivity.this, EventCreateMap.class));
+            }
+        });
+
+        final Button buttonEventCreateColor = findViewById(R.id.buttonEventCreateColor);
+        buttonEventCreateColor.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                /* Show color picker dialog */
+                cp.show();
+
+                /* On Click listener for the dialog, when the user select the color */
+                cp.findViewById(R.id.okColorButton).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        tb.setBackgroundColor(Color.rgb(cp.getRed(), cp.getGreen(), cp.getBlue()));
+                        cp.dismiss();
+                    }
+                });
             }
         });
 
@@ -202,33 +214,30 @@ public class EventCreateActivity extends AppCompatActivity {
                 strWhere = editWhere.getText().toString();
                 strAttendance = textEventCreateAttendance.getText().toString();
                 strCapacity = textEventCreateCapacity.getText().toString();
-                strType = editSpinner.getSelectedItem().toString();
 
 
                 //numLocX = Double.parseDouble(editLocX.getText().toString());
                 //numLocY = Double.parseDouble(editLocY.getText().toString());
 
                 //Verifies all data fields are filled
-                if  (
-                    !strName.isEmpty() &&
-                    !strDesc.isEmpty() &&
-                    !strDate.isEmpty() &&
-                    !strStartTime.isEmpty() &&
-                    !strEndTime.isEmpty() &&
-                    !strWhere.isEmpty() &&
-                    !strAttendance.isEmpty() &&
-                    !strCapacity.isEmpty() &&
-                    !Objects.equals(strType, strSpinnerInit)
-                    )
-                {
+                if (
+                        !strName.isEmpty() &&
+                                !strDesc.isEmpty() &&
+                                !strDate.isEmpty() &&
+                                !strStartTime.isEmpty() &&
+                                !strEndTime.isEmpty() &&
+                                !strWhere.isEmpty() &&
+                                !strAttendance.isEmpty() &&
+                                !strCapacity.isEmpty()
+                        ) {
 
                     Database.createNewEvent(new Event(
                             strName, strDesc,
                             strStartTime, strEndTime,
-                            strDate,
-                            strWhere, strType,
+                            strDate, strWhere,
                             bitMapEventImage,
                             user.getUid(),
+                            cp.getRed(), cp.getGreen(), cp.getBlue(),
                             Integer.parseInt(strAttendance), Integer.parseInt(strCapacity)));
 
                     Toast.makeText(getApplicationContext(), "Event created successfully",
@@ -289,7 +298,7 @@ public class EventCreateActivity extends AppCompatActivity {
     }
 
 
-    private void datePicker(final TextView tv){
+    private void datePicker(final TextView tv) {
         // Get Current Date
         final Calendar c = Calendar.getInstance();
         mYear = c.get(Calendar.YEAR);
@@ -308,7 +317,7 @@ public class EventCreateActivity extends AppCompatActivity {
         datePickerDialog.show();
     }
 
-    private void timePicker(final TextView tv){
+    private void timePicker(final TextView tv) {
         // Get Current Time
         final Calendar c = Calendar.getInstance();
         mHour = c.get(Calendar.HOUR_OF_DAY);
@@ -338,8 +347,8 @@ public class EventCreateActivity extends AppCompatActivity {
         Button b1 = d.findViewById(R.id.buttonDialogNPSet);
         Button b2 = d.findViewById(R.id.buttonDialogNPCancel);
         final NumberPicker np = d.findViewById(R.id.numberPicker1);
-        np.setMaxValue( tv.getId()==R.id.textEventCreateAttendance ? Integer.parseInt(textEventCreateCapacity.getText().toString()) : 99 ); // max value 100
-        np.setMinValue( tv.getId()==R.id.textEventCreateCapacity ? 1 : Integer.parseInt(textEventCreateAttendance.getText().toString()) );   // min value 0
+        np.setMaxValue(tv.getId() == R.id.textEventCreateAttendance ? Integer.parseInt(textEventCreateCapacity.getText().toString()) : 99); // max value 100
+        np.setMinValue(tv.getId() == R.id.textEventCreateCapacity ? 1 : Integer.parseInt(textEventCreateAttendance.getText().toString()));   // min value 0
         np.setWrapSelectorWheel(false);
         //np.setOnValueChangedListener(this);
         b1.setOnClickListener(new View.OnClickListener() {
@@ -359,8 +368,7 @@ public class EventCreateActivity extends AppCompatActivity {
     }
 
 
-
-    public void setupLocation(){
+    public void setupLocation() {
         TextView address;
         Geocoder geocoder;
         List<Address> addresses;
@@ -384,7 +392,7 @@ public class EventCreateActivity extends AppCompatActivity {
 
         try {
             Criteria criteria = new Criteria();
-            criteria.setAccuracy(Criteria.ACCURACY_COARSE);
+            criteria.setAccuracy(Criteria.ACCURACY_FINE);
             criteria.setAltitudeRequired(false);
             criteria.setBearingRequired(false);
             criteria.setCostAllowed(true);
@@ -401,13 +409,12 @@ public class EventCreateActivity extends AppCompatActivity {
 
         //TODO Location**************************
         String FullAddress = GeoFull(numLocX, numLocY);
-        address = findViewById(R.id.editAddress);
+        address = findViewById(R.id.editEventCreateAddress);
         address.setText(FullAddress);
 
     }
 
 
-    //TODO Coordinates to the entire Address
     public String GeoFull(double xCord, double yCord) {
 
         Geocoder geocoder;
@@ -435,7 +442,6 @@ public class EventCreateActivity extends AppCompatActivity {
         return null;
     }
 
-    //TODO Coordinates to Address
     public String GeoAdd(double xCord, double yCord) {
 
         Geocoder geocoder;
@@ -461,7 +467,6 @@ public class EventCreateActivity extends AppCompatActivity {
         return null;
     }
 
-    //TODO Coordinates to City, State
     public String GeoState(double xCord, double yCord) {
 
         Geocoder geocoder;
@@ -487,7 +492,6 @@ public class EventCreateActivity extends AppCompatActivity {
         return null;
     }
 
-    //TODO Coordinates to Zipcode
     public String GeoZip(double xCord, double yCord) {
 
         Geocoder geocoder;
@@ -513,8 +517,6 @@ public class EventCreateActivity extends AppCompatActivity {
     }
 
 
-
-
     //This auto-hides the keyboard
     public static void hideSoftKeyboard(Activity activity) {
         InputMethodManager inputMethodManager =
@@ -523,6 +525,7 @@ public class EventCreateActivity extends AppCompatActivity {
         inputMethodManager.hideSoftInputFromWindow(
                 activity.getCurrentFocus().getWindowToken(), 0);
     }
+
     public void setupKeyboardHide(View view) {
 
         // Set up touch listener for non-text box views to hide keyboard.

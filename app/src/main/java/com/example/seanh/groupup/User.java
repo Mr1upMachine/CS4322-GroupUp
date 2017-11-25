@@ -79,9 +79,11 @@ public class User implements Parcelable{
     }
 
     public void addSubscribedEvent(String eventId){ subscribedEventIds.add(eventId); }
-    public void addCreatedEvent(String eventId){ createdEventIds.add(eventId); }
     public boolean removeSubscribedEvent(String eventId){ return subscribedEventIds.remove(eventId); }
+    public boolean containsSubscribedEvent(String eventId){ return subscribedEventIds.contains(eventId); }
+    public void addCreatedEvent(String eventId){ createdEventIds.add(eventId); }
     public boolean removeCreatedEvent(String eventId){ return createdEventIds.remove(eventId); }
+    public boolean containsCreatedEvent(String eventId){ return createdEventIds.contains(eventId); }
 
 
 

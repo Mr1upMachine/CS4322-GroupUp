@@ -9,34 +9,32 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
-import java.util.Random;
 
 
 public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewHolder> {
 
     private List<Event> eventsList;
+    private User currentUser;
 
     public class EventViewHolder extends RecyclerView.ViewHolder {
         public TextView location, time;
-        public ImageView icon, color, background;
+        public ImageView color, subStar, ownStar, background;
 
         public EventViewHolder(View view) {
             super(view);
             location = view.findViewById(R.id.textEventRowLocation);
             time = view.findViewById(R.id.textEventRowTime);
 
-            icon = view.findViewById(R.id.imageEventRowIcon);
             color = view.findViewById(R.id.imageEventRowColor);
+            subStar = view.findViewById(R.id.imageEventRowSubStar);
+            ownStar = view.findViewById(R.id.imageEventRowOwnStar);
             background = view.findViewById(R.id.imageEventRowBackground);
-
-            //sets the color of the triangle to a random color
-            Random rnd = new Random();
-            color.setColorFilter(Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256)));
         }
     }
 
-    public EventsAdapter(List<Event> eventsList) {
+    public EventsAdapter(List<Event> eventsList, User currentUser) {
         this.eventsList = eventsList;
+        this.currentUser = currentUser;
     }
 
     @Override
@@ -51,6 +49,20 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewH
         Event event = eventsList.get(position);
         holder.location.setText(event.generateLocString());
         holder.time.setText(event.getDateTime());
+        holder.color.setColorFilter(Color.rgb(event.getColorR(), event.getColorG(), event.getColorB()));
+        if (currentUser.getSubscribedEvents() != null) {
+            if (currentUser.containsSubscribedEvent(event.getId())) {
+                holder.subStar.setVisibility(View.VISIBLE);
+            }
+            if (currentUser.getId().equals(event.getOwnerId())) {
+                holder.ownStar.setVisibility(View.VISIBLE);
+            }
+        }
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return position;
     }
 
     @Override

@@ -3,7 +3,9 @@ package com.example.seanh.groupup;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -14,7 +16,8 @@ import com.google.firebase.database.ValueEventListener;
 public class EventViewActivity extends AppCompatActivity {
     private TextView textEventViewOwner, textEventViewStartTime, textEventViewEndTime, textEventViewDate,
             textEventViewDescription, textEventViewAddress, textEventViewAttendance, textEventViewCapacity;
-    private User owner;
+    private Event event;
+    private User user, owner;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,8 +27,8 @@ public class EventViewActivity extends AppCompatActivity {
 
         //Gets Event object from Main Activity
         final Bundle b = getIntent().getExtras();
-        final Event event = b.getParcelable("myEvent");
-        final User user = b.getParcelable("myUser");
+        event = b.getParcelable("myEvent");
+        user = b.getParcelable("myUser");
         fetchOwner(event.getOwnerId());
 
         android.support.v7.widget.Toolbar tb = findViewById(R.id.toolbarEventView);
@@ -56,32 +59,19 @@ public class EventViewActivity extends AppCompatActivity {
         textEventViewEndTime.setText( event.getEndTime() );
         textEventViewDate.setText( event.getDate() );
         textEventViewDescription.setText( event.getDescription() );
-        textEventViewAddress.setText( event.getWhere() ); //TODO fix?
+        textEventViewAddress.setText( event.getAddress() ); //TODO fix?
         textEventViewAttendance.setText( ""+event.getAttendance() );
         textEventViewCapacity.setText( ""+event.getCapacity() );
         //imageEventViewPicture.setImageBitmap(pictureBitMap);
-
-
-
-        findViewById(R.id.buttonViewEventJoin).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //TODO Some database call adding current user to event attendees
-                //TODO increase current attendees +1
-                //Toast.makeText(getApplicationContext(), "Joined the Group " + eventString + "!", Toast.LENGTH_SHORT).show();
-            }
-        });
 
         findViewById(R.id.buttonViewEventShare).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //TODO open a view asking for user with whom to share with
                 //TODO send some sort of invitation to specified user
+                Toast.makeText(EventViewActivity.this, "This does nothing yet", Toast.LENGTH_SHORT).show();
             }
         });
-
-
-
     }
 
     @Override
@@ -91,6 +81,43 @@ public class EventViewActivity extends AppCompatActivity {
         overridePendingTransition(R.anim.nothing, R.anim.slide_out);
     }
 
+    public void setUpJoinButton(){
+        final Button buttonViewEventJoin = findViewById(R.id.buttonViewEventJoin);
+        if( !user.getId().equals(event.getOwnerId()) ) {
+            if (user.getSubscribedEvents().contains(event.getId())) {
+                buttonViewEventJoin.setText("Leave");
+            }
+            buttonViewEventJoin.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (!user.getSubscribedEvents().contains(event.getId())) {
+                        event.addSubscribedToEvent(user.getId());
+                        user.addSubscribedEvent(event.getId());
+                        buttonViewEventJoin.setText("Leave");
+                        Toast.makeText(EventViewActivity.this, "Event joined successfully", Toast.LENGTH_SHORT).show();
+                    } else {
+                        event.removeSubscribedToEvent(user.getId());
+                        user.removeSubscribedEvent(event.getId());
+                        buttonViewEventJoin.setText("Join");
+                        Toast.makeText(EventViewActivity.this, "Event left successfully", Toast.LENGTH_SHORT).show();
+                    }
+                    Database.updateEvent(event);
+                    Database.updateUser(user);
+                }
+            });
+        }
+        else{
+            buttonViewEventJoin.setText("Owner");
+            buttonViewEventJoin.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Toast.makeText(EventViewActivity.this, "I'd hope you're already going", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+    }
+
+
     //relevant database calls
     private final DatabaseReference dataRoot = FirebaseDatabase.getInstance().getReference();
     public void fetchOwner(String id){
@@ -99,7 +126,8 @@ public class EventViewActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 owner = dataSnapshot.getValue(User.class);
-                textEventViewOwner.setText("Host: " + owner.getfName() + " " + owner.getlName() ); //TODO change for owner name
+                textEventViewOwner.setText("Host: " + owner.getfName() + " " + owner.getlName() );
+                setUpJoinButton();
             }
 
             @Override

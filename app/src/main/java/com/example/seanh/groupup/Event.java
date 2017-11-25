@@ -9,15 +9,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Event implements Parcelable {
-    private String id, name, description, date, startTime, endTime, picURL, ownerId, where, type;
-    private int attendance, capacity;
+    private String id, name, description, date, startTime, endTime, picURL, ownerId, address;
+    private int colorR, colorG, colorB, attendance, capacity;
     private double locX, locY;
     private Bitmap bitMapEventImage;
     private List<String> subscribedUserIds = new ArrayList<>();
 
     //Constructors
-    Event(){} 
-    Event(String name, String description, String startTime, String endTime, String date, String where, String type, Bitmap bitMapEventImage, String ownerId, int attendance, int capacity){
+    Event(){}
+    Event(String name, String description, String startTime, String endTime, String date, String address,
+          Bitmap bitMapEventImage, String ownerId, int colorR, int colorG, int colorB, int attendance, int capacity){
+
         //Used for the creation of new events
         this.name = name;
         this.description = description;
@@ -25,9 +27,11 @@ public class Event implements Parcelable {
         this.endTime = endTime;
         this.date = date;
         this.bitMapEventImage = bitMapEventImage;
-        this.where = where;
+        this.address = address;
         this.ownerId = ownerId;
-        this.type = type;
+        this.colorR = colorR;
+        this.colorG = colorG;
+        this.colorB = colorB;
         this.attendance = attendance;
         this.capacity = capacity;
     }
@@ -42,8 +46,10 @@ public class Event implements Parcelable {
         endTime = in.readString();
         picURL = in.readString();
         ownerId = in.readString();
-        where = in.readString();
-        type = in.readString();
+        address = in.readString();
+        colorR = in.readInt();
+        colorG = in.readInt();
+        colorB = in.readInt();
         locX = in.readDouble();
         locY = in.readDouble();
         attendance = in.readInt();
@@ -115,11 +121,11 @@ public class Event implements Parcelable {
         this.locX = locX;
         this.locY = locY;
     }
-    public String getWhere() {
-        return where;
+    public String getAddress() {
+        return address;
     }
-    public void setWhere(String where) {
-        this.where = where;
+    public void setAddress(String address) {
+        this.address = address;
     }
     public String getOwnerId() {
         return ownerId;
@@ -129,8 +135,9 @@ public class Event implements Parcelable {
     }
     public void setBitMapEventImage(Bitmap bitMapEventImage) { this.bitMapEventImage=bitMapEventImage; }
     public Bitmap getBitMapEventImage() { return bitMapEventImage; }
-    public String getType() { return type; }
-    public void setType(String type) { this.type = type; }
+    public int getColorR() { return colorR; }
+    public int getColorG() { return colorG; }
+    public int getColorB() { return colorB; }
     public int getAttendance() { return attendance; }
     public void setAttendance(int attendance) { this.attendance = attendance; }
     public int getCapacity() { return capacity; }
@@ -150,16 +157,14 @@ public class Event implements Parcelable {
         DecimalFormat df = new DecimalFormat("#.000");
         return df.format(locX)+"  "+df.format(locY);
     }
-    public void addCreatedEvent(String userId){ subscribedUserIds.add(userId); }
-    public boolean removeSubscribedEvent(String userId){ return subscribedUserIds.remove(userId); }
+    public void addSubscribedToEvent(String userId){ subscribedUserIds.add(userId); }
+    public boolean removeSubscribedToEvent(String userId){ return subscribedUserIds.remove(userId); }
 
 
 
     //Parcelable part
     @Override
-    public int describeContents() {
-        return 0;
-    }
+    public int describeContents() { return 0; }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
@@ -171,8 +176,10 @@ public class Event implements Parcelable {
         dest.writeString(endTime);
         dest.writeString(picURL);
         dest.writeString(ownerId);
-        dest.writeString(where);
-        dest.writeString(type);
+        dest.writeString(address);
+        dest.writeInt(colorR);
+        dest.writeInt(colorG);
+        dest.writeInt(colorB);
         dest.writeDouble(locX);
         dest.writeDouble(locY);
         dest.writeInt(attendance);
@@ -188,9 +195,10 @@ public class Event implements Parcelable {
                 +"\nstartTime="+startTime
                 +"\nendTime="+endTime
                 +"\nstartDate="+date
-                +"\naddress="+where
+                +"\naddress="+address
                 +"\npicURL="+picURL+"}";
     }
+
 
 
 }
