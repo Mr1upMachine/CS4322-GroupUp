@@ -51,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
 
     boolean doubleBackToExitPressedOnce = false; //sign out pressing back twice
 
+    //TODO Micah delete this
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
