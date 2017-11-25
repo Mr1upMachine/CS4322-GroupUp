@@ -80,7 +80,7 @@ public class EventViewActivity extends AppCompatActivity {
     public void setUpJoinButton(){
         final Button buttonViewEventJoin = findViewById(R.id.buttonViewEventJoin);
         if( !user.getId().equals(event.getOwnerId()) ) {
-            if (user.getSubscribedEvents().contains(event.getId())) {
+            if (user.getSubscribedEventIds().contains(event.getId())) {
                 buttonViewEventJoin.setText("Leave");
             }
             buttonViewEventJoin.setOnClickListener(new View.OnClickListener() {
@@ -88,7 +88,7 @@ public class EventViewActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     //Check if event is full
                     if(Integer.parseInt(textEventViewAttendance.getText().toString()) < Integer.parseInt(textEventViewCapacity.getText().toString())) {
-                        if (!user.getSubscribedEvents().contains(event.getId())) {
+                        if (!user.getSubscribedEventIds().contains(event.getId())) {
                             event.addSubscribedToEvent(user.getId());
                             user.addSubscribedEvent(event.getId());
 

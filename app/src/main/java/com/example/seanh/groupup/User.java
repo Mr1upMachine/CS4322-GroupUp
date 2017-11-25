@@ -65,10 +65,10 @@ public class User implements Parcelable{
     public void setlName(String lName) {
         this.lName = lName;
     }
-    public List<String> getSubscribedEvents(){
+    public List<String> getSubscribedEventIds(){
         return subscribedEventIds;
     }
-    public void setSubscribedEvents(List<String> subscribedEvents) {
+    public void setSubscribedEventIds(List<String> subscribedEvents) {
         this.subscribedEventIds = subscribedEvents;
     }
     public List<String> getCreatedEventIds() {
