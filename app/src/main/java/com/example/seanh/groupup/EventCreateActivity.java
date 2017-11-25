@@ -231,6 +231,7 @@ public class EventCreateActivity extends AppCompatActivity {
                                 !strCapacity.isEmpty()
                         ) {
 
+                    //TODO make upload all correct data
                     Database.createNewEvent(new Event(
                             strName, strDesc,
                             strStartTime, strEndTime,
@@ -441,7 +442,6 @@ public class EventCreateActivity extends AppCompatActivity {
         }
         return null;
     }
-
     public String GeoAdd(double xCord, double yCord) {
 
         Geocoder geocoder;
@@ -466,7 +466,6 @@ public class EventCreateActivity extends AppCompatActivity {
         }
         return null;
     }
-
     public String GeoState(double xCord, double yCord) {
 
         Geocoder geocoder;
@@ -491,7 +490,6 @@ public class EventCreateActivity extends AppCompatActivity {
         }
         return null;
     }
-
     public String GeoZip(double xCord, double yCord) {
 
         Geocoder geocoder;

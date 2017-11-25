@@ -101,8 +101,8 @@ public class EventViewActivity extends AppCompatActivity {
                         buttonViewEventJoin.setText("Join");
                         Toast.makeText(EventViewActivity.this, "Event left successfully", Toast.LENGTH_SHORT).show();
                     }
-                    Database.updateEvent(event);
-                    Database.updateUser(user);
+                    updateEvent(event);
+                    updateUser(user);
                 }
             });
         }
@@ -133,5 +133,11 @@ public class EventViewActivity extends AppCompatActivity {
             @Override
             public void onCancelled(DatabaseError error) {  }
         });
+    }
+    public void updateEvent(Event e){
+        dataRoot.child("events").child(e.getId()).setValue(e);
+    }
+    public void updateUser(User u){
+        dataRoot.child("users").child(u.getId()).setValue(u);
     }
 }
