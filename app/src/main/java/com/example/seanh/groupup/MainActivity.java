@@ -50,8 +50,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean menuViewSwitch = true; //alternates which menu option is visible
 
     boolean doubleBackToExitPressedOnce = false; //sign out pressing back twice
-
-    //TODO Micah delete this
+    
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
