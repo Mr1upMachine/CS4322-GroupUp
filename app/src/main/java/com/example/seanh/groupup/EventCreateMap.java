@@ -23,14 +23,26 @@ import java.util.Locale;
 
 public class EventCreateMap extends FragmentActivity implements OnMapReadyCallback {
 
+    android.support.v7.widget.Toolbar tb;
     public GoogleMap mMap;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_create_map);
+        overridePendingTransition(R.anim.slide_in, R.anim.nothing);
+
+        tb = findViewById(R.id.toolbarEventCreateMap);
+        tb.setTitle("Select a location:");
+        tb.setNavigationIcon(R.drawable.ic_arrow_back_white_36dp);
+        tb.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+                overridePendingTransition(R.anim.nothing, R.anim.slide_out);
+            }
+        });
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);

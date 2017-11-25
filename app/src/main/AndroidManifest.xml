@@ -35,8 +35,7 @@
         <activity android:name=".EventCreateActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar"/>
         <activity android:name=".RegisterActivity"
-            android:theme="@style/Theme.AppCompat.NoActionBar">
-        </activity>
+            android:theme="@style/Theme.AppCompat.NoActionBar"/>
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -48,7 +47,8 @@
         <meta-data android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyDlRbdkCsK_I050580FrBHEz4tQqq4tDYw" />
         <activity android:name=".EventCreateMap"
-            android:label="@string/title_activity_event_create_map"></activity>
+            android:label="@string/title_activity_event_create_map"
+            android:theme="@style/Theme.AppCompat.NoActionBar"/>
     </application>
 
 </manifest>

@@ -129,7 +129,9 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.fabNewEvent).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, EventCreateActivity.class));
+                Intent i = new Intent(MainActivity.this, EventCreateActivity.class);
+                i.putExtra("myUser", user);
+                startActivity(i);
             }
         });
     }

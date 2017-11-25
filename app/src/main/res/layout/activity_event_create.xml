@@ -85,11 +85,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            app:layout_constraintEnd_toEndOf="@+id/btnMap"
-            app:layout_constraintStart_toStartOf="@+id/btnMap"
-            app:layout_constraintTop_toBottomOf="@+id/btnMap">
+            app:layout_constraintEnd_toEndOf="@+id/btnEventCreateMap"
+            app:layout_constraintTop_toBottomOf="@+id/btnEventCreateMap">
 
             <TextView
                 android:id="@+id/textView3"
@@ -164,7 +162,6 @@
             android:id="@+id/editEventCreateDescription"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
             android:layout_marginTop="8dp"
             android:ems="10"
             android:hint="Event Description"
@@ -179,10 +176,9 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:ems="10"
+            android:ems="14"
             android:hint="Event Address"
             android:inputType="textPostalAddress"
-            app:layout_constraintEnd_toStartOf="@+id/btnMap"
             app:layout_constraintStart_toStartOf="@+id/editEventCreateDescription"
             app:layout_constraintTop_toBottomOf="@+id/editEventCreateDescription" />
 
@@ -222,12 +218,15 @@
             app:layout_constraintTop_toBottomOf="@+id/textEventCreateStartTime" />
 
         <Button
-            android:id="@+id/btnMap"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="G Maps"
+            android:id="@+id/btnEventCreateMap"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/ic_map_white_18dp"
+            android:clickable="true"
+            android:focusable="true"
             app:layout_constraintBottom_toBottomOf="@+id/editEventCreateAddress"
             app:layout_constraintEnd_toEndOf="@+id/editEventCreateDescription"
+            app:layout_constraintStart_toEndOf="@+id/editEventCreateAddress"
             app:layout_constraintTop_toTopOf="@+id/editEventCreateAddress"
             app:layout_constraintVertical_bias="0.0" />
 

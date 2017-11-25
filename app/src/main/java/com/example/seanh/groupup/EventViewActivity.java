@@ -14,8 +14,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 public class EventViewActivity extends AppCompatActivity {
-    private TextView textEventViewOwner, textEventViewStartTime, textEventViewEndTime, textEventViewDate,
-            textEventViewDescription, textEventViewAddress, textEventViewAttendance, textEventViewCapacity;
+    private TextView textEventViewOwner, textEventViewAttendance, textEventViewCapacity;
     private Event event;
     private User user, owner;
     
@@ -25,15 +24,23 @@ public class EventViewActivity extends AppCompatActivity {
         setContentView(R.layout.activity_event_view);
         overridePendingTransition(R.anim.slide_in, R.anim.nothing);
 
+        textEventViewOwner = findViewById(R.id.textEventViewOwner);
+        final TextView textEventViewStartTime = findViewById(R.id.textEventViewStartTime);
+        final TextView textEventViewEndTime = findViewById(R.id.textEventViewEndTime);
+        final TextView textEventViewDate = findViewById(R.id.textEventViewDate);
+        final TextView textEventViewDescription = findViewById(R.id.textEventViewDescription);
+        final TextView textEventViewAddress = findViewById(R.id.textEventViewAddress);
+        textEventViewAttendance = findViewById(R.id.textEventViewAttendance);
+        textEventViewCapacity = findViewById(R.id.textEventViewCapacity);
+
         //Gets Event object from Main Activity
         final Bundle b = getIntent().getExtras();
         event = b.getParcelable("myEvent");
         user = b.getParcelable("myUser");
-        fetchOwner(event.getOwnerId());
+        fetchOwner(event.getOwnerId()); //also sets up Join button
 
-        android.support.v7.widget.Toolbar tb = findViewById(R.id.toolbarEventView);
+        final android.support.v7.widget.Toolbar tb = findViewById(R.id.toolbarEventView);
         setSupportActionBar(tb);
-        //getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setTitle( event.getName() );
         tb.setNavigationIcon(R.drawable.ic_arrow_back_white_36dp);
         tb.setNavigationOnClickListener(new View.OnClickListener() {
@@ -43,26 +50,15 @@ public class EventViewActivity extends AppCompatActivity {
                 overridePendingTransition(R.anim.nothing, R.anim.slide_out);
             }
         });
-        
-        //textEventViewName =  findViewById(R.id.textEventViewName);
-        textEventViewOwner =  findViewById(R.id.textEventViewOwner);
-        textEventViewStartTime =  findViewById(R.id.textEventViewStartTime);
-        textEventViewEndTime =  findViewById(R.id.textEventViewEndTime);
-        textEventViewDate =  findViewById(R.id.textEventViewDate);
-        textEventViewDescription = findViewById(R.id.textEventViewDescription);
-        textEventViewAddress =  findViewById(R.id.textEventViewAddress);
-        textEventViewAttendance =  findViewById(R.id.textEventViewAttendance);
-        textEventViewCapacity =  findViewById(R.id.textEventViewCapacity);
 
         //textEventViewName.setText( event.getName() );
         textEventViewStartTime.setText( event.getStartTime() );
         textEventViewEndTime.setText( event.getEndTime() );
         textEventViewDate.setText( event.getDate() );
         textEventViewDescription.setText( event.getDescription() );
-        textEventViewAddress.setText( event.getAddress() ); //TODO fix?
+        textEventViewAddress.setText( event.generateAddressPretty() );
         textEventViewAttendance.setText( ""+event.getAttendance() );
         textEventViewCapacity.setText( ""+event.getCapacity() );
-        //imageEventViewPicture.setImageBitmap(pictureBitMap);
 
         findViewById(R.id.buttonViewEventShare).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -90,19 +86,33 @@ public class EventViewActivity extends AppCompatActivity {
             buttonViewEventJoin.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (!user.getSubscribedEvents().contains(event.getId())) {
-                        event.addSubscribedToEvent(user.getId());
-                        user.addSubscribedEvent(event.getId());
-                        buttonViewEventJoin.setText("Leave");
-                        Toast.makeText(EventViewActivity.this, "Event joined successfully", Toast.LENGTH_SHORT).show();
-                    } else {
-                        event.removeSubscribedToEvent(user.getId());
-                        user.removeSubscribedEvent(event.getId());
-                        buttonViewEventJoin.setText("Join");
-                        Toast.makeText(EventViewActivity.this, "Event left successfully", Toast.LENGTH_SHORT).show();
+                    //Check if event is full
+                    if(Integer.parseInt(textEventViewAttendance.getText().toString()) < Integer.parseInt(textEventViewCapacity.getText().toString())) {
+                        if (!user.getSubscribedEvents().contains(event.getId())) {
+                            event.addSubscribedToEvent(user.getId());
+                            user.addSubscribedEvent(event.getId());
+
+                            event.setAttendance( event.getAttendance()+1 );
+
+                            textEventViewAttendance.setText( ""+event.getAttendance() );
+                            buttonViewEventJoin.setText("Leave");
+                            Toast.makeText(EventViewActivity.this, "Event joined successfully", Toast.LENGTH_SHORT).show();
+                        } else {
+                            event.removeSubscribedToEvent(user.getId());
+                            user.removeSubscribedEvent(event.getId());
+
+                            event.setAttendance( event.getAttendance()-1 );
+
+                            textEventViewAttendance.setText( ""+event.getAttendance() );
+                            buttonViewEventJoin.setText("Join");
+                            Toast.makeText(EventViewActivity.this, "Event left successfully", Toast.LENGTH_SHORT).show();
+                        }
+                        updateEvent(event);
+                        updateUser(user);
                     }
-                    updateEvent(event);
-                    updateUser(user);
+                    else {
+                        Toast.makeText(EventViewActivity.this, "Event is full!", Toast.LENGTH_SHORT).show();
+                    }
                 }
             });
         }

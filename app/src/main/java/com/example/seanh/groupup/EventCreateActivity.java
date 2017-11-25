@@ -37,8 +37,6 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.pes.androidmaterialcolorpickerdialog.ColorPicker;
 
 import java.io.FileDescriptor;
@@ -51,12 +49,13 @@ import java.util.Locale;
 //TODO Micah stuff here
 public class EventCreateActivity extends AppCompatActivity {
     private final String LOGTAG = "EventCreateActivity";
-    private final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-    private EditText editName, editDesc, editWhere;
+    private User user;
+    private EditText editName, editDesc, editAddress;
     private TextView textStartTime, textEndTime, textDate, textEventCreateAttendance, textEventCreateCapacity;
     private ImageView eventPicture;
     private String strName = "", strDesc = "", strDate = "",
-            strStartTime = "", strEndTime = "", strWhere = "",
+            strStartTime = "", strEndTime = "", strAddress = "",
+            strAddressStreet = "", strAddressAreaState = "", strAddressZip = "",
             strAttendance = "", strCapacity = "";
     private Bitmap bitMapEventImage;
     private int mYear, mMonth, mDay, mHour, mMinute;
@@ -100,12 +99,15 @@ public class EventCreateActivity extends AppCompatActivity {
         textStartTime = findViewById(R.id.textEventCreateStartTime);
         textEndTime = findViewById(R.id.textEventCreateEndTime);
         textDate = findViewById(R.id.textEventCreateDate);
-        editWhere = findViewById(R.id.editEventCreateAddress);
+        editAddress = findViewById(R.id.editEventCreateAddress);
         textEventCreateAttendance = findViewById(R.id.textEventCreateAttendance);
         textEventCreateCapacity = findViewById(R.id.textEventCreateCapacity);
         eventPicture = null;
         cp = new ColorPicker(this, 127, 127, 127);
 
+        final Bundle b = getIntent().getExtras();
+        user = b.getParcelable("myUser");
+        
 
         final android.support.v7.widget.Toolbar tb = findViewById(R.id.toolbarEventCreate);
         setSupportActionBar(tb);
@@ -124,10 +126,10 @@ public class EventCreateActivity extends AppCompatActivity {
         setupLocation();
 
         //Button for Google Maps extension, currently just sets address to current Latitude and Longitude
-        findViewById(R.id.btnMap).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.btnEventCreateMap).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                editWhere.setText(numLocX + " " + numLocY);
+                editAddress.setText(numLocX + " " + numLocY);
                 Toast.makeText(getApplicationContext(), "Right now I just populate the current Lat/Lon!", Toast.LENGTH_SHORT).show();
             }
         });
@@ -139,9 +141,7 @@ public class EventCreateActivity extends AppCompatActivity {
                 Intent i = new Intent(
                         Intent.ACTION_PICK,
                         android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-
                 startActivityForResult(i, RESULT_LOAD_IMAGE);
-
             }
         });
 
@@ -177,7 +177,7 @@ public class EventCreateActivity extends AppCompatActivity {
         });
 
         //Go to EventCreateMap Activity
-        findViewById(R.id.btnMap).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.btnEventCreateMap).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(EventCreateActivity.this, EventCreateMap.class));
@@ -211,35 +211,27 @@ public class EventCreateActivity extends AppCompatActivity {
                 strDate = textDate.getText().toString();
                 strStartTime = textStartTime.getText().toString();
                 strEndTime = textEndTime.getText().toString();
-                strWhere = editWhere.getText().toString();
+                strAddress = editAddress.getText().toString();
                 strAttendance = textEventCreateAttendance.getText().toString();
                 strCapacity = textEventCreateCapacity.getText().toString();
 
-
-                //numLocX = Double.parseDouble(editLocX.getText().toString());
-                //numLocY = Double.parseDouble(editLocY.getText().toString());
-
                 //Verifies all data fields are filled
-                if (
-                        !strName.isEmpty() &&
-                                !strDesc.isEmpty() &&
-                                !strDate.isEmpty() &&
-                                !strStartTime.isEmpty() &&
-                                !strEndTime.isEmpty() &&
-                                !strWhere.isEmpty() &&
-                                !strAttendance.isEmpty() &&
-                                !strCapacity.isEmpty()
-                        ) {
+                if (!strName.isEmpty() &&
+                        !strDesc.isEmpty() &&
+                        !strDate.isEmpty() &&
+                        !strStartTime.isEmpty() &&
+                        !strEndTime.isEmpty() &&
+                        !strAddress.isEmpty() &&
+                        !strAttendance.isEmpty() &&
+                        !strCapacity.isEmpty()) {
 
-                    //TODO make upload all correct data
                     Database.createNewEvent(new Event(
-                            strName, strDesc,
-                            strStartTime, strEndTime,
-                            strDate, strWhere,
-                            bitMapEventImage,
-                            user.getUid(),
-                            cp.getRed(), cp.getGreen(), cp.getBlue(),
-                            Integer.parseInt(strAttendance), Integer.parseInt(strCapacity)));
+                            strName, strDesc, user.getId(),
+                            strDate, strStartTime, strEndTime,
+                            strAddress, strAddressStreet, strAddressAreaState, strAddressZip,
+                            numLocX, numLocY, null,
+                            Integer.parseInt(strAttendance), Integer.parseInt(strCapacity),
+                            cp.getRed(), cp.getGreen(), cp.getBlue()));
 
                     Toast.makeText(getApplicationContext(), "Event created successfully",
                             Toast.LENGTH_LONG).show();
@@ -317,7 +309,6 @@ public class EventCreateActivity extends AppCompatActivity {
                 }, mYear, mMonth, mDay);
         datePickerDialog.show();
     }
-
     private void timePicker(final TextView tv) {
         // Get Current Time
         final Calendar c = Calendar.getInstance();
@@ -340,7 +331,6 @@ public class EventCreateActivity extends AppCompatActivity {
                 }, mHour, mMinute, false);
         timePickerDialog.show();
     }
-
     private void numberPickerDialog(final TextView tv) {
         final Dialog d = new Dialog(this);
         d.setTitle("NumberPicker");
@@ -348,8 +338,15 @@ public class EventCreateActivity extends AppCompatActivity {
         Button b1 = d.findViewById(R.id.buttonDialogNPSet);
         Button b2 = d.findViewById(R.id.buttonDialogNPCancel);
         final NumberPicker np = d.findViewById(R.id.numberPicker1);
-        np.setMaxValue(tv.getId() == R.id.textEventCreateAttendance ? Integer.parseInt(textEventCreateCapacity.getText().toString()) : 99); // max value 100
-        np.setMinValue(tv.getId() == R.id.textEventCreateCapacity ? 1 : Integer.parseInt(textEventCreateAttendance.getText().toString()));   // min value 0
+        if(tv.getId() == R.id.textEventCreateAttendance){ //prevents data from overflowing
+            np.setMaxValue(Integer.parseInt(textEventCreateCapacity.getText().toString())); // max value capacity
+            np.setMinValue(0);   // min value 0
+        }
+        else{
+            np.setMaxValue(99); // max value 99
+            np.setMinValue(Integer.parseInt(textEventCreateAttendance.getText().toString()));   // min value attendance
+        }
+
         np.setWrapSelectorWheel(false);
         //np.setOnValueChangedListener(this);
         b1.setOnClickListener(new View.OnClickListener() {
@@ -370,19 +367,12 @@ public class EventCreateActivity extends AppCompatActivity {
 
 
     public void setupLocation() {
-        TextView address;
-        Geocoder geocoder;
-        List<Address> addresses;
-
         //security check if permission is not already granted
         if (ActivityCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            findViewById(R.id.btnMap).setVisibility(View.GONE);
+            findViewById(R.id.btnEventCreateMap).setVisibility(View.GONE);
             return;
         }
-
-        //TODO properly prevent app from crashing if location permission is not granted
-        //sets up the location for the first time
 
         //sets up location manager
         mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
@@ -392,7 +382,7 @@ public class EventCreateActivity extends AppCompatActivity {
                 0.5f, mLocationListener);
 
         try {
-            Criteria criteria = new Criteria();
+            final Criteria criteria = new Criteria();
             criteria.setAccuracy(Criteria.ACCURACY_FINE);
             criteria.setAltitudeRequired(false);
             criteria.setBearingRequired(false);
@@ -400,7 +390,7 @@ public class EventCreateActivity extends AppCompatActivity {
             criteria.setPowerRequirement(Criteria.POWER_LOW);
             provider = mLocationManager.getBestProvider(criteria, true);
             if (provider != null) {
-                Location l = mLocationManager.getLastKnownLocation(provider);
+                final Location l = mLocationManager.getLastKnownLocation(provider);
                 numLocX = l.getLatitude();
                 numLocY = l.getLongitude();
             }
@@ -409,70 +399,47 @@ public class EventCreateActivity extends AppCompatActivity {
         }
 
         //TODO Location**************************
-        String FullAddress = GeoFull(numLocX, numLocY);
-        address = findViewById(R.id.editEventCreateAddress);
-        address.setText(FullAddress);
-
+        editAddress.setText( generateGeoFull(numLocX, numLocY) );
+        strAddress = generateGeoFull(numLocX, numLocY);
+        strAddressStreet = generateGeoAdd(numLocX, numLocY);
+        strAddressAreaState = generateGeoAreaState(numLocX, numLocY);
+        strAddressZip = generateGeoZip(numLocX, numLocY);
     }
 
-
-    public String GeoFull(double xCord, double yCord) {
-
-        Geocoder geocoder;
+    public String generateGeoFull(double xCord, double yCord) {
+        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
         List<Address> addresses;
-
-
-        geocoder = new Geocoder(this, Locale.getDefault());
 
         try {
             addresses = geocoder.getFromLocation(xCord, yCord, 1);
 
             String add = addresses.get(0).getAddressLine(0);
             String area = addresses.get(0).getLocality();
-            String city = addresses.get(0).getAdminArea();
+            String state = addresses.get(0).getAdminArea();
             String postalCode = addresses.get(0).getPostalCode();
 
-            String FullAddress = add + ", " + area + ", " + city + ", " + postalCode;
-
-
-            return FullAddress;
+            return add + ", " + area + " " + state + " " + postalCode;
 
         } catch (Exception e) {
             Log.d(LOGTAG, "Get Location Failed");
         }
         return null;
     }
-    public String GeoAdd(double xCord, double yCord) {
-
-        Geocoder geocoder;
+    public String generateGeoAdd(double xCord, double yCord) {
+        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
         List<Address> addresses;
-
-
-        geocoder = new Geocoder(this, Locale.getDefault());
-
         try {
             addresses = geocoder.getFromLocation(xCord, yCord, 1);
-
-            String add = addresses.get(0).getAddressLine(0);
-
-
-            String FullAddress = add;
-
-
-            return FullAddress;
+            return addresses.get(0).getAddressLine(0);
 
         } catch (Exception e) {
             Log.d(LOGTAG, "Get Location Failed");
         }
         return null;
     }
-    public String GeoState(double xCord, double yCord) {
-
-        Geocoder geocoder;
+    public String generateGeoAreaState(double xCord, double yCord) {
+        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
         List<Address> addresses;
-
-
-        geocoder = new Geocoder(this, Locale.getDefault());
 
         try {
             addresses = geocoder.getFromLocation(xCord, yCord, 1);
@@ -480,34 +447,20 @@ public class EventCreateActivity extends AppCompatActivity {
             String area = addresses.get(0).getLocality();
             String city = addresses.get(0).getAdminArea();
 
-            String FullAddress = area + ", " + city;
-
-
-            return FullAddress;
+            return area + ", " + city;
 
         } catch (Exception e) {
             Log.d(LOGTAG, "Get Location Failed");
         }
         return null;
     }
-    public String GeoZip(double xCord, double yCord) {
-
-        Geocoder geocoder;
+    public String generateGeoZip(double xCord, double yCord) {
+        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
         List<Address> addresses;
-
-
-        geocoder = new Geocoder(this, Locale.getDefault());
 
         try {
             addresses = geocoder.getFromLocation(xCord, yCord, 1);
-
-            String postalCode = addresses.get(0).getPostalCode();
-
-            String FullAddress = postalCode;
-
-
-            return FullAddress;
-
+            return addresses.get(0).getPostalCode();
         } catch (Exception e) {
             Log.d(LOGTAG, "Get Location Failed");
         }
@@ -523,7 +476,6 @@ public class EventCreateActivity extends AppCompatActivity {
         inputMethodManager.hideSoftInputFromWindow(
                 activity.getCurrentFocus().getWindowToken(), 0);
     }
-
     public void setupKeyboardHide(View view) {
 
         // Set up touch listener for non-text box views to hide keyboard.
