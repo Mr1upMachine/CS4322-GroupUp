@@ -94,7 +94,6 @@ public class EventViewActivity extends AppCompatActivity {
 
                             event.setAttendance( event.getAttendance()+1 );
 
-                            textEventViewAttendance.setText( ""+event.getAttendance() );
                             buttonViewEventJoin.setText("Leave");
                             Toast.makeText(EventViewActivity.this, "Event joined successfully", Toast.LENGTH_SHORT).show();
                         } else {
@@ -103,10 +102,10 @@ public class EventViewActivity extends AppCompatActivity {
 
                             event.setAttendance( event.getAttendance()-1 );
 
-                            textEventViewAttendance.setText( ""+event.getAttendance() );
                             buttonViewEventJoin.setText("Join");
                             Toast.makeText(EventViewActivity.this, "Event left successfully", Toast.LENGTH_SHORT).show();
                         }
+                        textEventViewAttendance.setText( ""+event.getAttendance() );
                         updateEvent(event);
                         updateUser(user);
                     }
