@@ -39,8 +39,13 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.storage.UploadTask;
 import com.pes.androidmaterialcolorpickerdialog.ColorPicker;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.FirebaseStorage;
 
+
+import java.io.ByteArrayOutputStream;
 import java.io.FileDescriptor;
 import java.io.IOException;
 import java.text.DecimalFormat;
@@ -52,6 +57,7 @@ import java.util.Locale;
 public class EventCreateActivity extends AppCompatActivity {
     private final String LOGTAG = "EventCreateActivity";
     private final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    private FirebaseStorage storage = FirebaseStorage.getInstance();
     private EditText editName, editDesc, editWhere;
     private TextView textStartTime, textEndTime, textDate, textEventCreateAttendance, textEventCreateCapacity;
     private ImageView eventPicture;
@@ -64,6 +70,7 @@ public class EventCreateActivity extends AppCompatActivity {
     private LocationManager mLocationManager;
     private String provider;
     private ColorPicker cp;
+    private StorageReference mStorageRef;
     private final LocationListener mLocationListener = new LocationListener() {
         @Override
         public void onLocationChanged(final Location location) {
@@ -105,6 +112,7 @@ public class EventCreateActivity extends AppCompatActivity {
         textEventCreateCapacity = findViewById(R.id.textEventCreateCapacity);
         eventPicture = null;
         cp = new ColorPicker(this, 127, 127, 127);
+        mStorageRef = FirebaseStorage.getInstance().getReference();
 
 
         final android.support.v7.widget.Toolbar tb = findViewById(R.id.toolbarEventCreate);
@@ -218,6 +226,36 @@ public class EventCreateActivity extends AppCompatActivity {
 
                 //numLocX = Double.parseDouble(editLocX.getText().toString());
                 //numLocY = Double.parseDouble(editLocY.getText().toString());
+
+
+                //checks to see if user image is given, if so then upload to database
+                if (
+                        eventPicture != null
+                        )
+                {
+                    //create bitmap of image, compress to PNG,
+                    //store byte array of image in imageData containing raw pixels
+                    eventPicture.setDrawingCacheEnabled(true);
+                    eventPicture.buildDrawingCache();
+                    Bitmap bitmap = eventPicture.getDrawingCache();
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+                    eventPicture.setDrawingCacheEnabled(false);
+                    byte[] imageData = baos.toByteArray();
+
+                    //path to where image will be saved in Firebase dir
+                    String path = "eventImages/" + strName + ".png";
+
+                    //eventRef is the unique reference pointing to the image in Firebase,
+                    //use to reference image when calling for eventView
+                    StorageReference eventRef = storage.getReference(path);
+
+
+                    //line physically uploading image to firebase
+                    UploadTask uploadtask = eventRef.putBytes(imageData);
+
+                    //TODO implement UploadTask to give progress bar so user knows when upload completes
+                }
 
                 //Verifies all data fields are filled
                 if (

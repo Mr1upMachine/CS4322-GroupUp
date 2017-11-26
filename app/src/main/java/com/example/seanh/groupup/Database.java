@@ -1,5 +1,7 @@
 package com.example.seanh.groupup;
 
+import android.media.Image;
+
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -26,12 +28,16 @@ public class Database {
     private static List<Event> tempEventList = new ArrayList<>();
 
 
+
     //Records new event into the database
     public static void createNewEvent(Event e) {
         DatabaseReference dr = dataEvents.push(); //generates unique id for event
         e.setId(dr.getKey()); //makes it easier to get generated key
         dr.setValue(e); //uploads data to database
     }
+//    public static void uploadEventPicture (Image eventImage) {
+//        eventually will live here i assume
+//    }
     public static void updateEvent(Event newEvent){
         DatabaseReference dr = dataEvents.child(newEvent.getId()); //gets event by id
         dr.setValue(newEvent); //uploads data to database
