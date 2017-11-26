@@ -55,11 +55,8 @@ public class EventCreateActivity extends AppCompatActivity {
     private ImageView eventPicture;
     private String strAddressStreet = "", strAddressAreaState = "", strAddressZip = "";
     private Bitmap bitMapEventImage;
-    private int mYear, mMonth, mDay;
     private Calendar startDateTime, endDateTime;
     public static double numLocX = 0.0, numLocY = 0.0;
-    private LocationManager mLocationManager;
-    private String provider;
     private ColorPicker cp;
     private final LocationListener mLocationListener = new LocationListener() {
         @Override
@@ -80,7 +77,7 @@ public class EventCreateActivity extends AppCompatActivity {
         public void onProviderDisabled(String provider) {
         }
     };
-    private static int RESULT_LOAD_IMAGE = 1;
+    private static final int RESULT_LOAD_IMAGE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -386,7 +383,7 @@ public class EventCreateActivity extends AppCompatActivity {
         }
 
         //sets up location manager
-        mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        LocationManager mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
         //updates location anytime the gps updates
         mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000,
@@ -399,7 +396,7 @@ public class EventCreateActivity extends AppCompatActivity {
             criteria.setBearingRequired(false);
             criteria.setCostAllowed(true);
             criteria.setPowerRequirement(Criteria.POWER_LOW);
-            provider = mLocationManager.getBestProvider(criteria, true);
+            String provider = mLocationManager.getBestProvider(criteria, true);
             if (provider != null) {
                 final Location l = mLocationManager.getLastKnownLocation(provider);
                 numLocX = l.getLatitude();
