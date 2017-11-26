@@ -12,13 +12,12 @@ public class Event implements Parcelable {
     private String id, name, description, date, startTime, endTime, picURL, ownerId, address;
     private int colorR, colorG, colorB, attendance, capacity;
     private double locX, locY;
-    private Bitmap bitMapEventImage;
     private List<String> subscribedUserIds = new ArrayList<>();
 
     //Constructors
     Event(){}
     Event(String name, String description, String startTime, String endTime, String date, String address,
-          Bitmap bitMapEventImage, String ownerId, int colorR, int colorG, int colorB, int attendance, int capacity){
+          String ownerId, int colorR, int colorG, int colorB, int attendance, int capacity){
 
         //Used for the creation of new events
         this.name = name;
@@ -26,7 +25,6 @@ public class Event implements Parcelable {
         this.startTime = startTime;
         this.endTime = endTime;
         this.date = date;
-        this.bitMapEventImage = bitMapEventImage;
         this.address = address;
         this.ownerId = ownerId;
         this.colorR = colorR;
@@ -133,8 +131,6 @@ public class Event implements Parcelable {
     public void setOwnerId(String ownerId) {
         this.ownerId = ownerId;
     }
-    public void setBitMapEventImage(Bitmap bitMapEventImage) { this.bitMapEventImage=bitMapEventImage; }
-    public Bitmap getBitMapEventImage() { return bitMapEventImage; }
     public int getColorR() { return colorR; }
     public int getColorG() { return colorG; }
     public int getColorB() { return colorB; }

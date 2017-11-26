@@ -39,6 +39,8 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.UploadTask;
 import com.pes.androidmaterialcolorpickerdialog.ColorPicker;
 import com.google.firebase.storage.StorageReference;
@@ -229,33 +231,7 @@ public class EventCreateActivity extends AppCompatActivity {
 
 
                 //checks to see if user image is given, if so then upload to database
-                if (
-                        eventPicture != null
-                        )
-                {
-                    //create bitmap of image, compress to PNG,
-                    //store byte array of image in imageData containing raw pixels
-                    eventPicture.setDrawingCacheEnabled(true);
-                    eventPicture.buildDrawingCache();
-                    Bitmap bitmap = eventPicture.getDrawingCache();
-                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
-                    eventPicture.setDrawingCacheEnabled(false);
-                    byte[] imageData = baos.toByteArray();
 
-                    //path to where image will be saved in Firebase dir
-                    String path = "eventImages/" + strName + ".png";
-
-                    //eventRef is the unique reference pointing to the image in Firebase,
-                    //use to reference image when calling for eventView
-                    StorageReference eventRef = storage.getReference(path);
-
-
-                    //line physically uploading image to firebase
-                    UploadTask uploadtask = eventRef.putBytes(imageData);
-
-                    //TODO implement UploadTask to give progress bar so user knows when upload completes
-                }
 
                 //Verifies all data fields are filled
                 if (
@@ -269,14 +245,39 @@ public class EventCreateActivity extends AppCompatActivity {
                                 !strCapacity.isEmpty()
                         ) {
 
-                    Database.createNewEvent(new Event(
+                    String eventID = createNewEvent(new Event(
                             strName, strDesc,
                             strStartTime, strEndTime,
                             strDate, strWhere,
-                            bitMapEventImage,
                             user.getUid(),
                             cp.getRed(), cp.getGreen(), cp.getBlue(),
                             Integer.parseInt(strAttendance), Integer.parseInt(strCapacity)));
+
+                    if (eventPicture != null)
+                    {
+                        //create bitmap of image, compress to PNG,
+                        //store byte array of image in imageData containing raw pixels
+                        eventPicture.setDrawingCacheEnabled(true);
+                        eventPicture.buildDrawingCache();
+                        Bitmap bitmap = eventPicture.getDrawingCache();
+                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                        bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+                        eventPicture.setDrawingCacheEnabled(false);
+                        byte[] imageData = baos.toByteArray();
+
+                        //path to where image will be saved in Firebase dir
+                        String path = "eventImages/" + eventID + ".png";
+
+                        //eventRef is the unique reference pointing to the image in Firebase,
+                        //use to reference image when calling for eventView
+                        StorageReference eventRef = storage.getReference(path);
+
+
+                        //line physically uploading image to firebase
+                        UploadTask uploadtask = eventRef.putBytes(imageData);
+
+                        //TODO implement UploadTask to give progress bar so user knows when upload completes
+                    }
 
                     Toast.makeText(getApplicationContext(), "Event created successfully",
                             Toast.LENGTH_LONG).show();
@@ -554,6 +555,16 @@ public class EventCreateActivity extends AppCompatActivity {
         return null;
     }
 
+
+    private final DatabaseReference dataRoot = FirebaseDatabase.getInstance().getReference();
+    private final DatabaseReference dataEvents = dataRoot.child("events");
+    public String createNewEvent(Event e) {
+        DatabaseReference dr = dataEvents.push(); //generates unique id for event
+        String s = dr.getKey();
+        e.setId(s); //makes it easier to get generated key
+        dr.setValue(e); //uploads data to database
+        return s;
+    }
 
     //This auto-hides the keyboard
     public static void hideSoftKeyboard(Activity activity) {
