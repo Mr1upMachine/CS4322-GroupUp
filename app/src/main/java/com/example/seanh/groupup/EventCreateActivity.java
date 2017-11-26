@@ -53,12 +53,10 @@ public class EventCreateActivity extends AppCompatActivity {
     private EditText editName, editDesc, editAddress;
     private TextView textStartTime, textEndTime, textDate, textEventCreateAttendance, textEventCreateCapacity;
     private ImageView eventPicture;
-    private String strName = "", strDesc = "", strDate = "",
-            strStartTime = "", strEndTime = "", strAddress = "",
-            strAddressStreet = "", strAddressAreaState = "", strAddressZip = "",
-            strAttendance = "", strCapacity = "";
+    private String strAddressStreet = "", strAddressAreaState = "", strAddressZip = "";
     private Bitmap bitMapEventImage;
-    private int mYear, mMonth, mDay, mHour, mMinute;
+    private int mYear, mMonth, mDay;
+    private Calendar startDateTime, endDateTime;
     public static double numLocX = 0.0, numLocY = 0.0;
     private LocationManager mLocationManager;
     private String provider;
@@ -103,6 +101,8 @@ public class EventCreateActivity extends AppCompatActivity {
         textEventCreateAttendance = findViewById(R.id.textEventCreateAttendance);
         textEventCreateCapacity = findViewById(R.id.textEventCreateCapacity);
         eventPicture = null;
+        startDateTime = Calendar.getInstance();
+        endDateTime = Calendar.getInstance();
         cp = new ColorPicker(this, 127, 127, 127);
 
         final Bundle b = getIntent().getExtras();
@@ -125,15 +125,6 @@ public class EventCreateActivity extends AppCompatActivity {
         //updates location first time TODO Doesn't work on API 26 Why?
         setupLocation();
 
-        //Button for Google Maps extension, currently just sets address to current Latitude and Longitude
-        findViewById(R.id.btnEventCreateMap).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                editAddress.setText(numLocX + " " + numLocY);
-                Toast.makeText(getApplicationContext(), "Right now I just populate the current Lat/Lon!", Toast.LENGTH_SHORT).show();
-            }
-        });
-
         //adds picture
         findViewById(R.id.buttonCreateEventPicture).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -154,13 +145,13 @@ public class EventCreateActivity extends AppCompatActivity {
         textStartTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                timePicker(textStartTime);
+                timeStPicker(textStartTime);
             }
         });
         textEndTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                timePicker(textEndTime);
+                timeEdPicker(textEndTime);
             }
         });
         textEventCreateAttendance.setOnClickListener(new View.OnClickListener() {
@@ -206,14 +197,14 @@ public class EventCreateActivity extends AppCompatActivity {
         findViewById(R.id.fabCreateEventSubmit).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                strName = editName.getText().toString();
-                strDesc = editDesc.getText().toString();
-                strDate = textDate.getText().toString();
-                strStartTime = textStartTime.getText().toString();
-                strEndTime = textEndTime.getText().toString();
-                strAddress = editAddress.getText().toString();
-                strAttendance = textEventCreateAttendance.getText().toString();
-                strCapacity = textEventCreateCapacity.getText().toString();
+                final String strName = editName.getText().toString();
+                final String strDesc = editDesc.getText().toString();
+                final String strDate = textDate.getText().toString();
+                final String strStartTime = textStartTime.getText().toString();
+                final String strEndTime = textEndTime.getText().toString();
+                final String strAddress = editAddress.getText().toString();
+                final String strAttendance = textEventCreateAttendance.getText().toString();
+                final String strCapacity = textEventCreateCapacity.getText().toString();
 
                 //Verifies all data fields are filled
                 if (!strName.isEmpty() &&
@@ -222,23 +213,22 @@ public class EventCreateActivity extends AppCompatActivity {
                         !strStartTime.isEmpty() &&
                         !strEndTime.isEmpty() &&
                         !strAddress.isEmpty() &&
-                        !strAttendance.isEmpty() &&
-                        !strCapacity.isEmpty()) {
+                        cp.getColor() != Color.rgb(127,127,127) ) {
 
                     Database.createNewEvent(new Event(
                             strName, strDesc, user.getId(),
-                            strDate, strStartTime, strEndTime,
+                            startDateTime.getTimeInMillis(), endDateTime.getTimeInMillis(),
                             strAddress, strAddressStreet, strAddressAreaState, strAddressZip,
                             numLocX, numLocY, null,
                             Integer.parseInt(strAttendance), Integer.parseInt(strCapacity),
-                            cp.getRed(), cp.getGreen(), cp.getBlue()));
+                            cp.getColor())); //TODO fix date & pic url
 
                     Toast.makeText(getApplicationContext(), "Event created successfully",
                             Toast.LENGTH_LONG).show();
 
                     finish();
                 } else {
-                    Toast.makeText(getApplicationContext(), "Please fill all fields",
+                    Toast.makeText(getApplicationContext(), "Please fill all fields & select color",
                             Toast.LENGTH_SHORT).show();
                 }
             }
@@ -294,26 +284,28 @@ public class EventCreateActivity extends AppCompatActivity {
     private void datePicker(final TextView tv) {
         // Get Current Date
         final Calendar c = Calendar.getInstance();
-        mYear = c.get(Calendar.YEAR);
-        mMonth = c.get(Calendar.MONTH);
-        mDay = c.get(Calendar.DAY_OF_MONTH);
+        final int mYear = c.get(Calendar.YEAR);
+        final int mMonth = c.get(Calendar.MONTH);
+        final int mDay = c.get(Calendar.DAY_OF_MONTH);
 
         DatePickerDialog datePickerDialog = new DatePickerDialog(this,
                 new DatePickerDialog.OnDateSetListener() {
 
                     @Override
                     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-
                         tv.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
+                        startDateTime.set(year, monthOfYear, dayOfMonth);
+                        endDateTime.set(year, monthOfYear, dayOfMonth);
                     }
                 }, mYear, mMonth, mDay);
+        datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
         datePickerDialog.show();
     }
-    private void timePicker(final TextView tv) {
+    private void timeStPicker(final TextView tv) {
         // Get Current Time
         final Calendar c = Calendar.getInstance();
-        mHour = c.get(Calendar.HOUR_OF_DAY);
-        mMinute = c.get(Calendar.MINUTE);
+        final int mStHour = c.get(Calendar.HOUR_OF_DAY);
+        final int mStMinute = c.get(Calendar.MINUTE);
 
         // Launch Time Picker Dialog
         TimePickerDialog timePickerDialog = new TimePickerDialog(this,
@@ -321,14 +313,33 @@ public class EventCreateActivity extends AppCompatActivity {
 
                     @Override
                     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-
-                        mHour = hourOfDay;
-                        mMinute = minute;
-
-                        DecimalFormat df = new DecimalFormat("00"); //makes minute have 2 digits
+                        final DecimalFormat df = new DecimalFormat("00"); //makes minute have 2 digits
                         tv.setText(hourOfDay + ":" + df.format(minute));
+                        startDateTime.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                        startDateTime.set(Calendar.MINUTE, minute);
                     }
-                }, mHour, mMinute, false);
+                }, mStHour, mStMinute, false);
+        timePickerDialog.show();
+    }
+    private void timeEdPicker(final TextView tv) {
+        // Get Current Time
+        final Calendar c = Calendar.getInstance();
+        final int mEdHour = c.get(Calendar.HOUR_OF_DAY);
+        final int mEdMinute = c.get(Calendar.MINUTE);
+
+        // Launch Time Picker Dialog
+        TimePickerDialog timePickerDialog = new TimePickerDialog(this,
+                new TimePickerDialog.OnTimeSetListener() {
+
+                    @Override
+                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                        final DecimalFormat df = new DecimalFormat("00"); //makes minute have 2 digits
+                        tv.setText(hourOfDay + ":" + df.format(minute));
+                        endDateTime.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                        endDateTime.set(Calendar.MINUTE, minute);
+                    }
+                }, mEdHour, mEdMinute, false);
+
         timePickerDialog.show();
     }
     private void numberPickerDialog(final TextView tv) {
@@ -339,12 +350,12 @@ public class EventCreateActivity extends AppCompatActivity {
         Button b2 = d.findViewById(R.id.buttonDialogNPCancel);
         final NumberPicker np = d.findViewById(R.id.numberPicker1);
         if(tv.getId() == R.id.textEventCreateAttendance){ //prevents data from overflowing
-            np.setMaxValue(Integer.parseInt(textEventCreateCapacity.getText().toString())); // max value capacity
+            np.setMaxValue(Integer.parseInt(textEventCreateCapacity.getText().toString()) - 1); // max value capacity-1
             np.setMinValue(0);   // min value 0
         }
         else{
             np.setMaxValue(99); // max value 99
-            np.setMinValue(Integer.parseInt(textEventCreateAttendance.getText().toString()));   // min value attendance
+            np.setMinValue(Integer.parseInt(textEventCreateAttendance.getText().toString()) + 1);   // min value attendance+1
         }
 
         np.setWrapSelectorWheel(false);
@@ -400,7 +411,7 @@ public class EventCreateActivity extends AppCompatActivity {
 
         //TODO Location**************************
         editAddress.setText( generateGeoFull(numLocX, numLocY) );
-        strAddress = generateGeoFull(numLocX, numLocY);
+        String strAddress = generateGeoFull(numLocX, numLocY);
         strAddressStreet = generateGeoAdd(numLocX, numLocY);
         strAddressAreaState = generateGeoAreaState(numLocX, numLocY);
         strAddressZip = generateGeoZip(numLocX, numLocY);

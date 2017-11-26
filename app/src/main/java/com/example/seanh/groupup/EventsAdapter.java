@@ -1,6 +1,5 @@
 package com.example.seanh.groupup;
 
-import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,7 +25,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewH
             time = view.findViewById(R.id.textEventRowTime);
 
             color = view.findViewById(R.id.imageEventRowColor);
-            subStar = view.findViewById(R.id.imageEventRowSubStar);
+            subStar = view.findViewById(R.id.imageEventRowSubHeart);
             ownStar = view.findViewById(R.id.imageEventRowOwnStar);
             background = view.findViewById(R.id.imageEventRowBackground);
         }
@@ -47,15 +46,19 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewH
 
     public void onBindViewHolder(EventViewHolder holder, int position) {
         Event event = eventsList.get(position);
-        holder.location.setText(event.generateLocString());
-        holder.time.setText(event.getDateTime());
-        holder.color.setColorFilter(Color.rgb(event.getColorR(), event.getColorG(), event.getColorB()));
+        holder.location.setText( event.genLocString() );
+        holder.time.setText( event.genStartDateTimeSimple() );
+        holder.color.setColorFilter( event.getColor() );
         if (currentUser.getSubscribedEventIds() != null) {
             if (currentUser.containsSubscribedEvent(event.getId())) {
                 holder.subStar.setVisibility(View.VISIBLE);
             }
-            if (currentUser.getId().equals(event.getOwnerId())) {
+            else if (currentUser.getId().equals(event.getOwnerId())) {
                 holder.ownStar.setVisibility(View.VISIBLE);
+            }
+            else {
+                holder.subStar.setVisibility(View.INVISIBLE);
+                holder.ownStar.setVisibility(View.INVISIBLE);
             }
         }
     }

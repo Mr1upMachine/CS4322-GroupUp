@@ -52,11 +52,11 @@ public class EventViewActivity extends AppCompatActivity {
         });
 
         //textEventViewName.setText( event.getName() );
-        textEventViewStartTime.setText( event.getStartTime() );
-        textEventViewEndTime.setText( event.getEndTime() );
-        textEventViewDate.setText( event.getDate() );
+        textEventViewStartTime.setText( event.genStartTimeSimple() );
+        textEventViewEndTime.setText( event.genEndTimeSimple() );
+        textEventViewDate.setText( event.genStartDateSimple() );
         textEventViewDescription.setText( event.getDescription() );
-        textEventViewAddress.setText( event.generateAddressPretty() );
+        textEventViewAddress.setText( event.genAddressPretty() );
         textEventViewAttendance.setText( ""+event.getAttendance() );
         textEventViewCapacity.setText( ""+event.getCapacity() );
 

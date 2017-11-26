@@ -24,22 +24,26 @@
         app:srcCompat="@drawable/triangle" />
 
     <ImageView
-        android:id="@+id/imageEventRowSubStar"
-        android:layout_width="27dp"
-        android:layout_height="27dp"
+        android:id="@+id/imageEventRowSubHeart"
+        android:layout_width="21dp"
+        android:layout_height="21dp"
         android:layout_alignParentStart="true"
         android:layout_alignTop="@+id/imageEventRowBackground"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="5dp"
         android:visibility="invisible"
-        app:srcCompat="@drawable/ic_star_rate_white_18dp" />
+        app:srcCompat="@drawable/ic_favorite_white_18dp" />
 
     <ImageView
         android:id="@+id/imageEventRowOwnStar"
-        android:layout_width="27dp"
-        android:layout_height="27dp"
+        android:layout_width="21dp"
+        android:layout_height="21dp"
         android:layout_alignParentStart="true"
         android:layout_alignTop="@+id/imageEventRowBackground"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="5dp"
         android:visibility="invisible"
-        app:srcCompat="@drawable/ic_star_border_black_18dp" />
+        app:srcCompat="@drawable/ic_star_white_18dp" />
 
     <TextView
         android:id="@+id/textEventRowLocation"
