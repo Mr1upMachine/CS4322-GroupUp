@@ -253,8 +253,7 @@ public class EventCreateActivity extends AppCompatActivity {
                             cp.getRed(), cp.getGreen(), cp.getBlue(),
                             Integer.parseInt(strAttendance), Integer.parseInt(strCapacity)));
 
-                    if (eventPicture != null)
-                    {
+                    if (eventPicture != null){
                         //create bitmap of image, compress to PNG,
                         //store byte array of image in imageData containing raw pixels
                         eventPicture.setDrawingCacheEnabled(true);
