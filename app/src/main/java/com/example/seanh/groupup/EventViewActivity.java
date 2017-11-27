@@ -73,8 +73,7 @@ public class EventViewActivity extends AppCompatActivity {
         textEventViewCapacity.setText( ""+event.getCapacity() );
 
 
-        //TODO need to pull eventID for filepath
-        String eventID = "temp";
+        String eventID = event.getId();
         String path = "eventImages/" + eventID + ".png";
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageRef = storage.getReferenceFromUrl(path);
