@@ -40,15 +40,10 @@ import android.widget.Toast;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.pes.androidmaterialcolorpickerdialog.ColorPicker;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.FirebaseStorage;
-
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileDescriptor;
@@ -62,17 +57,14 @@ import java.util.Locale;
 public class EventCreateActivity extends AppCompatActivity {
     private final String LOGTAG = "EventCreateActivity";
     private User user;
-    //private final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     private FirebaseStorage storage = FirebaseStorage.getInstance();
     private EditText editName, editDesc, editAddress;
     private TextView textStartTime, textEndTime, textDate, textEventCreateAttendance, textEventCreateCapacity;
     private ImageView eventPicture;
     private String strAddressStreet = "", strAddressAreaState = "", strAddressZip = "";
-    private Bitmap bitMapEventImage;
     private Calendar startDateTime, endDateTime;
     public static double numLocX = 0.0, numLocY = 0.0;
     private ColorPicker cp;
-    private StorageReference mStorageRef;
     private final LocationListener mLocationListener = new LocationListener() {
         @Override
         public void onLocationChanged(final Location location) {
@@ -116,7 +108,6 @@ public class EventCreateActivity extends AppCompatActivity {
         startDateTime = Calendar.getInstance();
         endDateTime = Calendar.getInstance();
         cp = new ColorPicker(this, 127, 127, 127);
-        mStorageRef = FirebaseStorage.getInstance().getReference();
 
         final Bundle b = getIntent().getExtras();
         user = b.getParcelable("myUser");
@@ -124,7 +115,6 @@ public class EventCreateActivity extends AppCompatActivity {
 
         final android.support.v7.widget.Toolbar tb = findViewById(R.id.toolbarEventCreate);
         setSupportActionBar(tb);
-        //getSupportActionBar().setDisplayShowTitleEnabled(false);
         tb.setNavigationIcon(R.drawable.ic_arrow_back_white_36dp);
         tb.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -317,7 +307,6 @@ public class EventCreateActivity extends AppCompatActivity {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            bitMapEventImage = bmp;
             eventPicture.setImageBitmap(bmp);
 
             //TODO sets plus button to 20% opacity, change value to like 1% later
@@ -345,7 +334,7 @@ public class EventCreateActivity extends AppCompatActivity {
         final int mMonth = c.get(Calendar.MONTH);
         final int mDay = c.get(Calendar.DAY_OF_MONTH);
 
-        DatePickerDialog datePickerDialog = new DatePickerDialog(this,
+        final DatePickerDialog datePickerDialog = new DatePickerDialog(this,
                 new DatePickerDialog.OnDateSetListener() {
 
                     @Override
@@ -365,7 +354,7 @@ public class EventCreateActivity extends AppCompatActivity {
         final int mStMinute = c.get(Calendar.MINUTE);
 
         // Launch Time Picker Dialog
-        TimePickerDialog timePickerDialog = new TimePickerDialog(this,
+        final TimePickerDialog timePickerDialog = new TimePickerDialog(this,
                 new TimePickerDialog.OnTimeSetListener() {
 
                     @Override
@@ -385,7 +374,7 @@ public class EventCreateActivity extends AppCompatActivity {
         final int mEdMinute = c.get(Calendar.MINUTE);
 
         // Launch Time Picker Dialog
-        TimePickerDialog timePickerDialog = new TimePickerDialog(this,
+        final TimePickerDialog timePickerDialog = new TimePickerDialog(this,
                 new TimePickerDialog.OnTimeSetListener() {
 
                     @Override
