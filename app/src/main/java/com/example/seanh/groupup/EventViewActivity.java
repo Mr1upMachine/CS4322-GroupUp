@@ -1,6 +1,12 @@
 package com.example.seanh.groupup;
 
+import android.app.AlarmManager;
+import android.app.Notification;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -12,6 +18,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import java.util.Calendar;
 
 public class EventViewActivity extends AppCompatActivity {
     private TextView textEventViewOwner, textEventViewAttendance, textEventViewCapacity;
@@ -87,12 +95,21 @@ public class EventViewActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     //Check if event is full
-                    if(Integer.parseInt(textEventViewAttendance.getText().toString()) < Integer.parseInt(textEventViewCapacity.getText().toString())) {
+                    if(Integer.parseInt(textEventViewAttendance.getText().toString()) <= Integer.parseInt(textEventViewCapacity.getText().toString())) {
                         if (!user.getSubscribedEventIds().contains(event.getId())) {
                             event.addSubscribedToEvent(user.getId());
                             user.addSubscribedEvent(event.getId());
 
                             event.setAttendance( event.getAttendance()+1 );
+                            final int delay = (int)(event.getStartDateTime() - Calendar.getInstance().getTimeInMillis() );
+                            if(delay-900000 > 0) {
+                                scheduleNotification(getNotification("\"" + event.getName() + "\"",
+                                        "This event is starting soon!"), delay - 900000);
+                            }
+                            if(delay > 0) {
+                                scheduleNotification(getNotification("\"" + event.getName() + "\"",
+                                        "This event is starting now!"), delay);
+                            }
 
                             buttonViewEventJoin.setText("Leave");
                             Toast.makeText(EventViewActivity.this, "Event joined successfully", Toast.LENGTH_SHORT).show();
@@ -101,6 +118,10 @@ public class EventViewActivity extends AppCompatActivity {
                             user.removeSubscribedEvent(event.getId());
 
                             event.setAttendance( event.getAttendance()-1 );
+                            cancelNotification(getNotification( event.getName(),
+                                    "This event is starting soon!"));
+                            cancelNotification(getNotification( event.getName(),
+                                    "This event is starting now!"));
 
                             buttonViewEventJoin.setText("Join");
                             Toast.makeText(EventViewActivity.this, "Event left successfully", Toast.LENGTH_SHORT).show();
@@ -126,6 +147,33 @@ public class EventViewActivity extends AppCompatActivity {
         }
     }
 
+    private void scheduleNotification(Notification notification, int delay) {
+
+        Intent notificationIntent = new Intent(this, NotificationPublisher.class);
+        notificationIntent.putExtra(NotificationPublisher.NOTIFICATION_ID, 1);
+        notificationIntent.putExtra(NotificationPublisher.NOTIFICATION, notification);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        long futureInMillis = SystemClock.elapsedRealtime() + delay;
+        AlarmManager am = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+        am.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
+    }
+    private Notification getNotification(String contentTitle, String contentText) {
+        Notification.Builder builder = new Notification.Builder(this);
+        builder.setContentTitle(contentTitle);
+        builder.setContentText(contentText);
+        builder.setSmallIcon(R.drawable.ic_favorite_white_18dp); //TODO replace me
+        return builder.build();
+    }
+    private void cancelNotification(Notification notification){
+        Intent notificationIntent = new Intent(this, NotificationPublisher.class);
+        notificationIntent.putExtra(NotificationPublisher.NOTIFICATION_ID, 1);
+        notificationIntent.putExtra(NotificationPublisher.NOTIFICATION, notification);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        am.cancel(pendingIntent);
+    }
 
     //relevant database calls
     private final DatabaseReference dataRoot = FirebaseDatabase.getInstance().getReference();

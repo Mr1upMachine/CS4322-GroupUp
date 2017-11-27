@@ -5,6 +5,7 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -37,6 +38,8 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.pes.androidmaterialcolorpickerdialog.ColorPicker;
 
 import java.io.FileDescriptor;
@@ -113,6 +116,8 @@ public class EventCreateActivity extends AppCompatActivity {
         tb.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                SharedPreferences preferences = getSharedPreferences("MapAddress", 0);
+                preferences.edit().remove("address").remove("locX").remove("locY").apply();
                 finish();
                 overridePendingTransition(R.anim.nothing, R.anim.slide_out);
             }
@@ -223,6 +228,8 @@ public class EventCreateActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "Event created successfully",
                             Toast.LENGTH_LONG).show();
 
+                    SharedPreferences preferences = getSharedPreferences("MapAddress", 0);
+                    preferences.edit().remove("address").remove("locX").remove("locY").apply();
                     finish();
                 } else {
                     Toast.makeText(getApplicationContext(), "Please fill all fields & select color",
@@ -232,6 +239,17 @@ public class EventCreateActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        SharedPreferences prefs = getSharedPreferences("MapAddress", MODE_PRIVATE);
+        String restoredText = prefs.getString("address", null);
+        if (restoredText != null) {
+            editAddress.setText(prefs.getString("address", "No name defined"));//"No name defined" is the default value.
+            numLocX = Double.parseDouble( prefs.getString("locX", "No name defined") );//"No name defined" is the default value.
+            numLocY = Double.parseDouble( prefs.getString("locY", "No name defined") );//"No name defined" is the default value.
+        }
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -414,6 +432,8 @@ public class EventCreateActivity extends AppCompatActivity {
         strAddressZip = generateGeoZip(numLocX, numLocY);
     }
 
+
+
     public String generateGeoFull(double xCord, double yCord) {
         Geocoder geocoder = new Geocoder(this, Locale.getDefault());
         List<Address> addresses;
@@ -473,6 +493,15 @@ public class EventCreateActivity extends AppCompatActivity {
             Log.d(LOGTAG, "Get Location Failed");
         }
         return null;
+    }
+
+
+    private static final DatabaseReference dataRoot = FirebaseDatabase.getInstance().getReference();
+    private static final DatabaseReference dataEvents = dataRoot.child("events");
+    public static void createNewEvent(Event e) {
+        DatabaseReference dr = dataEvents.push(); //generates unique id for event
+        e.setId(dr.getKey()); //makes it easier to get generated key
+        dr.setValue(e); //uploads data to database
     }
 
 

@@ -21,6 +21,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -141,7 +142,6 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-
         //Makes refreshing the event list easy
         swipeRefreshContainer = findViewById(R.id.swipeRefreshContainer);
         swipeRefreshContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -155,7 +155,6 @@ public class MainActivity extends AppCompatActivity {
                 android.R.color.holo_green_light,
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
-
 
 
 
@@ -298,6 +297,10 @@ public class MainActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 user = dataSnapshot.getValue(User.class);
                 Log.d(LOGTAG,"data parse complete");
+                final TextView tvName = findViewById(R.id.textMainDrawerName);
+                final TextView tvEmail = findViewById(R.id.textMainDrawerEmail);
+                tvName.setText(user.getfName()+" "+user.getlName());
+                tvEmail.setText(user.getEmail());
                 showEventList();
             }
 

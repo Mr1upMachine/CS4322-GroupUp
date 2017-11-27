@@ -1,9 +1,12 @@
 package com.example.seanh.groupup;
 
+import android.content.SharedPreferences;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -42,6 +45,23 @@ public class EventCreateMap extends FragmentActivity implements OnMapReadyCallba
                 overridePendingTransition(R.anim.nothing, R.anim.slide_out);
             }
         });
+        tb.inflateMenu(R.menu.menu_event_create_map);
+        tb.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                if(item.getItemId() == R.id.menu_event_create_map_submit){
+                    SharedPreferences.Editor editor = getSharedPreferences("MapAddress", MODE_PRIVATE).edit();
+                    EditText tv = findViewById(R.id.editEventCreateMapSearch);
+                    editor.putString("address", tv.getText().toString());
+                    editor.putString("locX", ""+0.0);
+                    editor.putString("locY", ""+0.0);
+                    editor.apply();
+                    finish();
+                    overridePendingTransition(R.anim.nothing, R.anim.slide_out);
+                }
+                return true;
+            }
+        });
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -53,7 +73,7 @@ public class EventCreateMap extends FragmentActivity implements OnMapReadyCallba
         findViewById(R.id.btnSearch).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EditText locationSearch = findViewById(R.id.editSearch);
+                EditText locationSearch = findViewById(R.id.editEventCreateMapSearch);
                 String location = locationSearch.getText().toString();
 
                 if(location != null || !location.equals("")) {
