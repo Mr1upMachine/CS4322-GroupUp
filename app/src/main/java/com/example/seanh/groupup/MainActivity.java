@@ -270,26 +270,26 @@ public class MainActivity extends AppCompatActivity {
 
     //relevant database calls
     private final DatabaseReference dataRoot = FirebaseDatabase.getInstance().getReference();
-    public void fetchAllData(){
+    public void fetchAllData(){ //Step 1
         dataRoot.child("events").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 parseAllEvents(dataSnapshot);
-                fetchCurrentUser(fbUser.getUid());
+                fetchCurrentUser(fbUser.getUid()); //Proceed to Step 2
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {  }
         });
     }
-    private void parseAllEvents(DataSnapshot dataSnapshot){
+    private void parseAllEvents(DataSnapshot dataSnapshot){ //Step 1.5
         eventList.clear();//clears out old list
         for (DataSnapshot ds : dataSnapshot.getChildren())
         {
             eventList.add(ds.getValue(Event.class));
         }
     }
-    public void fetchCurrentUser(String id){
+    public void fetchCurrentUser(String id){ //Step 2
         // Read from the database
         dataRoot.child("users").child(id).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -302,17 +302,21 @@ public class MainActivity extends AppCompatActivity {
                 tvName.setText(user.getfName()+" "+user.getlName());
                 tvEmail.setText(user.getEmail());
 
-                showEventList();
+                fetchEventImages(); //Proceed to Step 3
             }
 
             @Override
             public void onCancelled(DatabaseError error) {  }
         });
     }
+    public void fetchEventImages(){ //Step 3
+        //TODO Micah load images
+        showEventList(); //Proceed to Step 4
+    }
     public void showEventList(){
         //Handles setup of RecyclerView
         recyclerView = findViewById(R.id.recycleViewEventList);
-        eAdapter = new EventsAdapter(eventList, user);
+        eAdapter = new EventsAdapter(eventList, user); //EventsAdapter created
         final RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -337,16 +341,16 @@ public class MainActivity extends AppCompatActivity {
             public void onLongClick(View view, final int position) { }
         }));
 
-        showMapMarkers();
+        showMapMarkers(); //Proceed to Step 5
     }
-    private void showMapMarkers(){
+    private void showMapMarkers(){ //Step 5
 
         for(Event e : eventList){
 
         }
 
         //Hides loading bar(s)
-        findViewById(R.id.progressBarMainActivity).setVisibility(View.GONE);
+        findViewById(R.id.progressBarMainActivity).setVisibility(View.GONE); //FINISH
         swipeRefreshContainer.setRefreshing(false);
     }
 

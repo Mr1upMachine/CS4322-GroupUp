@@ -49,6 +49,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewH
         holder.location.setText( event.genLocString() );
         holder.time.setText( event.genStartDateTimeSimple() );
         holder.color.setColorFilter( event.getColor() );
+        //holder.background.setImageDrawable(); //TODO set image
         if (currentUser.getSubscribedEventIds() != null) {
             if (currentUser.containsSubscribedEvent(event.getId())) {
                 holder.subStar.setVisibility(View.VISIBLE);
