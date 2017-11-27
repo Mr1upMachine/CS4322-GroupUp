@@ -48,8 +48,7 @@ public class MainActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
     private DrawerLayout mDrawerLayout;
-    private NavigationView navigationView;
-    Menu menuBar;
+    private Menu menuBar;
     private boolean menuViewSwitch = true; //alternates which menu option is visible
     private FloatingActionButton fab;
 
@@ -73,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
         });
         toolbar.inflateMenu(R.menu.menu_main);
         mDrawerLayout = findViewById(R.id.drawer_layout);
-        navigationView = findViewById(R.id.navigationMain);
+        final NavigationView navigationView = findViewById(R.id.navigationMain);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -98,12 +97,6 @@ public class MainActivity extends AppCompatActivity {
                     else{
                         Toast.makeText(MainActivity.this, "No hosted events", Toast.LENGTH_SHORT).show();
                     }
-                }
-                else if(id == R.id.main_drawer_item3){
-
-                }
-                else if(id == R.id.main_drawer_item4){
-
                 }
 
                 toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_36dp);
@@ -133,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        //if Location permission is not granted, try granting Location permission TODO replace this with better way (ie. better location)
+        //if Location permission is not granted, try granting Location permission
         requestPermissions(new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION, android.Manifest.permission.ACCESS_FINE_LOCATION}, 1);
 
         //loads events for the first time

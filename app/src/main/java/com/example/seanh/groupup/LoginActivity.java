@@ -49,7 +49,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         };
 
-        //if Location permission is not granted, try granting Location permission TODO replace this with better way (ie. better location)
+        //if Location permission is not granted, try granting Location permission
         requestPermissions(new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION, android.Manifest.permission.ACCESS_FINE_LOCATION}, 1);
 
         findViewById(R.id.buttonLogin).setOnClickListener(new View.OnClickListener() {

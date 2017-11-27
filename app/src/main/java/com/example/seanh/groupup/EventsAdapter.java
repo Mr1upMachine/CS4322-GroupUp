@@ -46,8 +46,8 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewH
 
     public void onBindViewHolder(EventViewHolder holder, int position) {
         Event event = eventsList.get(position);
-        holder.location.setText( event.genLocString() );
-        holder.time.setText( event.genStartDateTimeSimple() );
+        holder.location.setText( event.getAddressStreet() );
+        holder.time.setText( event.genStartTimeDateSimple() );
         holder.color.setColorFilter( event.getColor() );
         //holder.background.setImageDrawable(); //TODO set image
         if (currentUser.getSubscribedEventIds() != null) {

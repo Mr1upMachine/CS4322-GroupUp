@@ -9,7 +9,6 @@
     tools:context="com.example.seanh.groupup.RegisterActivity"
     tools:layout_editor_absoluteX="0dp"
     tools:layout_editor_absoluteY="25dp">
-    <!-- TODO Fix text appearance (make better looking) -->
 
     <TextView
         android:id="@+id/textRegister"

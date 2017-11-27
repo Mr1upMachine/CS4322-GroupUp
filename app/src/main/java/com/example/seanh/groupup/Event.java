@@ -187,7 +187,7 @@ public class Event implements Parcelable {
     }
 
     public String genStartDateSimple() {
-        SimpleDateFormat fmtOut = new SimpleDateFormat("dd-MM-yyyy");
+        SimpleDateFormat fmtOut = new SimpleDateFormat("MM-dd-yyyy");
         return fmtOut.format(startDateTime);
     }
     public String genStartTimeSimple() {
@@ -197,7 +197,10 @@ public class Event implements Parcelable {
         return cal.get(Calendar.HOUR_OF_DAY) + ":" + df.format(cal.get(Calendar.MINUTE));
     }
     public String genStartDateTimeSimple() {
-        return genStartDateSimple() + " " + genStartTimeSimple();
+        return genStartDateSimple() + "   " + genStartTimeSimple();
+    }
+    public String genStartTimeDateSimple() {
+        return genStartTimeSimple() + "   " + genStartDateSimple();
     }
     public String genEndTimeSimple() {
         final DecimalFormat df = new DecimalFormat("00");
@@ -210,6 +213,9 @@ public class Event implements Parcelable {
         return df.format(locX) + "  " + df.format(locY);
     }
     public String genAddressSimple() {
+        return addressStreet + ", " + addressCityState + " " + addressZip;
+    }
+    public String genAddressPretty() {
         return addressStreet + " | " + addressCityState + " " + addressZip;
     }
 
@@ -257,5 +263,11 @@ public class Event implements Parcelable {
                 + "\nendDateTime=" + endDateTime
                 + "\naddress=" + address
                 + "\npicRef=" + picRef + "}";
+    }
+    public String toStringShare() {
+        return "Hey come to " + name
+                + " which is at " + genAddressSimple()
+                + " and starts at " + genStartTimeSimple()
+                + " on " + genStartDateSimple();
     }
 }

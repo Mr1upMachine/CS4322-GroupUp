@@ -1,9 +1,11 @@
 package com.example.seanh.groupup;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -16,13 +18,12 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
-import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 public class EventViewActivity extends AppCompatActivity {
-    private TextView textEventViewOwner, textEventViewStartTime, textEventViewEndTime, textEventViewDate,
-            textEventViewDescription, textEventViewAddress, textEventViewAttendance, textEventViewCapacity;
+    private Toolbar tb;
+    private TextView textEventViewOwner;
     private ImageView imageEventImage;
     private Event event;
     private User user, owner;
@@ -39,7 +40,7 @@ public class EventViewActivity extends AppCompatActivity {
         user = b.getParcelable("myUser");
         fetchOwner(event.getOwnerId());
 
-        android.support.v7.widget.Toolbar tb = findViewById(R.id.toolbarEventView);
+        tb = findViewById(R.id.toolbarEventView);
         setSupportActionBar(tb);
         getSupportActionBar().setTitle( event.getName() );
         tb.setNavigationIcon(R.drawable.ic_arrow_back_white_36dp);
@@ -51,30 +52,28 @@ public class EventViewActivity extends AppCompatActivity {
             }
         });
         
-        //textEventViewName =  findViewById(R.id.textEventViewName);
         textEventViewOwner =  findViewById(R.id.textEventViewOwner);
-        textEventViewStartTime =  findViewById(R.id.textEventViewStartTime);
-        textEventViewEndTime =  findViewById(R.id.textEventViewEndTime);
-        textEventViewDate =  findViewById(R.id.textEventViewDate);
-        textEventViewDescription = findViewById(R.id.textEventViewDescription);
-        textEventViewAddress =  findViewById(R.id.textEventViewAddress);
-        textEventViewAttendance =  findViewById(R.id.textEventViewAttendance);
-        textEventViewCapacity =  findViewById(R.id.textEventViewCapacity);
+        final TextView textEventViewStartTime = findViewById(R.id.textEventViewStartTime);
+        final TextView textEventViewEndTime = findViewById(R.id.textEventViewEndTime);
+        final TextView textEventViewDate = findViewById(R.id.textEventViewDate);
+        final TextView textEventViewDescription = findViewById(R.id.textEventViewDescription);
+        final TextView textEventViewAddress = findViewById(R.id.textEventViewAddress);
+        final TextView textEventViewAttendance = findViewById(R.id.textEventViewAttendance);
+        final TextView textEventViewCapacity = findViewById(R.id.textEventViewCapacity);
         imageEventImage = findViewById(R.id.app_bar_image);
 
-        //textEventViewName.setText( event.getName() );
         textEventViewStartTime.setText( event.genStartTimeSimple() );
         textEventViewEndTime.setText( event.genEndTimeSimple() );
         textEventViewDate.setText( event.genStartDateSimple() );
         textEventViewDescription.setText( event.getDescription() );
-        textEventViewAddress.setText( event.genAddressSimple() ); //TODO fix?
+        textEventViewAddress.setText( event.genAddressPretty() );
         textEventViewAttendance.setText( ""+event.getAttendance() );
         textEventViewCapacity.setText( ""+event.getCapacity() );
 
 
-        String eventID = event.getId();
-        FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference storageRef = storage.getReferenceFromUrl("gs://groupup-f9e17.appspot.com/eventImages").child(eventID + ".png");
+        final String eventID = event.getId();
+        final FirebaseStorage storage = FirebaseStorage.getInstance();
+        final StorageReference storageRef = storage.getReferenceFromUrl("gs://groupup-f9e17.appspot.com/eventImages").child(eventID + ".png");
 
 
 
@@ -92,11 +91,18 @@ public class EventViewActivity extends AppCompatActivity {
         findViewById(R.id.buttonViewEventShare).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO open a view asking for user with whom to share with
-                //TODO send some sort of invitation to specified user
-                Toast.makeText(EventViewActivity.this, "This does nothing yet", Toast.LENGTH_SHORT).show();
+                Intent sendIntent = new Intent();
+                sendIntent.setAction(Intent.ACTION_SEND);
+                sendIntent.putExtra(Intent.EXTRA_TEXT, event.toStringShare());
+                sendIntent.setType("text/plain");
+                startActivity(Intent.createChooser(sendIntent, "Share event details:"));
             }
         });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
     }
 
     @Override

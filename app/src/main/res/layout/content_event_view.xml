@@ -17,14 +17,13 @@
 
     <TextView
         android:id="@+id/textEventViewDescription"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_width="220dp"
+        android:layout_height="152dp"
+        android:layout_marginTop="12dp"
         android:ems="10"
         android:singleLine="false"
-        android:text="This is a description of the event that is happening. It may have a lot of words or almost none, so the layout must look good for both. This example if for a lot of words."
-        android:textAlignment="center"
-        app:layout_constraintEnd_toStartOf="@+id/textEventViewStartTime"
+        android:text='"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi '
+        android:textAlignment="textStart"
         app:layout_constraintStart_toStartOf="@+id/textEventViewOwner"
         app:layout_constraintTop_toBottomOf="@+id/textEventViewOwner" />
 

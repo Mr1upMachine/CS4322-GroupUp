@@ -53,7 +53,6 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
-//TODO Micah stuff here
 public class EventCreateActivity extends AppCompatActivity {
     private final String LOGTAG = "EventCreateActivity";
     private User user;
@@ -61,7 +60,7 @@ public class EventCreateActivity extends AppCompatActivity {
     private EditText editName, editDesc, editAddress;
     private TextView textStartTime, textEndTime, textDate, textEventCreateAttendance, textEventCreateCapacity;
     private ImageView eventPicture;
-    private String strAddressStreet = "", strAddressAreaState = "", strAddressZip = "";
+    private String strAddress = "", strAddressStreet = "", strAddressAreaState = "", strAddressZip = "";
     private Calendar startDateTime, endDateTime;
     public static double numLocX = 0.0, numLocY = 0.0;
     private ColorPicker cp;
@@ -207,7 +206,6 @@ public class EventCreateActivity extends AppCompatActivity {
                 final String strDate = textDate.getText().toString();
                 final String strStartTime = textStartTime.getText().toString();
                 final String strEndTime = textEndTime.getText().toString();
-                final String strAddress = editAddress.getText().toString();
                 final String strAttendance = textEventCreateAttendance.getText().toString();
                 final String strCapacity = textEventCreateCapacity.getText().toString();
 
@@ -227,10 +225,10 @@ public class EventCreateActivity extends AppCompatActivity {
                     String eventID = createNewEvent(new Event(
                             strName, strDesc, user.getId(),
                             startDateTime.getTimeInMillis(), endDateTime.getTimeInMillis(),
-                            strAddress, strAddressStreet, strAddressAreaState, strAddressZip,
+                            strAddress, strAddressStreet, strAddressAreaState, strAddressZip,  //TODO fix?
                             numLocX, numLocY, null,
                             Integer.parseInt(strAttendance), Integer.parseInt(strCapacity),
-                            cp.getColor())); //TODO fix date & pic url
+                            cp.getColor()));
 
                     if (eventPicture != null){
                         //create bitmap of image, compress to PNG,
@@ -260,7 +258,7 @@ public class EventCreateActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "Event created successfully",
                             Toast.LENGTH_LONG).show();
 
-                    SharedPreferences preferences = getSharedPreferences("MapAddress", 0);
+                    final SharedPreferences preferences = getSharedPreferences("MapAddress", 0);
                     preferences.edit().remove("address").remove("locX").remove("locY").apply();
                     finish();
                 } else {
@@ -274,8 +272,8 @@ public class EventCreateActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        SharedPreferences prefs = getSharedPreferences("MapAddress", MODE_PRIVATE);
-        String restoredText = prefs.getString("address", null);
+        final SharedPreferences prefs = getSharedPreferences("MapAddress", MODE_PRIVATE);
+        final String restoredText = prefs.getString("address", null);
         if (restoredText != null) {
             editAddress.setText(prefs.getString("address", "No name defined"));//"No name defined" is the default value.
             numLocX = Double.parseDouble( prefs.getString("locX", "No name defined") );//"No name defined" is the default value.
@@ -287,7 +285,7 @@ public class EventCreateActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && null != data) {
+        if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && data != null) {
             Uri selectedImage = data.getData();
             String[] filePathColumn = {MediaStore.Images.Media.DATA};
 
@@ -309,8 +307,8 @@ public class EventCreateActivity extends AppCompatActivity {
             }
             eventPicture.setImageBitmap(bmp);
 
-            //TODO sets plus button to 20% opacity, change value to like 1% later
-            ImageButton ib = findViewById(R.id.buttonCreateEventPicture);
+            //sets plus button to 20% opacity
+            final ImageButton ib = findViewById(R.id.buttonCreateEventPicture);
             ib.setAlpha(0.2f);
         }
 
@@ -432,7 +430,7 @@ public class EventCreateActivity extends AppCompatActivity {
         }
 
         //sets up location manager
-        LocationManager mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        final LocationManager mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
         //updates location anytime the gps updates
         mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000,
@@ -445,7 +443,7 @@ public class EventCreateActivity extends AppCompatActivity {
             criteria.setBearingRequired(false);
             criteria.setCostAllowed(true);
             criteria.setPowerRequirement(Criteria.POWER_LOW);
-            String provider = mLocationManager.getBestProvider(criteria, true);
+            final String provider = mLocationManager.getBestProvider(criteria, true);
             if (provider != null) {
                 final Location l = mLocationManager.getLastKnownLocation(provider);
                 numLocX = l.getLatitude();
@@ -455,9 +453,9 @@ public class EventCreateActivity extends AppCompatActivity {
             Log.d(LOGTAG, "Get Location Failed");
         }
 
-        //TODO Location**************************
-        editAddress.setText( generateGeoFull(numLocX, numLocY) );
-        String strAddress = generateGeoFull(numLocX, numLocY);
+        //Location
+        strAddress = generateGeoFull(numLocX, numLocY);
+        editAddress.setText( strAddress );
         strAddressStreet = generateGeoAdd(numLocX, numLocY);
         strAddressAreaState = generateGeoAreaState(numLocX, numLocY);
         strAddressZip = generateGeoZip(numLocX, numLocY);
@@ -530,8 +528,8 @@ public class EventCreateActivity extends AppCompatActivity {
     private final DatabaseReference dataRoot = FirebaseDatabase.getInstance().getReference();
     private final DatabaseReference dataEvents = dataRoot.child("events");
     public String createNewEvent(Event e) {
-        DatabaseReference dr = dataEvents.push(); //generates unique id for event
-        String s = dr.getKey();
+        final DatabaseReference dr = dataEvents.push(); //generates unique id for event
+        final String s = dr.getKey();
         e.setId(s); //makes it easier to get generated key
         dr.setValue(e); //uploads data to database
         return s;
