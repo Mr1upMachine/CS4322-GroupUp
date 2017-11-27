@@ -1,21 +1,29 @@
 package com.example.seanh.groupup;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.FirebaseStorage;
+
 public class EventViewActivity extends AppCompatActivity {
     private TextView textEventViewOwner, textEventViewStartTime, textEventViewEndTime, textEventViewDate,
             textEventViewDescription, textEventViewAddress, textEventViewAttendance, textEventViewCapacity;
+    private ImageView imageEventImage;
     private Event event;
     private User user, owner;
     
@@ -53,6 +61,7 @@ public class EventViewActivity extends AppCompatActivity {
         textEventViewAddress =  findViewById(R.id.textEventViewAddress);
         textEventViewAttendance =  findViewById(R.id.textEventViewAttendance);
         textEventViewCapacity =  findViewById(R.id.textEventViewCapacity);
+        imageEventImage = findViewById(R.id.app_bar_image);
 
         //textEventViewName.setText( event.getName() );
         textEventViewStartTime.setText( event.getStartTime() );
@@ -62,7 +71,24 @@ public class EventViewActivity extends AppCompatActivity {
         textEventViewAddress.setText( event.getAddress() ); //TODO fix?
         textEventViewAttendance.setText( ""+event.getAttendance() );
         textEventViewCapacity.setText( ""+event.getCapacity() );
-        //imageEventViewPicture.setImageBitmap(pictureBitMap);
+
+
+        //TODO need to pull eventID for filepath
+        String eventID = "temp";
+        String path = "eventImages/" + eventID + ".png";
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReferenceFromUrl(path);
+
+        //getting file as byteArray
+        final long ONE_MEGABYTE = (1024 * 1024);
+        storageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+            @Override
+            public void onSuccess(byte[] bytes) {
+                Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                imageEventImage.setImageBitmap(bitmap);
+            }
+        });
+
 
         findViewById(R.id.buttonViewEventShare).setOnClickListener(new View.OnClickListener() {
             @Override
