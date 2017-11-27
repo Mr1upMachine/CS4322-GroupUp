@@ -74,7 +74,7 @@ public class EventViewActivity extends AppCompatActivity {
 
 
         String eventID = event.getId();
-        String path = "eventImages/" + eventID + ".png";
+        String path = "gs://groupup-f9e17.appspot.com/eventImages/" + eventID;
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageRef = storage.getReferenceFromUrl(path);
 
