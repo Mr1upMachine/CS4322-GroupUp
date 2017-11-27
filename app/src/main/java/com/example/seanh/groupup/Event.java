@@ -79,132 +79,99 @@ public class Event implements Parcelable {
     };
 
     //Getter & setters galore
-
-
     public String getId() {
         return id;
     }
-
     public void setId(String id) {
         this.id = id;
     }
-
     public String getName() {
         return name;
     }
-
     public void setName(String name) {
         this.name = name;
     }
-
     public String getDescription() {
         return description;
     }
-
     public void setDescription(String description) {
         this.description = description;
     }
-
     public String getPicURL() {
         return picURL;
     }
-
     public void setPicURL(String picURL) {
         this.picURL = picURL;
     }
-
     public String getOwnerId() {
         return ownerId;
     }
-
     public void setOwnerId(String ownerId) {
         this.ownerId = ownerId;
     }
-
     public String getAddress() {
         return address;
     }
-
     public void setAddress(String address) {
         this.address = address;
     }
-
     public String getAddressStreet() {
         return addressStreet;
     }
-
     public void setAddressStreet(String addressStreet) {
         this.addressStreet = addressStreet;
     }
-
     public String getAddressCityState() {
         return addressCityState;
     }
-
     public void setAddressCityState(String addressCityState) {
         this.addressCityState = addressCityState;
     }
-
     public String getAddressZip() {
         return addressZip;
     }
-
     public void setAddressZip(String addressZip) {
         this.addressZip = addressZip;
     }
-
     public long getStartDateTime() {
         return startDateTime;
     }
-
     public void setStartDateTime(long startDateTime) {
         this.startDateTime = startDateTime;
     }
-
     public long getEndDateTime() {
         return endDateTime;
     }
-
     public void setEndDateTime(long endDateTime) {
         this.endDateTime = endDateTime;
     }
-
     public int getAttendance() {
         return attendance;
     }
-
     public void setAttendance(int attendance) {
         this.attendance = attendance;
     }
-
     public int getCapacity() {
         return capacity;
     }
-
     public void setCapacity(int capacity) {
         this.capacity = capacity;
     }
-
     public int getColor() {
         return color;
     }
-
     public void setColor(int color) {
         this.color = color;
     }
-
     public double getLocX() {
         return locX;
     }
-
     public void setLocX(double locX) {
         this.locX = locX;
     }
-
     public double getLocY() {
         return locY;
     }
-
     public void setLocY(double locY) {
         this.locY = locY;
     }
@@ -242,7 +209,7 @@ public class Event implements Parcelable {
         DecimalFormat df = new DecimalFormat("#.000");
         return df.format(locX) + "  " + df.format(locY);
     }
-    public String genAddressPretty() {
+    public String genAddressSimple() {
         return addressStreet + " | " + addressCityState + " " + addressZip;
     }
 

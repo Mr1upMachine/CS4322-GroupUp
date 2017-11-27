@@ -41,7 +41,6 @@ public class EventViewActivity extends AppCompatActivity {
 
         android.support.v7.widget.Toolbar tb = findViewById(R.id.toolbarEventView);
         setSupportActionBar(tb);
-        //getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setTitle( event.getName() );
         tb.setNavigationIcon(R.drawable.ic_arrow_back_white_36dp);
         tb.setNavigationOnClickListener(new View.OnClickListener() {
@@ -64,11 +63,11 @@ public class EventViewActivity extends AppCompatActivity {
         imageEventImage = findViewById(R.id.app_bar_image);
 
         //textEventViewName.setText( event.getName() );
-        textEventViewStartTime.setText( event.getStartTime() );
-        textEventViewEndTime.setText( event.getEndTime() );
-        textEventViewDate.setText( event.getDate() );
+        textEventViewStartTime.setText( event.genStartTimeSimple() );
+        textEventViewEndTime.setText( event.genEndTimeSimple() );
+        textEventViewDate.setText( event.genStartDateSimple() );
         textEventViewDescription.setText( event.getDescription() );
-        textEventViewAddress.setText( event.getAddress() ); //TODO fix?
+        textEventViewAddress.setText( event.genAddressSimple() ); //TODO fix?
         textEventViewAttendance.setText( ""+event.getAttendance() );
         textEventViewCapacity.setText( ""+event.getCapacity() );
 
@@ -110,13 +109,13 @@ public class EventViewActivity extends AppCompatActivity {
     public void setUpJoinButton(){
         final Button buttonViewEventJoin = findViewById(R.id.buttonViewEventJoin);
         if( !user.getId().equals(event.getOwnerId()) ) {
-            if (user.getSubscribedEvents().contains(event.getId())) {
+            if (user.getSubscribedEventIds().contains(event.getId())) {
                 buttonViewEventJoin.setText("Leave");
             }
             buttonViewEventJoin.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (!user.getSubscribedEvents().contains(event.getId())) {
+                    if (!user.getSubscribedEventIds().contains(event.getId())) {
                         event.addSubscribedToEvent(user.getId());
                         user.addSubscribedEvent(event.getId());
                         buttonViewEventJoin.setText("Leave");
