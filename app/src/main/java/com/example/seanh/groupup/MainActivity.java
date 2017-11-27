@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -20,6 +21,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -47,7 +49,9 @@ public class MainActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private DrawerLayout mDrawerLayout;
     private NavigationView navigationView;
+    Menu menuBar;
     private boolean menuViewSwitch = true; //alternates which menu option is visible
+    private FloatingActionButton fab;
 
     boolean doubleBackToExitPressedOnce = false; //sign out pressing back twice
     
@@ -75,13 +79,25 @@ public class MainActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 final int id = item.getItemId();
 
-                Toast.makeText(MainActivity.this,item.getTitle()+" selected", Toast.LENGTH_SHORT).show();
+                tempList = new ArrayList<>(eventList);
 
-                if(id == R.id.main_drawer_item1){
+                //TODO figure out why recycleview doesn't clear cache
 
+                if(id == R.id.main_drawer_subscribed){
+                    if( !user.getSubscribedEventIds().isEmpty() ) {
+                        filterEventList( user.getSubscribedEventIds() );
+                    }
+                    else{
+                        Toast.makeText(MainActivity.this, "No subscribed events", Toast.LENGTH_SHORT).show();
+                    }
                 }
-                else if(id == R.id.main_drawer_item2){
-
+                else if(id == R.id.main_drawer_hosted){
+                    if( !user.getCreatedEventIds().isEmpty() ) {
+                        filterEventList( user.getCreatedEventIds() );
+                    }
+                    else{
+                        Toast.makeText(MainActivity.this, "No hosted events", Toast.LENGTH_SHORT).show();
+                    }
                 }
                 else if(id == R.id.main_drawer_item3){
 
@@ -89,6 +105,27 @@ public class MainActivity extends AppCompatActivity {
                 else if(id == R.id.main_drawer_item4){
 
                 }
+
+                toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_36dp);
+                toolbar.setTitle(item.getTitle()+" Events");
+                menuBar.getItem(0).setVisible(false);
+                menuBar.getItem(1).setVisible(false);
+                toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        resetEventList();
+                        toolbar.setNavigationIcon(R.drawable.ic_menu_white);
+                        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                mDrawerLayout.openDrawer(Gravity.START);
+                            }
+                        });
+                        toolbar.setTitle("GroupUp");
+                        menuBar.getItem(0).setVisible(true);
+                        menuBar.getItem(1).setVisible(true);
+                    }
+                });
 
                 mDrawerLayout.closeDrawer(Gravity.START);
                 return false;
@@ -101,7 +138,6 @@ public class MainActivity extends AppCompatActivity {
 
         //loads events for the first time
         fetchAllData();
-
 
 
 
@@ -123,12 +159,14 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-
         //Makes FAB (plus button) go to EventCreateActivity
-        findViewById(R.id.fabNewEvent).setOnClickListener(new View.OnClickListener() {
+        fab = findViewById(R.id.fabNewEvent);
+        fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, EventCreateActivity.class));
+                Intent i = new Intent(MainActivity.this, EventCreateActivity.class);
+                i.putExtra("myUser", user);
+                startActivity(i);
             }
         });
     }
@@ -136,7 +174,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
-
+        menuBar = menu;
+        
         //All for SearchView (search button at top)
         final MenuItem searchMenu = menu.findItem(R.id.main_search);
         final SearchView searchView = (SearchView) searchMenu.getActionView();
@@ -185,12 +224,14 @@ public class MainActivity extends AppCompatActivity {
         if (id == R.id.main_view_switch) {
             if(menuViewSwitch) {
                 recyclerView.setVisibility(View.GONE);
+                fab.hide();
                 findViewById(R.id.constraintLayoutEventMap).setVisibility(View.VISIBLE);
                 item.setIcon(R.drawable.ic_format_list_bulleted_white_18dp);
             }
             else{
                 findViewById(R.id.constraintLayoutEventMap).setVisibility(View.GONE);
                 recyclerView.setVisibility(View.VISIBLE);
+                fab.show();
                 item.setIcon(R.drawable.ic_map_white_18dp);
             }
             menuViewSwitch = !menuViewSwitch; //alternates which menu option is visible
@@ -255,6 +296,12 @@ public class MainActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 user = dataSnapshot.getValue(User.class);
                 Log.d(LOGTAG,"data parse complete");
+
+                final TextView tvName = findViewById(R.id.textMainDrawerName);
+                final TextView tvEmail = findViewById(R.id.textMainDrawerEmail);
+                tvName.setText(user.getfName()+" "+user.getlName());
+                tvEmail.setText(user.getEmail());
+
                 showEventList();
             }
 
@@ -290,6 +337,14 @@ public class MainActivity extends AppCompatActivity {
             public void onLongClick(View view, final int position) { }
         }));
 
+        showMapMarkers();
+    }
+    private void showMapMarkers(){
+
+        for(Event e : eventList){
+
+        }
+
         //Hides loading bar(s)
         findViewById(R.id.progressBarMainActivity).setVisibility(View.GONE);
         swipeRefreshContainer.setRefreshing(false);
@@ -297,15 +352,30 @@ public class MainActivity extends AppCompatActivity {
 
 
     //helper methods for altering the eventList
-    void filterEventList(String query) {
+    private void filterEventList(String query) {
         for (Event e : tempList) {
             if (e.getName().toLowerCase().contains( query.toLowerCase() )) {
                 eventList.add(e);
             }
         }
+
+        //TODO Map filter update
+
         eAdapter.notifyDataSetChanged();
     }
-    void resetEventList(){
+    private void filterEventList(List<String> eventIdList){
+        eAdapter.clear();
+        for(String eventId : eventIdList) {
+            for (Event e : tempList) {
+                if (e.getId().equals(eventId)) {
+                    eventList.add(e);
+                    break;
+                }
+            }
+        }
+        eAdapter.notifyDataSetChanged();
+    }
+    private void resetEventList(){
         eAdapter.clear();
         eAdapter.addAll(tempList);
     }

@@ -1,29 +1,28 @@
 package com.example.seanh.groupup;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.app.AlarmManager;
+import android.app.Notification;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.FirebaseStorage;
+import java.util.Calendar;
 
 public class EventViewActivity extends AppCompatActivity {
-    private TextView textEventViewOwner, textEventViewStartTime, textEventViewEndTime, textEventViewDate,
-            textEventViewDescription, textEventViewAddress, textEventViewAttendance, textEventViewCapacity;
-    private ImageView imageEventImage;
+    private TextView textEventViewOwner, textEventViewAttendance, textEventViewCapacity;
     private Event event;
     private User user, owner;
     
@@ -33,15 +32,23 @@ public class EventViewActivity extends AppCompatActivity {
         setContentView(R.layout.activity_event_view);
         overridePendingTransition(R.anim.slide_in, R.anim.nothing);
 
+        textEventViewOwner = findViewById(R.id.textEventViewOwner);
+        final TextView textEventViewStartTime = findViewById(R.id.textEventViewStartTime);
+        final TextView textEventViewEndTime = findViewById(R.id.textEventViewEndTime);
+        final TextView textEventViewDate = findViewById(R.id.textEventViewDate);
+        final TextView textEventViewDescription = findViewById(R.id.textEventViewDescription);
+        final TextView textEventViewAddress = findViewById(R.id.textEventViewAddress);
+        textEventViewAttendance = findViewById(R.id.textEventViewAttendance);
+        textEventViewCapacity = findViewById(R.id.textEventViewCapacity);
+
         //Gets Event object from Main Activity
         final Bundle b = getIntent().getExtras();
         event = b.getParcelable("myEvent");
         user = b.getParcelable("myUser");
-        fetchOwner(event.getOwnerId());
+        fetchOwner(event.getOwnerId()); //also sets up Join button
 
-        android.support.v7.widget.Toolbar tb = findViewById(R.id.toolbarEventView);
+        final android.support.v7.widget.Toolbar tb = findViewById(R.id.toolbarEventView);
         setSupportActionBar(tb);
-        //getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setTitle( event.getName() );
         tb.setNavigationIcon(R.drawable.ic_arrow_back_white_36dp);
         tb.setNavigationOnClickListener(new View.OnClickListener() {
@@ -51,43 +58,15 @@ public class EventViewActivity extends AppCompatActivity {
                 overridePendingTransition(R.anim.nothing, R.anim.slide_out);
             }
         });
-        
-        //textEventViewName =  findViewById(R.id.textEventViewName);
-        textEventViewOwner =  findViewById(R.id.textEventViewOwner);
-        textEventViewStartTime =  findViewById(R.id.textEventViewStartTime);
-        textEventViewEndTime =  findViewById(R.id.textEventViewEndTime);
-        textEventViewDate =  findViewById(R.id.textEventViewDate);
-        textEventViewDescription = findViewById(R.id.textEventViewDescription);
-        textEventViewAddress =  findViewById(R.id.textEventViewAddress);
-        textEventViewAttendance =  findViewById(R.id.textEventViewAttendance);
-        textEventViewCapacity =  findViewById(R.id.textEventViewCapacity);
-        imageEventImage = findViewById(R.id.app_bar_image);
 
         //textEventViewName.setText( event.getName() );
-        textEventViewStartTime.setText( event.getStartTime() );
-        textEventViewEndTime.setText( event.getEndTime() );
-        textEventViewDate.setText( event.getDate() );
+        textEventViewStartTime.setText( event.genStartTimeSimple() );
+        textEventViewEndTime.setText( event.genEndTimeSimple() );
+        textEventViewDate.setText( event.genStartDateSimple() );
         textEventViewDescription.setText( event.getDescription() );
-        textEventViewAddress.setText( event.getAddress() ); //TODO fix?
+        textEventViewAddress.setText( event.genAddressPretty() );
         textEventViewAttendance.setText( ""+event.getAttendance() );
         textEventViewCapacity.setText( ""+event.getCapacity() );
-
-
-        String eventID = event.getId();
-        String path = "gs://groupup-f9e17.appspot.com/eventImages/" + eventID;
-        FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference storageRef = storage.getReferenceFromUrl(path);
-
-        //getting file as byteArray
-        final long ONE_MEGABYTE = (1024 * 1024);
-        storageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
-            @Override
-            public void onSuccess(byte[] bytes) {
-                Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                imageEventImage.setImageBitmap(bitmap);
-            }
-        });
-
 
         findViewById(R.id.buttonViewEventShare).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -109,25 +88,51 @@ public class EventViewActivity extends AppCompatActivity {
     public void setUpJoinButton(){
         final Button buttonViewEventJoin = findViewById(R.id.buttonViewEventJoin);
         if( !user.getId().equals(event.getOwnerId()) ) {
-            if (user.getSubscribedEvents().contains(event.getId())) {
+            if (user.getSubscribedEventIds().contains(event.getId())) {
                 buttonViewEventJoin.setText("Leave");
             }
             buttonViewEventJoin.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (!user.getSubscribedEvents().contains(event.getId())) {
-                        event.addSubscribedToEvent(user.getId());
-                        user.addSubscribedEvent(event.getId());
-                        buttonViewEventJoin.setText("Leave");
-                        Toast.makeText(EventViewActivity.this, "Event joined successfully", Toast.LENGTH_SHORT).show();
-                    } else {
-                        event.removeSubscribedToEvent(user.getId());
-                        user.removeSubscribedEvent(event.getId());
-                        buttonViewEventJoin.setText("Join");
-                        Toast.makeText(EventViewActivity.this, "Event left successfully", Toast.LENGTH_SHORT).show();
+                    //Check if event is full
+                    if(Integer.parseInt(textEventViewAttendance.getText().toString()) <= Integer.parseInt(textEventViewCapacity.getText().toString())) {
+                        if (!user.getSubscribedEventIds().contains(event.getId())) {
+                            event.addSubscribedToEvent(user.getId());
+                            user.addSubscribedEvent(event.getId());
+
+                            event.setAttendance( event.getAttendance()+1 );
+                            final int delay = (int)(event.getStartDateTime() - Calendar.getInstance().getTimeInMillis() );
+                            if(delay-900000 > 0) {
+                                scheduleNotification(getNotification("\"" + event.getName() + "\"",
+                                        "This event is starting soon!"), delay - 900000);
+                            }
+                            if(delay > 0) {
+                                scheduleNotification(getNotification("\"" + event.getName() + "\"",
+                                        "This event is starting now!"), delay);
+                            }
+
+                            buttonViewEventJoin.setText("Leave");
+                            Toast.makeText(EventViewActivity.this, "Event joined successfully", Toast.LENGTH_SHORT).show();
+                        } else {
+                            event.removeSubscribedToEvent(user.getId());
+                            user.removeSubscribedEvent(event.getId());
+
+                            event.setAttendance( event.getAttendance()-1 );
+                            cancelNotification(getNotification( event.getName(),
+                                    "This event is starting soon!"));
+                            cancelNotification(getNotification( event.getName(),
+                                    "This event is starting now!"));
+
+                            buttonViewEventJoin.setText("Join");
+                            Toast.makeText(EventViewActivity.this, "Event left successfully", Toast.LENGTH_SHORT).show();
+                        }
+                        textEventViewAttendance.setText( ""+event.getAttendance() );
+                        updateEvent(event);
+                        updateUser(user);
                     }
-                    Database.updateEvent(event);
-                    Database.updateUser(user);
+                    else {
+                        Toast.makeText(EventViewActivity.this, "Event is full!", Toast.LENGTH_SHORT).show();
+                    }
                 }
             });
         }
@@ -142,6 +147,33 @@ public class EventViewActivity extends AppCompatActivity {
         }
     }
 
+    private void scheduleNotification(Notification notification, int delay) {
+
+        Intent notificationIntent = new Intent(this, NotificationPublisher.class);
+        notificationIntent.putExtra(NotificationPublisher.NOTIFICATION_ID, 1);
+        notificationIntent.putExtra(NotificationPublisher.NOTIFICATION, notification);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        long futureInMillis = SystemClock.elapsedRealtime() + delay;
+        AlarmManager am = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+        am.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
+    }
+    private Notification getNotification(String contentTitle, String contentText) {
+        Notification.Builder builder = new Notification.Builder(this);
+        builder.setContentTitle(contentTitle);
+        builder.setContentText(contentText);
+        builder.setSmallIcon(R.drawable.ic_favorite_white_18dp); //TODO replace me
+        return builder.build();
+    }
+    private void cancelNotification(Notification notification){
+        Intent notificationIntent = new Intent(this, NotificationPublisher.class);
+        notificationIntent.putExtra(NotificationPublisher.NOTIFICATION_ID, 1);
+        notificationIntent.putExtra(NotificationPublisher.NOTIFICATION, notification);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        am.cancel(pendingIntent);
+    }
 
     //relevant database calls
     private final DatabaseReference dataRoot = FirebaseDatabase.getInstance().getReference();
@@ -158,5 +190,11 @@ public class EventViewActivity extends AppCompatActivity {
             @Override
             public void onCancelled(DatabaseError error) {  }
         });
+    }
+    public void updateEvent(Event e){
+        dataRoot.child("events").child(e.getId()).setValue(e);
+    }
+    public void updateUser(User u){
+        dataRoot.child("users").child(u.getId()).setValue(u);
     }
 }
