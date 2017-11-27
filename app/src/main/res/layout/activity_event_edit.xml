@@ -2,18 +2,18 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/layoutEventCreate"
+    android:id="@+id/layoutEventEdit"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:backgroundTint="@android:color/darker_gray"
     android:visibility="visible"
-    tools:context="com.example.seanh.groupup.EventCreateActivity"
+    tools:context="com.example.seanh.groupup.EventEditActivity"
     tools:layout_editor_absoluteX="0dp"
     tools:layout_editor_absoluteY="81dp">
 
 
     <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbarEventCreate"
+        android:id="@+id/toolbarEventEdit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?attr/colorPrimary"
@@ -21,17 +21,17 @@
         android:theme="?attr/actionBarTheme" />
 
     <android.support.constraint.ConstraintLayout
-        android:id="@+id/constraintEventCreateTop"
+        android:id="@+id/constraintEventEditTop"
         android:layout_width="0dp"
         android:layout_height="150dp"
         android:background="@android:color/holo_blue_light"
         android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbarEventCreate">
+        app:layout_constraintTop_toBottomOf="@+id/toolbarEventEdit">
 
         <ImageView
-            android:id="@+id/imageViewCreateEventPicture"
+            android:id="@+id/imageViewEditEventPicture"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:adjustViewBounds="true"
@@ -43,7 +43,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageButton
-            android:id="@+id/buttonCreateEventPicture"
+            android:id="@+id/buttonEditEventPicture"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
@@ -52,22 +52,22 @@
             android:layout_marginTop="8dp"
             android:background="@drawable/ic_add_circle_outline_white"
             android:elevation="12dp"
-            app:layout_constraintBottom_toBottomOf="@+id/imageViewCreateEventPicture"
+            app:layout_constraintBottom_toBottomOf="@+id/imageViewEditEventPicture"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/imageViewCreateEventPicture" />
+            app:layout_constraintTop_toTopOf="@+id/imageViewEditEventPicture" />
 
     </android.support.constraint.ConstraintLayout>
 
     <android.support.constraint.ConstraintLayout
-        android:id="@+id/constraintEventCreateBottom"
+        android:id="@+id/constraintEventEditBottom"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraintEventCreateTop"
+        app:layout_constraintTop_toBottomOf="@+id/constraintEventEditTop"
         app:layout_constraintVertical_bias="1.0">
 
         <TextView
@@ -76,9 +76,9 @@
             android:layout_height="wrap_content"
             android:text="-"
             android:textSize="30sp"
-            app:layout_constraintBottom_toBottomOf="@+id/textEventCreateStartTime"
-            app:layout_constraintStart_toEndOf="@+id/textEventCreateStartTime"
-            app:layout_constraintTop_toTopOf="@+id/textEventCreateStartTime" />
+            app:layout_constraintBottom_toBottomOf="@+id/textEventEditStartTime"
+            app:layout_constraintStart_toEndOf="@+id/textEventEditStartTime"
+            app:layout_constraintTop_toTopOf="@+id/textEventEditStartTime" />
 
         <android.support.constraint.ConstraintLayout
             android:id="@+id/constraintLayoutCapacity"
@@ -86,8 +86,8 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:layout_marginTop="8dp"
-            app:layout_constraintEnd_toEndOf="@+id/btnEventCreateMap"
-            app:layout_constraintTop_toBottomOf="@+id/btnEventCreateMap">
+            app:layout_constraintEnd_toEndOf="@+id/btnEventEditMap"
+            app:layout_constraintTop_toBottomOf="@+id/btnEventEditMap">
 
             <TextView
                 android:id="@+id/textView3"
@@ -102,7 +102,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/textEventCreateAttendance"
+                android:id="@+id/textEventEditAttendance"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="12dp"
@@ -130,7 +130,7 @@
                 app:layout_constraintVertical_bias="0.6" />
 
             <TextView
-                android:id="@+id/textEventCreateCapacity"
+                android:id="@+id/textEventEditCapacity"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="12dp"
@@ -146,7 +146,7 @@
         </android.support.constraint.ConstraintLayout>
 
         <EditText
-            android:id="@+id/editEventCreateName"
+            android:id="@+id/editEventEditName"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -154,12 +154,12 @@
             android:ems="10"
             android:hint="Event Title"
             android:inputType="textPersonName"
-            app:layout_constraintEnd_toStartOf="@+id/buttonEventCreateColor"
+            app:layout_constraintEnd_toStartOf="@+id/buttonEventEditColor"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <EditText
-            android:id="@+id/editEventCreateDescription"
+            android:id="@+id/editEventEditDescription"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -167,72 +167,71 @@
             android:hint="Event Description"
             android:inputType="textMultiLine"
             android:singleLine="false"
-            app:layout_constraintEnd_toEndOf="@+id/buttonEventCreateColor"
-            app:layout_constraintStart_toStartOf="@+id/editEventCreateName"
-            app:layout_constraintTop_toBottomOf="@+id/editEventCreateName" />
+            app:layout_constraintEnd_toEndOf="@+id/buttonEventEditColor"
+            app:layout_constraintStart_toStartOf="@+id/editEventEditName"
+            app:layout_constraintTop_toBottomOf="@+id/editEventEditName" />
 
-        <TextView
-            android:id="@+id/editEventCreateAddress"
+        <EditText
+            android:id="@+id/editEventEditAddress"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:background="?attr/editTextBackground"
             android:ems="14"
             android:hint="Event Address"
-            app:layout_constraintEnd_toStartOf="@+id/btnEventCreateMap"
-            app:layout_constraintStart_toStartOf="@+id/editEventCreateDescription"
-            app:layout_constraintTop_toBottomOf="@+id/editEventCreateDescription" />
+            android:inputType="textPostalAddress"
+            app:layout_constraintStart_toStartOf="@+id/editEventEditDescription"
+            app:layout_constraintTop_toBottomOf="@+id/editEventEditDescription" />
 
         <TextView
-            android:id="@+id/textEventCreateStartTime"
+            android:id="@+id/textEventEditStartTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:background="?attr/editTextBackground"
             android:ems="5"
             android:gravity="center"
-            android:hint="Start Time"
-            app:layout_constraintStart_toStartOf="@+id/editEventCreateAddress"
-            app:layout_constraintTop_toBottomOf="@+id/editEventCreateAddress" />
+            android:text="Start Time"
+            app:layout_constraintStart_toStartOf="@+id/editEventEditAddress"
+            app:layout_constraintTop_toBottomOf="@+id/editEventEditAddress" />
 
         <TextView
-            android:id="@+id/textEventCreateEndTime"
+            android:id="@+id/textEventEditEndTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="?attr/editTextBackground"
             android:ems="5"
             android:gravity="center"
-            android:hint="End Time"
+            android:text="End Time"
             app:layout_constraintStart_toEndOf="@+id/textEventViewDash2"
-            app:layout_constraintTop_toTopOf="@+id/textEventCreateStartTime" />
+            app:layout_constraintTop_toTopOf="@+id/textEventEditStartTime" />
 
         <TextView
-            android:id="@+id/textEventCreateDate"
+            android:id="@+id/textEventEditDate"
             android:layout_width="80dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="1dp"
             android:background="?attr/editTextBackground"
             android:gravity="center"
-            android:hint="Date"
-            app:layout_constraintEnd_toEndOf="@+id/textEventCreateEndTime"
-            app:layout_constraintStart_toStartOf="@+id/textEventCreateStartTime"
-            app:layout_constraintTop_toBottomOf="@+id/textEventCreateStartTime" />
+            android:text="Date"
+            app:layout_constraintEnd_toEndOf="@+id/textEventEditEndTime"
+            app:layout_constraintStart_toStartOf="@+id/textEventEditStartTime"
+            app:layout_constraintTop_toBottomOf="@+id/textEventEditStartTime" />
 
         <Button
-            android:id="@+id/btnEventCreateMap"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:id="@+id/btnEventEditMap"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:background="@drawable/ic_map_white_18dp"
             android:clickable="true"
             android:focusable="true"
-            app:layout_constraintBottom_toBottomOf="@+id/editEventCreateAddress"
-            app:layout_constraintDimensionRatio="h,1:1"
-            app:layout_constraintEnd_toEndOf="@+id/editEventCreateDescription"
-            app:layout_constraintTop_toTopOf="@+id/editEventCreateAddress"
+            app:layout_constraintBottom_toBottomOf="@+id/editEventEditAddress"
+            app:layout_constraintEnd_toEndOf="@+id/editEventEditDescription"
+            app:layout_constraintStart_toEndOf="@+id/editEventEditAddress"
+            app:layout_constraintTop_toTopOf="@+id/editEventEditAddress"
             app:layout_constraintVertical_bias="0.0" />
 
         <android.support.design.widget.FloatingActionButton
-            android:id="@+id/fabCreateEventSubmit"
+            android:id="@+id/fabEditEventSubmit"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_marginBottom="24dp"
@@ -246,13 +245,13 @@
             app:srcCompat="@drawable/ic_check_white_18dp" />
 
         <Button
-            android:id="@+id/buttonEventCreateColor"
+            android:id="@+id/buttonEventEditColor"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:text="Set Color"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/editEventCreateName" />
+            app:layout_constraintTop_toTopOf="@+id/editEventEditName" />
 
     </android.support.constraint.ConstraintLayout>
 

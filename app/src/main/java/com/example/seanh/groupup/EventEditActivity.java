@@ -1,33 +1,25 @@
 package com.example.seanh.groupup;
 
-import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.location.Address;
-import android.location.Criteria;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
-import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -53,12 +45,13 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
-public class EventCreateActivity extends AppCompatActivity {
-    private final String LOGTAG = "EventCreateActivity";
+public class EventEditActivity extends AppCompatActivity {
+    private final String LOGTAG = "EventEditActivity";
+    private Event event;
     private User user;
     private FirebaseStorage storage = FirebaseStorage.getInstance();
-    private EditText editName, editDesc;
-    private TextView textAddress, textStartTime, textEndTime, textDate, textEventCreateAttendance, textEventCreateCapacity;
+    private EditText editName, editDesc, editAddress;
+    private TextView textStartTime, textEndTime, textDate, textEventEditAttendance, textEventEditCapacity;
     private ImageView eventPicture;
     private String strAddress = "", strAddressStreet = "", strAddressAreaState = "", strAddressZip = "";
     private Calendar startDateTime, endDateTime;
@@ -88,38 +81,33 @@ public class EventCreateActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_event_create);
+        setContentView(R.layout.activity_event_edit);
         overridePendingTransition(R.anim.slide_in, R.anim.nothing);
-        setTitle("Create an Event:");
+        setTitle("Edit an Event:");
 
         //clears cache
-        SharedPreferences preferences = getSharedPreferences("MapAddress", 0);
+        final SharedPreferences preferences = getSharedPreferences("MapAddress", 0);
         preferences.edit().remove("address").remove("locX").remove("locY").apply();
+        finish();
 
         //continuation of value setup from above
-        editName = findViewById(R.id.editEventCreateName);
-        editDesc = findViewById(R.id.editEventCreateDescription);
-        textStartTime = findViewById(R.id.textEventCreateStartTime);
-        textEndTime = findViewById(R.id.textEventCreateEndTime);
-        textDate = findViewById(R.id.textEventCreateDate);
-        textAddress = findViewById(R.id.editEventCreateAddress);
-        textEventCreateAttendance = findViewById(R.id.textEventCreateAttendance);
-        textEventCreateCapacity = findViewById(R.id.textEventCreateCapacity);
+        editName = findViewById(R.id.editEventEditName);
+        editDesc = findViewById(R.id.editEventEditDescription);
+        textStartTime = findViewById(R.id.textEventEditStartTime);
+        textEndTime = findViewById(R.id.textEventEditEndTime);
+        textDate = findViewById(R.id.textEventEditDate);
+        editAddress = findViewById(R.id.editEventEditAddress);
+        textEventEditAttendance = findViewById(R.id.textEventEditAttendance);
+        textEventEditCapacity = findViewById(R.id.textEventEditCapacity);
         eventPicture = null;
-        startDateTime = Calendar.getInstance();
-        endDateTime = Calendar.getInstance();
-        cp = new ColorPicker(this, 127, 127, 127);
 
-        final Bundle b = getIntent().getExtras();
-        user = b.getParcelable("myUser");
-
-
-        final android.support.v7.widget.Toolbar tb = findViewById(R.id.toolbarEventCreate);
+        final android.support.v7.widget.Toolbar tb = findViewById(R.id.toolbarEventEdit);
         setSupportActionBar(tb);
         tb.setNavigationIcon(R.drawable.ic_arrow_back_white_36dp);
         tb.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //clears cache
                 SharedPreferences preferences = getSharedPreferences("MapAddress", 0);
                 preferences.edit().remove("address").remove("locX").remove("locY").apply();
                 finish();
@@ -127,17 +115,39 @@ public class EventCreateActivity extends AppCompatActivity {
             }
         });
 
+        //Gets Event object from Main Activity
+        final Bundle b = getIntent().getExtras();
+        event = b.getParcelable("myEvent");
+        user = b.getParcelable("myUser");
 
-        //updates location first time TODO Doesn't work on API 26 Why?
-        setupLocation();
+        editName.setText( event.getName() );
+        editDesc.setText( event.getDescription() );
+        textStartTime.setText( event.genStartTimeSimple() );
+        textEndTime.setText( event.genEndTimeSimple() );
+        textDate.setText( event.genStartDateSimple() );
+        strAddress = event.getAddress();
+        strAddressStreet = event.getAddressStreet();
+        strAddressAreaState = event.getAddressCityState();
+        strAddressZip = event.getAddressZip();
+        editAddress.setText( strAddress );
+        textEventEditAttendance.setText( ""+event.getAttendance() );
+        textEventEditCapacity.setText( ""+event.getCapacity() );
+        startDateTime = Calendar.getInstance();
+        startDateTime.setTimeInMillis(event.getStartDateTime());
+        endDateTime = Calendar.getInstance();
+        endDateTime.setTimeInMillis(event.getEndDateTime());
+        numLocX = event.getLocX();
+        numLocY = event.getLocY();
+        cp = new ColorPicker(this, event.genColorR(), event.genColorG(), event.genColorB());
+        tb.setBackgroundColor( event.getColor() );
 
         //adds picture
-        findViewById(R.id.buttonCreateEventPicture).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.buttonEditEventPicture).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View w) {
                 Intent i = new Intent(
                         Intent.ACTION_PICK,
-                        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 startActivityForResult(i, RESULT_LOAD_IMAGE);
             }
         });
@@ -160,29 +170,29 @@ public class EventCreateActivity extends AppCompatActivity {
                 timeEdPicker(textEndTime);
             }
         });
-        textEventCreateAttendance.setOnClickListener(new View.OnClickListener() {
+        textEventEditAttendance.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                numberPickerDialog(textEventCreateAttendance);
+                numberPickerDialog(textEventEditAttendance);
             }
         });
-        textEventCreateCapacity.setOnClickListener(new View.OnClickListener() {
+        textEventEditCapacity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                numberPickerDialog(textEventCreateCapacity);
-            }
-        });
-
-        //Go to EventCreateMap Activity
-        findViewById(R.id.btnEventCreateMap).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(EventCreateActivity.this, EventCreateMap.class));
+                numberPickerDialog(textEventEditCapacity);
             }
         });
 
-        final Button buttonEventCreateColor = findViewById(R.id.buttonEventCreateColor);
-        buttonEventCreateColor.setOnClickListener(new View.OnClickListener() {
+        //Go to EventEditMap Activity
+        findViewById(R.id.btnEventEditMap).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(EventEditActivity.this, EventCreateMap.class));
+            }
+        });
+
+        final Button buttonEventEditColor = findViewById(R.id.buttonEventEditColor);
+        buttonEventEditColor.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 /* Show color picker dialog */
@@ -200,7 +210,7 @@ public class EventCreateActivity extends AppCompatActivity {
         });
 
         //Code for Submit button
-        findViewById(R.id.fabCreateEventSubmit).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.fabEditEventSubmit).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 final String strName = editName.getText().toString();
@@ -208,8 +218,8 @@ public class EventCreateActivity extends AppCompatActivity {
                 final String strDate = textDate.getText().toString();
                 final String strStartTime = textStartTime.getText().toString();
                 final String strEndTime = textEndTime.getText().toString();
-                final String strAttendance = textEventCreateAttendance.getText().toString();
-                final String strCapacity = textEventCreateCapacity.getText().toString();
+                final String strAttendance = textEventEditAttendance.getText().toString();
+                final String strCapacity = textEventEditCapacity.getText().toString();
 
 
                 //checks to see if user image is given, if so then upload to database
@@ -222,49 +232,60 @@ public class EventCreateActivity extends AppCompatActivity {
                         !strStartTime.isEmpty() &&
                         !strEndTime.isEmpty() &&
                         !strAddress.isEmpty() &&
-                        cp.getColor() != Color.rgb(127,127,127) ) {
+                        cp.getColor() != Color.rgb(127,127,127) &&
+                        eventPicture != null) {
 
-                    String eventID = createNewEvent(new Event(
-                            strName, strDesc, user.getId(),
-                            startDateTime.getTimeInMillis(), endDateTime.getTimeInMillis(),
-                            strAddress, strAddressStreet, strAddressAreaState, strAddressZip,  //TODO fix?
-                            numLocX, numLocY,
-                            Integer.parseInt(strAttendance), Integer.parseInt(strCapacity),
-                            cp.getColor()));
+                    event.setName(strName);
+                    event.setDescription(strDesc);
+                    event.setStartDateTime(startDateTime.getTimeInMillis());
+                    event.setEndDateTime(endDateTime.getTimeInMillis());
+                    event.setAddress(strAddress);
+                    event.setAddressStreet(strAddressStreet);
+                    event.setAddressCityState(strAddressAreaState);
+                    event.setAddressZip(strAddressZip);
+                    event.setAttendance(Integer.parseInt(strAttendance));
+                    event.setCapacity(Integer.parseInt(strCapacity));
+                    event.setColor(cp.getColor());
+                    event.setLocX(numLocX);
+                    event.setLocY(numLocY);
 
-                    if (eventPicture != null){
-                        //create bitmap of image, compress to PNG,
-                        //store byte array of image in imageData containing raw pixels
-                        eventPicture.setDrawingCacheEnabled(true);
-                        eventPicture.buildDrawingCache();
-                        Bitmap bitmap = eventPicture.getDrawingCache();
-                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                        bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
-                        eventPicture.setDrawingCacheEnabled(false);
-                        byte[] imageData = baos.toByteArray();
-
-                        //path to where image will be saved in Firebase dir
-                        String path = "eventImages/" + eventID + ".png";
-
-                        //eventRef is the unique reference pointing to the image in Firebase,
-                        //use to reference image when calling for eventView
-                        StorageReference eventRef = storage.getReference(path);
+                    //uploads event data
+                    editEvent(event);
 
 
-                        //line physically uploading image to firebase
-                        UploadTask uploadtask = eventRef.putBytes(imageData);
+                    //Edit bitmap of image, compress to PNG,
+                    //store byte array of image in imageData containing raw pixels
+                    eventPicture.setDrawingCacheEnabled(true);
+                    eventPicture.buildDrawingCache();
+                    Bitmap bitmap = eventPicture.getDrawingCache();
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+                    eventPicture.setDrawingCacheEnabled(false);
+                    byte[] imageData = baos.toByteArray();
 
-                        //TODO implement UploadTask to give progress bar so user knows when upload completes
-                    }
+                    //path to where image will be saved in Firebase dir
+                    String path = "eventImages/" + event.getId() + ".png";
 
-                    Toast.makeText(getApplicationContext(), "Event created successfully",
-                            Toast.LENGTH_LONG).show();
+                    //eventRef is the unique reference pointing to the image in Firebase,
+                    //use to reference image when calling for eventView
+                    StorageReference eventRef = storage.getReference(path);
 
+
+                    //line physically uploading image to firebase
+                    UploadTask uploadtask = eventRef.putBytes(imageData);
+
+                    //TODO implement UploadTask to give progress bar so user knows when upload completes
+
+
+                    Toast.makeText(getApplicationContext(), "Event edited successfully",
+                            Toast.LENGTH_SHORT).show();
+
+                    //clears cache
                     final SharedPreferences preferences = getSharedPreferences("MapAddress", 0);
                     preferences.edit().remove("address").remove("locX").remove("locY").apply();
                     finish();
                 } else {
-                    Toast.makeText(getApplicationContext(), "Please fill all fields & select color",
+                    Toast.makeText(getApplicationContext(), "Please fill all fields, select picture, & select color",
                             Toast.LENGTH_SHORT).show();
                 }
             }
@@ -277,8 +298,7 @@ public class EventCreateActivity extends AppCompatActivity {
         final SharedPreferences prefs = getSharedPreferences("MapAddress", MODE_PRIVATE);
         final String restoredText = prefs.getString("address", null);
         if (restoredText != null) {
-            strAddress = prefs.getString("address", "No name defined");//"No name defined" is the default value.
-            textAddress.setText( strAddress);
+            editAddress.setText(prefs.getString("address", "No name defined"));//"No name defined" is the default value.
             numLocX = Double.parseDouble( prefs.getString("locX", "No name defined") );//"No name defined" is the default value.
             numLocY = Double.parseDouble( prefs.getString("locY", "No name defined") );//"No name defined" is the default value.
         }
@@ -300,7 +320,7 @@ public class EventCreateActivity extends AppCompatActivity {
             String picturePath = cursor.getString(columnIndex);
             cursor.close();
 
-            eventPicture = findViewById(R.id.imageViewCreateEventPicture);
+            eventPicture = findViewById(R.id.imageViewEditEventPicture);
 
             Bitmap bmp = null;
             try {
@@ -311,7 +331,7 @@ public class EventCreateActivity extends AppCompatActivity {
             eventPicture.setImageBitmap(bmp);
 
             //sets plus button to 20% opacity
-            final ImageButton ib = findViewById(R.id.buttonCreateEventPicture);
+            final ImageButton ib = findViewById(R.id.buttonEditEventPicture);
             ib.setAlpha(0.2f);
         }
 
@@ -396,13 +416,13 @@ public class EventCreateActivity extends AppCompatActivity {
         Button b1 = d.findViewById(R.id.buttonDialogNPSet);
         Button b2 = d.findViewById(R.id.buttonDialogNPCancel);
         final NumberPicker np = d.findViewById(R.id.numberPicker1);
-        if(tv.getId() == R.id.textEventCreateAttendance){ //prevents data from overflowing
-            np.setMaxValue(Integer.parseInt(textEventCreateCapacity.getText().toString()) - 1); // max value capacity-1
+        if(tv.getId() == R.id.textEventEditAttendance){ //prevents data from overflowing
+            np.setMaxValue(Integer.parseInt(textEventEditCapacity.getText().toString()) - 1); // max value capacity-1
             np.setMinValue(0);   // min value 0
         }
         else{
             np.setMaxValue(99); // max value 99
-            np.setMinValue(Integer.parseInt(textEventCreateAttendance.getText().toString()) + 1);   // min value attendance+1
+            np.setMinValue(Integer.parseInt(textEventEditAttendance.getText().toString()) + 1);   // min value attendance+1
         }
 
         np.setWrapSelectorWheel(false);
@@ -422,48 +442,6 @@ public class EventCreateActivity extends AppCompatActivity {
         });
         d.show();
     }
-
-
-    public void setupLocation() {
-        //security check if permission is not already granted
-        if (ActivityCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            findViewById(R.id.btnEventCreateMap).setVisibility(View.GONE);
-            return;
-        }
-
-        //sets up location manager
-        final LocationManager mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-
-        //updates location anytime the gps updates
-        mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000,
-                0.5f, mLocationListener);
-
-        try {
-            final Criteria criteria = new Criteria();
-            criteria.setAccuracy(Criteria.ACCURACY_FINE);
-            criteria.setAltitudeRequired(false);
-            criteria.setBearingRequired(false);
-            criteria.setCostAllowed(true);
-            criteria.setPowerRequirement(Criteria.POWER_LOW);
-            final String provider = mLocationManager.getBestProvider(criteria, true);
-            if (provider != null) {
-                final Location l = mLocationManager.getLastKnownLocation(provider);
-                numLocX = l.getLatitude();
-                numLocY = l.getLongitude();
-            }
-        } catch (Exception e) {
-            Log.d(LOGTAG, "Get Location Failed");
-        }
-
-        //Location
-        strAddress = generateGeoFull(numLocX, numLocY);
-        textAddress.setText( strAddress );
-        strAddressStreet = generateGeoAdd(numLocX, numLocY);
-        strAddressAreaState = generateGeoAreaState(numLocX, numLocY);
-        strAddressZip = generateGeoZip(numLocX, numLocY);
-    }
-
 
 
     public String generateGeoFull(double xCord, double yCord) {
@@ -530,41 +508,9 @@ public class EventCreateActivity extends AppCompatActivity {
 
     private final DatabaseReference dataRoot = FirebaseDatabase.getInstance().getReference();
     private final DatabaseReference dataEvents = dataRoot.child("events");
-    public String createNewEvent(Event e) {
-        final DatabaseReference dr = dataEvents.push(); //generates unique id for event
-        final String s = dr.getKey();
-        e.setId(s); //makes it easier to get generated key
+    public String editEvent(Event e) {
+        final DatabaseReference dr = dataEvents.child( e.getId() ); //generates unique id for event
         dr.setValue(e); //uploads data to database
-        return s;
+        return e.getId();
     }
-
-    //This auto-hides the keyboard
-    public static void hideSoftKeyboard(Activity activity) {
-        InputMethodManager inputMethodManager =
-                (InputMethodManager) activity.getSystemService(
-                        Activity.INPUT_METHOD_SERVICE);
-        inputMethodManager.hideSoftInputFromWindow(
-                activity.getCurrentFocus().getWindowToken(), 0);
-    }
-    public void setupKeyboardHide(View view) {
-
-        // Set up touch listener for non-text box views to hide keyboard.
-        if (!(view instanceof EditText)) {
-            view.setOnTouchListener(new View.OnTouchListener() {
-                public boolean onTouch(View v, MotionEvent event) {
-                    hideSoftKeyboard(EventCreateActivity.this);
-                    return false;
-                }
-            });
-        }
-
-        //If a layout container, iterate over children and seed recursion.
-        if (view instanceof ViewGroup) {
-            for (int i = 0; i < ((ViewGroup) view).getChildCount(); i++) {
-                View innerView = ((ViewGroup) view).getChildAt(i);
-                setupKeyboardHide(innerView);
-            }
-        }
-    }
-
 }

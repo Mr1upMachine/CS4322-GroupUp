@@ -11,7 +11,7 @@ import java.util.Calendar;
 import java.util.List;
 
 public class Event implements Parcelable {
-    private String id, name, description, picRef, ownerId,
+    private String id, name, description, ownerId,
             address, addressStreet, addressCityState, addressZip;
     private long startDateTime, endDateTime;
     private int attendance, capacity, color;
@@ -24,7 +24,7 @@ public class Event implements Parcelable {
     Event(String name, String description, String ownerId,
           long startDateTime, long endDateTime,
           String address, String addressStreet, String addressCityState, String addressZip,
-          double locX, double locY, String picRef,
+          double locX, double locY,
           int attendance, int capacity, int color) {
 
         //Used for the creation of new events
@@ -39,7 +39,6 @@ public class Event implements Parcelable {
         this.addressZip = addressZip;
         this.locX = locX;
         this.locY = locY;
-        this.picRef = picRef;
         this.attendance = attendance;
         this.capacity = capacity;
         this.color = color;
@@ -52,7 +51,6 @@ public class Event implements Parcelable {
         description = in.readString();
         startDateTime = in.readLong();
         endDateTime = in.readLong();
-        picRef = in.readString();
         ownerId = in.readString();
         address = in.readString();
         addressStreet = in.readString();
@@ -96,12 +94,6 @@ public class Event implements Parcelable {
     }
     public void setDescription(String description) {
         this.description = description;
-    }
-    public String getPicRef() {
-        return picRef;
-    }
-    public void setPicRef(String picRef) {
-        this.picRef = picRef;
     }
     public String getOwnerId() {
         return ownerId;
@@ -240,7 +232,6 @@ public class Event implements Parcelable {
         dest.writeString(description);
         dest.writeLong(startDateTime);
         dest.writeLong(endDateTime);
-        dest.writeString(picRef);
         dest.writeString(ownerId);
         dest.writeString(address);
         dest.writeString(addressStreet);
@@ -261,8 +252,7 @@ public class Event implements Parcelable {
                 + "\ndesc=" + description
                 + "\nstartDateTime=" + startDateTime
                 + "\nendDateTime=" + endDateTime
-                + "\naddress=" + address
-                + "\npicRef=" + picRef + "}";
+                + "\naddress=" + address + "}";
     }
     public String toStringShare() {
         return "Hey come to " + name

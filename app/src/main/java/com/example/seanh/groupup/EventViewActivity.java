@@ -6,6 +6,8 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -27,6 +29,7 @@ public class EventViewActivity extends AppCompatActivity {
     private ImageView imageEventImage;
     private Event event;
     private User user, owner;
+    private boolean isOwner = false;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +54,7 @@ public class EventViewActivity extends AppCompatActivity {
                 overridePendingTransition(R.anim.nothing, R.anim.slide_out);
             }
         });
+        tb.inflateMenu(R.menu.menu_event_view);
         
         textEventViewOwner =  findViewById(R.id.textEventViewOwner);
         final TextView textEventViewStartTime = findViewById(R.id.textEventViewStartTime);
@@ -101,8 +105,31 @@ public class EventViewActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        if(isOwner) {
+            getMenuInflater().inflate(R.menu.menu_event_view, menu);
+        }
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        final int id = item.getItemId();
+
+
+            //passes through the information to the next activity about this event
+            Intent i = new Intent(EventViewActivity.this, EventEditActivity.class);
+            Bundle b = new Bundle();
+            b.putParcelable("myEvent", event);
+            b.putParcelable("myUser", user);
+            i.putExtras(b);
+            startActivity(i);
+
+        if(id == R.id.menu_event_view_delete) {
+            //TODO delete here
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -158,6 +185,10 @@ public class EventViewActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 owner = dataSnapshot.getValue(User.class);
                 textEventViewOwner.setText("Host: " + owner.getfName() + " " + owner.getlName() );
+                if(owner.getId().equals(user.getId())) {
+                    isOwner = true;
+                    invalidateOptionsMenu();
+                }
                 setUpJoinButton();
             }
 
