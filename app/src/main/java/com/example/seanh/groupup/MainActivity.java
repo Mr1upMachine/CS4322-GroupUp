@@ -297,10 +297,12 @@ public class MainActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 user = dataSnapshot.getValue(User.class);
                 Log.d(LOGTAG,"data parse complete");
+
                 final TextView tvName = findViewById(R.id.textMainDrawerName);
                 final TextView tvEmail = findViewById(R.id.textMainDrawerEmail);
                 tvName.setText(user.getfName()+" "+user.getlName());
                 tvEmail.setText(user.getEmail());
+
                 showEventList();
             }
 
@@ -336,6 +338,14 @@ public class MainActivity extends AppCompatActivity {
             public void onLongClick(View view, final int position) { }
         }));
 
+        showMapMarkers();
+    }
+    private void showMapMarkers(){
+
+        for(Event e : eventList){
+
+        }
+
         //Hides loading bar(s)
         findViewById(R.id.progressBarMainActivity).setVisibility(View.GONE);
         swipeRefreshContainer.setRefreshing(false);
@@ -349,6 +359,9 @@ public class MainActivity extends AppCompatActivity {
                 eventList.add(e);
             }
         }
+
+        //TODO Map filter update
+
         eAdapter.notifyDataSetChanged();
     }
     private void filterEventList(List<String> eventIdList){
