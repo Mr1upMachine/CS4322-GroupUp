@@ -74,9 +74,10 @@ public class EventViewActivity extends AppCompatActivity {
 
 
         String eventID = event.getId();
-        String path = "gs://groupup-f9e17.appspot.com/eventImages/" + eventID;
         FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference storageRef = storage.getReferenceFromUrl(path);
+        StorageReference storageRef = storage.getReferenceFromUrl("gs://groupup-f9e17.appspot.com/eventImages").child(eventID + ".png");
+
+
 
         //getting file as byteArray
         final long ONE_MEGABYTE = (1024 * 1024);
