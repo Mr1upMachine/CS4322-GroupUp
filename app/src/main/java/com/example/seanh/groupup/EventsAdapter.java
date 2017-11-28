@@ -6,6 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.graphics.Bitmap;
+
 
 import java.util.List;
 
@@ -14,6 +16,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewH
 
     private List<Event> eventsList;
     private User currentUser;
+    private Bitmap eventBitmap;
 
     public class EventViewHolder extends RecyclerView.ViewHolder {
         public TextView location, time;
@@ -31,9 +34,10 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewH
         }
     }
 
-    public EventsAdapter(List<Event> eventsList, User currentUser) {
+    public EventsAdapter(List<Event> eventsList, User currentUser, Bitmap eventBM) {
         this.eventsList = eventsList;
         this.currentUser = currentUser;
+        eventBitmap = eventBM;
     }
 
     @Override
@@ -49,6 +53,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewH
         holder.location.setText( event.getAddressStreet() );
         holder.time.setText( event.genStartTimeDateSimple() );
         holder.color.setColorFilter( event.getColor() );
+        holder.background.setImageBitmap(eventBitmap);
         if(currentUser != null) {
             //holder.background.setImageDrawable(); //TODO set image
             if (currentUser.getSubscribedEventIds() != null) {

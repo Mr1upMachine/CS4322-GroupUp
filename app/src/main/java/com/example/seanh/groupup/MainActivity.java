@@ -1,8 +1,11 @@
 package com.example.seanh.groupup;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -24,6 +27,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -31,16 +35,18 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.List;
-
-//TODO Micah delete this
 
 public class MainActivity extends AppCompatActivity {
     private final String LOGTAG = "MainActivity";
     private final FirebaseUser fbUser = FirebaseAuth.getInstance().getCurrentUser();
     private User user;
+    private Event event;
+    private Bitmap eventBitmap;
 
     private List<Event> eventList = new ArrayList<>();
     private List<Event> tempList;
@@ -55,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
     private FloatingActionButton fab;
 
     boolean doubleBackToExitPressedOnce = false; //sign out pressing back twice
-    
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -187,7 +193,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
@@ -256,7 +261,6 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
-
     @Override
     public void onBackPressed() {
         if (mDrawerLayout.isDrawerOpen(Gravity.START)) {
@@ -282,7 +286,6 @@ public class MainActivity extends AppCompatActivity {
             }, 2000);
         }
     }
-
 
 
     //relevant database calls
@@ -311,6 +314,7 @@ public class MainActivity extends AppCompatActivity {
         dataRoot.child("users").child(id).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                DataSnapshot ds = dataSnapshot;
                 user = dataSnapshot.getValue(User.class);
                 Log.d(LOGTAG,"data parse complete");
 
@@ -323,21 +327,39 @@ public class MainActivity extends AppCompatActivity {
                 else {
                     Toast.makeText(MainActivity.this, "User info ERROR", Toast.LENGTH_SHORT).show();
                 }
-                fetchEventImages(); //Proceed to Step 3
+                fetchEventImages(ds); //Proceed to Step 3
             }
 
             @Override
             public void onCancelled(DatabaseError error) {  }
         });
     }
-    public void fetchEventImages(){ //Step 3
-        //TODO Micah load images
+    public void fetchEventImages(DataSnapshot dataSnapshot){ //Step 3
+        event = dataSnapshot.getValue(Event.class);
+        final String eventID = event.getId();
+        final FirebaseStorage storage = FirebaseStorage.getInstance();
+        final StorageReference storageRef = storage.getReferenceFromUrl("gs://groupup-f9e17.appspot.com/eventImages").child(eventID + ".png");
+
+        //getting file as byteArray
+        final long ONE_MEGABYTE = (1024 * 1024);
+        storageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+            @Override
+            public void onSuccess(byte[] bytes) {
+                Bitmap bm = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+
+                //eventBitmap set to hold current event's event image
+                eventBitmap = bm;
+            }
+        });
+
+
         showEventList(); //Proceed to Step 4
     }
     public void showEventList(){
+        
         //Handles setup of RecyclerView
         recyclerView = findViewById(R.id.recycleViewEventList);
-        eAdapter = new EventsAdapter(eventList, user); //EventsAdapter created
+        eAdapter = new EventsAdapter(eventList, user, eventBitmap); //EventsAdapter created
         final RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
