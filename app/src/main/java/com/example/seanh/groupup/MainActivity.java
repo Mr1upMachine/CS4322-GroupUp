@@ -35,6 +35,8 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
+//TODO Micah delete this
+
 public class MainActivity extends AppCompatActivity {
     private final String LOGTAG = "MainActivity";
     private final FirebaseUser fbUser = FirebaseAuth.getInstance().getCurrentUser();
