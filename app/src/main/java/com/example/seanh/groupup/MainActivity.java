@@ -132,16 +132,7 @@ public class MainActivity extends AppCompatActivity {
         //loads events for the first time
         fetchAllData();
 
-        //Handles setup of RecyclerView
-        recyclerView = findViewById(R.id.recycleViewEventList);
-        eAdapter = new EventsAdapter(eventList, user); //EventsAdapter created
-        final RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
-        recyclerView.setLayoutManager(mLayoutManager);
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setAdapter(eAdapter);
 
-        //Updates the RecycleView
-        eAdapter.notifyDataSetChanged();
 
 
         //Makes refreshing the event list easy
@@ -317,6 +308,17 @@ public class MainActivity extends AppCompatActivity {
         showEventList(); //Proceed to Step 4
     }
     public void showEventList(){
+        //Handles setup of RecyclerView
+        recyclerView = findViewById(R.id.recycleViewEventList);
+        eAdapter = new EventsAdapter(eventList, user); //EventsAdapter created
+        final RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
+        recyclerView.setLayoutManager(mLayoutManager);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setAdapter(eAdapter);
+
+        //Updates the RecycleView
+        eAdapter.notifyDataSetChanged();
+
         //onClickListener for RecycleView elements
         recyclerView.addOnItemTouchListener(new RecyclerTouchListener(this, recyclerView, new ClickListener() {
             public void onClick(View view, final int position) {

@@ -6,8 +6,6 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -54,7 +52,7 @@ public class EventViewActivity extends AppCompatActivity {
                 overridePendingTransition(R.anim.nothing, R.anim.slide_out);
             }
         });
-        tb.inflateMenu(R.menu.menu_event_view);
+        //tb.inflateMenu(R.menu.menu_event_view);
         
         textEventViewOwner =  findViewById(R.id.textEventViewOwner);
         final TextView textEventViewStartTime = findViewById(R.id.textEventViewStartTime);
@@ -104,6 +102,7 @@ public class EventViewActivity extends AppCompatActivity {
         });
     }
 
+    /*
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         if(isOwner) {
@@ -118,12 +117,8 @@ public class EventViewActivity extends AppCompatActivity {
 
 
             //passes through the information to the next activity about this event
-            Intent i = new Intent(EventViewActivity.this, EventEditActivity.class);
-            Bundle b = new Bundle();
-            b.putParcelable("myEvent", event);
-            b.putParcelable("myUser", user);
-            i.putExtras(b);
-            startActivity(i);
+            //Intent i = new Intent(getApplicationContext(), EventEditActivity.class);
+            //startActivity(i);
 
         if(id == R.id.menu_event_view_delete) {
             //TODO delete here
@@ -131,6 +126,7 @@ public class EventViewActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+    */
 
     @Override
     public void onBackPressed() {
@@ -185,10 +181,10 @@ public class EventViewActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 owner = dataSnapshot.getValue(User.class);
                 textEventViewOwner.setText("Host: " + owner.getfName() + " " + owner.getlName() );
-                if(owner.getId().equals(user.getId())) {
+                /*if(owner.getId().equals(user.getId())) {
                     isOwner = true;
                     invalidateOptionsMenu();
-                }
+                }*/
                 setUpJoinButton();
             }
 

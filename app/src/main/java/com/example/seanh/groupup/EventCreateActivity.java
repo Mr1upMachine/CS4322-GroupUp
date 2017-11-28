@@ -174,6 +174,13 @@ public class EventCreateActivity extends AppCompatActivity {
         });
 
         //Go to EventCreateMap Activity
+        //Go to EventCreateMap Activity
+        findViewById(R.id.editEventCreateAddress).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(EventCreateActivity.this, EventCreateMap.class));
+            }
+        });
         findViewById(R.id.btnEventCreateMap).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -212,17 +219,21 @@ public class EventCreateActivity extends AppCompatActivity {
                 final String strCapacity = textEventCreateCapacity.getText().toString();
 
 
-                //checks to see if user image is given, if so then upload to database
+                if(strDesc.length() < 30) {
+                    Toast.makeText(getApplicationContext(), "Event description too short, add "+( 30-strDesc.length() )+" more characters.",
+                            Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
 
                 //Verifies all data fields are filled
                 if (!strName.isEmpty() &&
-                        !strDesc.isEmpty() &&
                         !strDate.isEmpty() &&
                         !strStartTime.isEmpty() &&
                         !strEndTime.isEmpty() &&
                         !strAddress.isEmpty() &&
-                        cp.getColor() != Color.rgb(127,127,127) ) {
+                        cp.getColor() != Color.rgb(127,127,127) &&
+                        eventPicture != null) {
 
                     String eventID = createNewEvent(new Event(
                             strName, strDesc, user.getId(),
@@ -232,30 +243,29 @@ public class EventCreateActivity extends AppCompatActivity {
                             Integer.parseInt(strAttendance), Integer.parseInt(strCapacity),
                             cp.getColor()));
 
-                    if (eventPicture != null){
-                        //create bitmap of image, compress to PNG,
-                        //store byte array of image in imageData containing raw pixels
-                        eventPicture.setDrawingCacheEnabled(true);
-                        eventPicture.buildDrawingCache();
-                        Bitmap bitmap = eventPicture.getDrawingCache();
-                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                        bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
-                        eventPicture.setDrawingCacheEnabled(false);
-                        byte[] imageData = baos.toByteArray();
+                    //create bitmap of image, compress to PNG,
+                    //store byte array of image in imageData containing raw pixels
+                    eventPicture.setDrawingCacheEnabled(true);
+                    eventPicture.buildDrawingCache();
+                    Bitmap bitmap = eventPicture.getDrawingCache();
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+                    eventPicture.setDrawingCacheEnabled(false);
+                    byte[] imageData = baos.toByteArray();
 
-                        //path to where image will be saved in Firebase dir
-                        String path = "eventImages/" + eventID + ".png";
+                    //path to where image will be saved in Firebase dir
+                    String path = "eventImages/" + eventID + ".png";
 
-                        //eventRef is the unique reference pointing to the image in Firebase,
-                        //use to reference image when calling for eventView
-                        StorageReference eventRef = storage.getReference(path);
+                    //eventRef is the unique reference pointing to the image in Firebase,
+                    //use to reference image when calling for eventView
+                    StorageReference eventRef = storage.getReference(path);
 
 
-                        //line physically uploading image to firebase
-                        UploadTask uploadtask = eventRef.putBytes(imageData);
+                    //line physically uploading image to firebase
+                    UploadTask uploadtask = eventRef.putBytes(imageData);
 
-                        //TODO implement UploadTask to give progress bar so user knows when upload completes
-                    }
+                    //TODO implement UploadTask to give progress bar so user knows when upload completes
+
 
                     Toast.makeText(getApplicationContext(), "Event created successfully",
                             Toast.LENGTH_LONG).show();
@@ -264,7 +274,7 @@ public class EventCreateActivity extends AppCompatActivity {
                     preferences.edit().remove("address").remove("locX").remove("locY").apply();
                     finish();
                 } else {
-                    Toast.makeText(getApplicationContext(), "Please fill all fields & select color",
+                    Toast.makeText(getApplicationContext(), "Please fill all fields, select picture, and select color",
                             Toast.LENGTH_SHORT).show();
                 }
             }
