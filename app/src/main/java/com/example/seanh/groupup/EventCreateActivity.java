@@ -238,7 +238,8 @@ public class EventCreateActivity extends AppCompatActivity {
                     String eventID = createNewEvent(new Event(
                             strName, strDesc, user.getId(),
                             startDateTime.getTimeInMillis(), endDateTime.getTimeInMillis(),
-                            strAddress, strAddressStreet, strAddressAreaState, strAddressZip,  //TODO fix?
+                            generateGeoFull(numLocX, numLocY), generateGeoAdd(numLocX, numLocY),
+                            generateGeoAreaState(numLocX, numLocY), generateGeoZip(numLocX, numLocY),  //TODO fix?
                             numLocX, numLocY,
                             Integer.parseInt(strAttendance), Integer.parseInt(strCapacity),
                             cp.getColor()));
@@ -545,6 +546,10 @@ public class EventCreateActivity extends AppCompatActivity {
         final String s = dr.getKey();
         e.setId(s); //makes it easier to get generated key
         dr.setValue(e); //uploads data to database
+
+        user.addCreatedEvent(e.getId()); //uploads it to user count
+        dataRoot.child("users").setValue(user);
+
         return s;
     }
 

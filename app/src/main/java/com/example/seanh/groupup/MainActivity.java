@@ -85,6 +85,26 @@ public class MainActivity extends AppCompatActivity {
                 if(id == R.id.main_drawer_subscribed){
                     if( !user.getSubscribedEventIds().isEmpty() ) {
                         filterEventList( user.getSubscribedEventIds() );
+                        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_36dp);
+                        toolbar.setTitle(item.getTitle()+" Events");
+                        menuBar.getItem(0).setVisible(false);
+                        menuBar.getItem(1).setVisible(false);
+                        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                resetEventList();
+                                toolbar.setNavigationIcon(R.drawable.ic_menu_white);
+                                toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        mDrawerLayout.openDrawer(Gravity.START);
+                                    }
+                                });
+                                toolbar.setTitle("GroupUp");
+                                menuBar.getItem(0).setVisible(true);
+                                menuBar.getItem(1).setVisible(true);
+                            }
+                        });
                     }
                     else{
                         Toast.makeText(MainActivity.this, "No subscribed events", Toast.LENGTH_SHORT).show();
@@ -93,32 +113,33 @@ public class MainActivity extends AppCompatActivity {
                 else if(id == R.id.main_drawer_hosted){
                     if( !user.getCreatedEventIds().isEmpty() ) {
                         filterEventList( user.getCreatedEventIds() );
+                        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_36dp);
+                        toolbar.setTitle(item.getTitle()+" Events");
+                        menuBar.getItem(0).setVisible(false);
+                        menuBar.getItem(1).setVisible(false);
+                        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                resetEventList();
+                                toolbar.setNavigationIcon(R.drawable.ic_menu_white);
+                                toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        mDrawerLayout.openDrawer(Gravity.START);
+                                    }
+                                });
+                                toolbar.setTitle("GroupUp");
+                                menuBar.getItem(0).setVisible(true);
+                                menuBar.getItem(1).setVisible(true);
+                            }
+                        });
                     }
                     else{
                         Toast.makeText(MainActivity.this, "No hosted events", Toast.LENGTH_SHORT).show();
                     }
                 }
 
-                toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_36dp);
-                toolbar.setTitle(item.getTitle()+" Events");
-                menuBar.getItem(0).setVisible(false);
-                menuBar.getItem(1).setVisible(false);
-                toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        resetEventList();
-                        toolbar.setNavigationIcon(R.drawable.ic_menu_white);
-                        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                mDrawerLayout.openDrawer(Gravity.START);
-                            }
-                        });
-                        toolbar.setTitle("GroupUp");
-                        menuBar.getItem(0).setVisible(true);
-                        menuBar.getItem(1).setVisible(true);
-                    }
-                });
+
 
                 mDrawerLayout.closeDrawer(Gravity.START);
                 return false;
@@ -293,9 +314,10 @@ public class MainActivity extends AppCompatActivity {
 
                 final TextView tvName = findViewById(R.id.textMainDrawerName);
                 final TextView tvEmail = findViewById(R.id.textMainDrawerEmail);
-                tvName.setText(user.getfName()+" "+user.getlName());
-                tvEmail.setText(user.getEmail());
-
+                if(user != null) {
+                    tvName.setText(user.getfName() + " " + user.getlName());
+                    tvEmail.setText(user.getEmail());
+                }
                 fetchEventImages(); //Proceed to Step 3
             }
 

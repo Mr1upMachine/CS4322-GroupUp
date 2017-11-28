@@ -23,11 +23,11 @@ import com.google.firebase.storage.StorageReference;
 
 public class EventViewActivity extends AppCompatActivity {
     private Toolbar tb;
-    private TextView textEventViewOwner;
+    private TextView textEventViewOwner, textEventViewAttendance;
     private ImageView imageEventImage;
     private Event event;
     private User user, owner;
-    private boolean isOwner = false;
+    //private boolean isOwner = false;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +60,7 @@ public class EventViewActivity extends AppCompatActivity {
         final TextView textEventViewDate = findViewById(R.id.textEventViewDate);
         final TextView textEventViewDescription = findViewById(R.id.textEventViewDescription);
         final TextView textEventViewAddress = findViewById(R.id.textEventViewAddress);
-        final TextView textEventViewAttendance = findViewById(R.id.textEventViewAttendance);
+        textEventViewAttendance = findViewById(R.id.textEventViewAttendance);
         final TextView textEventViewCapacity = findViewById(R.id.textEventViewCapacity);
         imageEventImage = findViewById(R.id.app_bar_image);
 
@@ -135,41 +135,62 @@ public class EventViewActivity extends AppCompatActivity {
         overridePendingTransition(R.anim.nothing, R.anim.slide_out);
     }
 
-    public void setUpJoinButton(){
+    public void setUpJoinButton() {
         final Button buttonViewEventJoin = findViewById(R.id.buttonViewEventJoin);
-        if( !user.getId().equals(event.getOwnerId()) ) {
-            if (user.getSubscribedEventIds().contains(event.getId())) {
-                buttonViewEventJoin.setText("Leave");
-            }
-            buttonViewEventJoin.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (!user.getSubscribedEventIds().contains(event.getId())) {
-                        event.addSubscribedToEvent(user.getId());
-                        user.addSubscribedEvent(event.getId());
-                        buttonViewEventJoin.setText("Leave");
-                        Toast.makeText(EventViewActivity.this, "Event joined successfully", Toast.LENGTH_SHORT).show();
-                    } else {
-                        event.removeSubscribedToEvent(user.getId());
-                        user.removeSubscribedEvent(event.getId());
-                        buttonViewEventJoin.setText("Join");
-                        Toast.makeText(EventViewActivity.this, "Event left successfully", Toast.LENGTH_SHORT).show();
+        if (user != null) {
+            if (!user.getId().equals(event.getOwnerId())) {
+                if (user.getSubscribedEventIds().contains(event.getId())) {
+                    buttonViewEventJoin.setText("Leave");
+                }
+                buttonViewEventJoin.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (!user.getSubscribedEventIds().contains(event.getId())) {
+                            event.addSubscribedToEvent(user.getId());
+                            user.addSubscribedEvent(event.getId());
+
+                            if (event.getAttendance() >= event.getCapacity()) {
+                                Toast.makeText(EventViewActivity.this, "Event is full!", Toast.LENGTH_SHORT).show();
+                                return;
+                            } else {
+                                event.setAttendance(event.getAttendance() + 1);
+                                textEventViewAttendance.setText("" + event.getAttendance());
+                                buttonViewEventJoin.setText("Leave");
+                                Toast.makeText(EventViewActivity.this, "Event joined successfully", Toast.LENGTH_SHORT).show();
+                            }
+                        } else {
+                            event.removeSubscribedToEvent(user.getId());
+                            user.removeSubscribedEvent(event.getId());
+
+                            event.setAttendance(event.getAttendance() - 1);
+                            textEventViewAttendance.setText("" + event.getAttendance());
+
+                            buttonViewEventJoin.setText("Join");
+                            Toast.makeText(EventViewActivity.this, "Event left successfully", Toast.LENGTH_SHORT).show();
+                        }
+                        //relegates it to background task
+                        Runnable runnable = new Runnable() {
+                            @Override
+                            public void run() {
+                                updateEvent(event);
+                                updateUser(user);
+                            }
+                        };
+                        new Thread(runnable).start();
                     }
-                    Database.updateEvent(event);
-                    Database.updateUser(user);
-                }
-            });
-        }
-        else{
-            buttonViewEventJoin.setText("Owner");
-            buttonViewEventJoin.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Toast.makeText(EventViewActivity.this, "I'd hope you're already going", Toast.LENGTH_SHORT).show();
-                }
-            });
+                });
+            } else {
+                buttonViewEventJoin.setText("Owner");
+                buttonViewEventJoin.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Toast.makeText(EventViewActivity.this, "I'd hope you're already going", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
         }
     }
+
 
 
     //relevant database calls
@@ -180,7 +201,9 @@ public class EventViewActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 owner = dataSnapshot.getValue(User.class);
-                textEventViewOwner.setText("Host: " + owner.getfName() + " " + owner.getlName() );
+                if (owner != null) {
+                    textEventViewOwner.setText("Host: " + owner.getfName() + " " + owner.getlName() );
+                }
                 /*if(owner.getId().equals(user.getId())) {
                     isOwner = true;
                     invalidateOptionsMenu();
@@ -191,5 +214,11 @@ public class EventViewActivity extends AppCompatActivity {
             @Override
             public void onCancelled(DatabaseError error) {  }
         });
+    }
+    public void updateEvent(Event newEvent){
+        dataRoot.child("events").child(newEvent.getId()).setValue(newEvent); //uploads data to database
+    }
+    public void updateUser(User u){
+        dataRoot.child("users").child(u.getId()).setValue(u);
     }
 }

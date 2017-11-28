@@ -49,17 +49,17 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewH
         holder.location.setText( event.getAddressStreet() );
         holder.time.setText( event.genStartTimeDateSimple() );
         holder.color.setColorFilter( event.getColor() );
-        //holder.background.setImageDrawable(); //TODO set image
-        if (currentUser.getSubscribedEventIds() != null) {
-            if (currentUser.containsSubscribedEvent(event.getId())) {
-                holder.subStar.setVisibility(View.VISIBLE);
-            }
-            else if (currentUser.getId().equals(event.getOwnerId())) {
-                holder.ownStar.setVisibility(View.VISIBLE);
-            }
-            else {
-                holder.subStar.setVisibility(View.INVISIBLE);
-                holder.ownStar.setVisibility(View.INVISIBLE);
+        if(currentUser != null) {
+            //holder.background.setImageDrawable(); //TODO set image
+            if (currentUser.getSubscribedEventIds() != null) {
+                if (currentUser.containsSubscribedEvent(event.getId())) {
+                    holder.subStar.setVisibility(View.VISIBLE);
+                } else if (currentUser.getId().equals(event.getOwnerId())) {
+                    holder.ownStar.setVisibility(View.VISIBLE);
+                } else {
+                    holder.subStar.setVisibility(View.INVISIBLE);
+                    holder.ownStar.setVisibility(View.INVISIBLE);
+                }
             }
         }
     }

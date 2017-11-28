@@ -9,12 +9,5 @@
         android:id="@+id/main_drawer_hosted"
         android:icon="@drawable/ic_group_white_18dp"
         android:title="Hosted" />
-    <item
-        android:id="@+id/main_drawer_item3"
-        android:icon="@drawable/ic_menu_white"
-        android:title="Item3" />
-    <item
-        android:id="@+id/main_drawer_item4"
-        android:icon="@drawable/ic_menu_white"
-        android:title="Item4" />
+
 </menu>
