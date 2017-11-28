@@ -318,6 +318,9 @@ public class MainActivity extends AppCompatActivity {
                     tvName.setText(user.getfName() + " " + user.getlName());
                     tvEmail.setText(user.getEmail());
                 }
+                else {
+                    Toast.makeText(MainActivity.this, "User info ERROR", Toast.LENGTH_SHORT).show();
+                }
                 fetchEventImages(); //Proceed to Step 3
             }
 

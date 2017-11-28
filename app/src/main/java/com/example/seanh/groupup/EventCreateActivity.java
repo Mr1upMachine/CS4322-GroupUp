@@ -548,7 +548,7 @@ public class EventCreateActivity extends AppCompatActivity {
         dr.setValue(e); //uploads data to database
 
         user.addCreatedEvent(e.getId()); //uploads it to user count
-        dataRoot.child("users").setValue(user);
+        dataRoot.child("users").child(user.getId()).setValue(user);
 
         return s;
     }
