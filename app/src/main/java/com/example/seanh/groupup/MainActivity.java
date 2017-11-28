@@ -27,6 +27,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -46,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
     private final FirebaseUser fbUser = FirebaseAuth.getInstance().getCurrentUser();
     private User user;
     private Event event;
-    private Bitmap eventBitmap;
+    private Bitmap eventBitmap = null;
 
     private List<Event> eventList = new ArrayList<>();
     private List<Event> tempList;
@@ -338,10 +339,10 @@ public class MainActivity extends AppCompatActivity {
         event = dataSnapshot.getValue(Event.class);
         final String eventID = event.getId();
         final FirebaseStorage storage = FirebaseStorage.getInstance();
+        final long ONE_MEGABYTE = (1024 * 1024);
         final StorageReference storageRef = storage.getReferenceFromUrl("gs://groupup-f9e17.appspot.com/eventImages").child(eventID + ".png");
 
-        //getting file as byteArray
-        final long ONE_MEGABYTE = (1024 * 1024);
+
         storageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
             @Override
             public void onSuccess(byte[] bytes) {
@@ -350,7 +351,24 @@ public class MainActivity extends AppCompatActivity {
                 //eventBitmap set to hold current event's event image
                 eventBitmap = bm;
             }
+
+        }).addOnFailureListener(new OnFailureListener() {
+
+            //supply stock image if event owner never set their own
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                final StorageReference stockImageRef = storage.getReferenceFromUrl("gs://groupup-f9e17.appspot.com/eventImages/stock_park.png");
+                        stockImageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                            @Override
+                            public void onSuccess(byte[] bytes) {
+                                Bitmap bm = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                                eventBitmap = bm;
+
+                            }
+                        });
+            }
         });
+
 
 
         showEventList(); //Proceed to Step 4
