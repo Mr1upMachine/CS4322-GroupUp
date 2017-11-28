@@ -317,6 +317,7 @@ public class MainActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 DataSnapshot ds = dataSnapshot;
                 user = dataSnapshot.getValue(User.class);
+                event = dataSnapshot.getValue(Event.class);
                 Log.d(LOGTAG,"data parse complete");
 
                 final TextView tvName = findViewById(R.id.textMainDrawerName);
@@ -328,15 +329,15 @@ public class MainActivity extends AppCompatActivity {
                 else {
                     Toast.makeText(MainActivity.this, "User info ERROR", Toast.LENGTH_SHORT).show();
                 }
-                fetchEventImages(ds); //Proceed to Step 3
+                fetchEventImages(event); //Proceed to Step 3
             }
 
             @Override
             public void onCancelled(DatabaseError error) {  }
         });
     }
-    public void fetchEventImages(DataSnapshot dataSnapshot){ //Step 3
-        event = dataSnapshot.getValue(Event.class);
+    public void fetchEventImages(Event ev){ //Step 3
+        event = ev;
         final String eventID = event.getId();
         final FirebaseStorage storage = FirebaseStorage.getInstance();
         final long ONE_MEGABYTE = (1024 * 1024);
@@ -368,7 +369,6 @@ public class MainActivity extends AppCompatActivity {
                         });
             }
         });
-
 
 
         showEventList(); //Proceed to Step 4

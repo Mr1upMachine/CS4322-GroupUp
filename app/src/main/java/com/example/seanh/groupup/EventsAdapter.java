@@ -37,7 +37,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewH
     public EventsAdapter(List<Event> eventsList, User currentUser, Bitmap eventBM) {
         this.eventsList = eventsList;
         this.currentUser = currentUser;
-        eventBitmap = eventBM;
+        this.eventBitmap = eventBM;
     }
 
     @Override
