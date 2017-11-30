@@ -69,28 +69,20 @@
 
     <TextView
         android:id="@+id/textEventViewAddress"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp"
-        android:layout_marginEnd="24dp"
-        android:layout_marginStart="24dp"
+        android:layout_width="296dp"
+        android:layout_height="36dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:ems="10"
         android:text="123 Main Street | ButtsTown, AS 01248"
         android:textAlignment="center"
-        app:layout_constraintBottom_toTopOf="@+id/constraintLayoutEventViewMap"
-        app:layout_constraintEnd_toEndOf="@+id/constraintLayoutEventViewMap"
-        app:layout_constraintStart_toStartOf="@+id/constraintLayoutEventViewMap" />
-
-    <android.support.constraint.ConstraintLayout
-        android:id="@+id/constraintLayoutEventViewMap"
-        android:layout_width="0dp"
-        android:layout_height="150dp"
-        android:background="#472386"
-        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+        app:layout_constraintBottom_toTopOf="@+id/MapViewActivity"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-
-    </android.support.constraint.ConstraintLayout>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/constraintLayoutCapacity"
@@ -185,5 +177,17 @@
             android:background="?attr/selectableItemBackground"
             android:text="Share" />
     </LinearLayout>
+
+    <fragment
+        android:id="@+id/MapViewActivity"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="369dp"
+        android:layout_height="183dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/linearLayout"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.878"
+        tools:layout_editor_absoluteX="0dp" />
 
 </android.support.constraint.ConstraintLayout>

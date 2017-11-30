@@ -23,7 +23,18 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -31,19 +42,23 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.List;
 
 //TODO Micah delete this
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
     private final String LOGTAG = "MainActivity";
     private final FirebaseUser fbUser = FirebaseAuth.getInstance().getCurrentUser();
     private User user;
+    private Bitmap eventBitmap;
 
     private List<Event> eventList = new ArrayList<>();
     private List<Event> tempList;
+    private List<Bitmap> eventBitmapList = new ArrayList<>();
     private RecyclerView recyclerView;
     private EventsAdapter eAdapter;
     private SwipeRefreshLayout swipeRefreshContainer;
@@ -55,6 +70,9 @@ public class MainActivity extends AppCompatActivity {
     private FloatingActionButton fab;
 
     boolean doubleBackToExitPressedOnce = false; //sign out pressing back twice
+
+    GoogleMap mMap;
+    boolean firstTimeMap = true;
     
 
     @Override
@@ -87,6 +105,7 @@ public class MainActivity extends AppCompatActivity {
                 if(id == R.id.main_drawer_subscribed){
                     if( !user.getSubscribedEventIds().isEmpty() ) {
                         filterEventList( user.getSubscribedEventIds() );
+                        refreshMapMarkers();
                         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_36dp);
                         toolbar.setTitle(item.getTitle()+" Events");
                         menuBar.getItem(0).setVisible(false);
@@ -94,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
                         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                resetEventList();
+                                resetMapMarkers();
                                 toolbar.setNavigationIcon(R.drawable.ic_menu_white);
                                 toolbar.setNavigationOnClickListener(new View.OnClickListener() {
                                     @Override
@@ -115,6 +134,7 @@ public class MainActivity extends AppCompatActivity {
                 else if(id == R.id.main_drawer_hosted){
                     if( !user.getCreatedEventIds().isEmpty() ) {
                         filterEventList( user.getCreatedEventIds() );
+                        refreshMapMarkers();
                         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_36dp);
                         toolbar.setTitle(item.getTitle()+" Events");
                         menuBar.getItem(0).setVisible(false);
@@ -122,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
                         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                resetEventList();
+                                resetMapMarkers();
                                 toolbar.setNavigationIcon(R.drawable.ic_menu_white);
                                 toolbar.setNavigationOnClickListener(new View.OnClickListener() {
                                     @Override
@@ -148,6 +168,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapMain);
+        mapFragment.getMapAsync(this);
 
         //if Location permission is not granted, try granting Location permission
         requestPermissions(new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION, android.Manifest.permission.ACCESS_FINE_LOCATION}, 1);
@@ -206,14 +228,14 @@ public class MainActivity extends AppCompatActivity {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                eAdapter.clear();
-                filterEventList(query);
-                return true;
+                return onQueryTextChange(query);
             }
             @Override
             public boolean onQueryTextChange(String newText) {
                 eAdapter.clear();
                 filterEventList(newText);
+                clearMapMarkers();
+                refreshMapMarkers();
                 return true;
             }
         });
@@ -221,7 +243,7 @@ public class MainActivity extends AppCompatActivity {
         closeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                resetEventList();
+                resetMapMarkers();
 
                 final EditText et = findViewById(R.id.search_src_text); //Find EditText view
                 et.setText(""); //Clear the text from EditText view
@@ -244,17 +266,45 @@ public class MainActivity extends AppCompatActivity {
                 fab.hide();
                 findViewById(R.id.constraintLayoutEventMap).setVisibility(View.VISIBLE);
                 item.setIcon(R.drawable.ic_format_list_bulleted_white_18dp);
+                swipeRefreshContainer.setEnabled( false );
             }
             else{
                 findViewById(R.id.constraintLayoutEventMap).setVisibility(View.GONE);
                 recyclerView.setVisibility(View.VISIBLE);
                 fab.show();
                 item.setIcon(R.drawable.ic_map_white_18dp);
+                swipeRefreshContainer.setEnabled( true );
             }
             menuViewSwitch = !menuViewSwitch; //alternates which menu option is visible
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+
+        mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+        float zoomLevel = 12f;
+        double numLocX = 33.93775966448825;
+        double numLocY = -84.52007937612456;
+        LatLng current = new LatLng(numLocX,numLocY);
+        if(firstTimeMap) {
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(current, zoomLevel));
+            firstTimeMap = false;
+        }
+        mMap.addMarker(new MarkerOptions()
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.littleguy))
+                .position(current)
+                .title("Current Location"));
+
+        for(Event e: eventList) {
+            LatLng eventLatLng = new LatLng(e.getLocX(), e.getLocY());
+            mMap.addMarker(new MarkerOptions()
+                    .position(eventLatLng)
+                    .title(e.getName()));
+        }
     }
 
     @Override
@@ -331,13 +381,54 @@ public class MainActivity extends AppCompatActivity {
         });
     }
     public void fetchEventImages(){ //Step 3
-        //TODO Micah load images
-        showEventList(); //Proceed to Step 4
+        eventBitmapList.clear();
+        for(Event e: eventList) {
+            final String eventID = e.getId();
+            final FirebaseStorage storage = FirebaseStorage.getInstance();
+            final long ONE_MEGABYTE = (1024 * 1024);
+            final StorageReference storageRef = storage.getReferenceFromUrl("gs://groupup-f9e17.appspot.com/eventImages").child(eventID + ".png");
+
+
+            storageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                @Override
+                public void onSuccess(byte[] bytes) {
+                    Bitmap bm = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+
+                    //eventBitmap set to hold current event's event image
+                    eventBitmap = bm;
+                    eventBitmapList.add(eventBitmap);
+                    if(eventList.size() == eventBitmapList.size()) {
+                        showEventList(); //Proceed to Step 4
+                    }
+                }
+
+            }).addOnFailureListener(new OnFailureListener() {
+
+                //supply stock image if event owner never set their own
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    final StorageReference stockImageRef = storage.getReferenceFromUrl("gs://groupup-f9e17.appspot.com/eventImages/stock_park.png");
+                    stockImageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                        @Override
+                        public void onSuccess(byte[] bytes) {
+                            Bitmap bm = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                            eventBitmap = bm;
+                            eventBitmapList.add(eventBitmap);
+                            if(eventList.size() == eventBitmapList.size()) {
+                                showEventList(); //Proceed to Step 4
+                            }
+                        }
+                    });
+                }
+            });
+
+        }
     }
+
     public void showEventList(){
         //Handles setup of RecyclerView
         recyclerView = findViewById(R.id.recycleViewEventList);
-        eAdapter = new EventsAdapter(eventList, user); //EventsAdapter created
+        eAdapter = new EventsAdapter(eventList, user, eventBitmapList); //EventsAdapter created
         final RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -365,10 +456,7 @@ public class MainActivity extends AppCompatActivity {
         showMapMarkers(); //Proceed to Step 5
     }
     private void showMapMarkers(){ //Step 5
-
-        for(Event e : eventList){
-
-        }
+        onMapReady(mMap);
 
         //Hides loading bar(s)
         findViewById(R.id.progressBarMainActivity).setVisibility(View.GONE); //FINISH
@@ -403,5 +491,17 @@ public class MainActivity extends AppCompatActivity {
     private void resetEventList(){
         eAdapter.clear();
         eAdapter.addAll(tempList);
+    }
+
+    private void clearMapMarkers(){
+        mMap.clear();
+        onMapReady(mMap);
+    }
+    private void resetMapMarkers(){
+        resetEventList();
+        onMapReady(mMap);
+    }
+    private void refreshMapMarkers(){
+        onMapReady(mMap);
     }
 }

@@ -9,7 +9,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -28,12 +27,20 @@ public class EventCreateMap extends FragmentActivity implements OnMapReadyCallba
 
     android.support.v7.widget.Toolbar tb;
     public GoogleMap mMap;
+    LatLng eventLocation;
+    EditText et;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_create_map);
         overridePendingTransition(R.anim.slide_in, R.anim.nothing);
+
+        et = findViewById(R.id.editEventCreateMapSearch);
+
+        double numLocX = 33.93775966448825;
+        double numLocY = -84.52007937612456;
+        eventLocation = new LatLng(numLocX, numLocY);
 
         tb = findViewById(R.id.toolbarEventCreateMap);
         tb.setTitle("Select a location:");
@@ -51,10 +58,10 @@ public class EventCreateMap extends FragmentActivity implements OnMapReadyCallba
             public boolean onMenuItemClick(MenuItem item) {
                 if(item.getItemId() == R.id.menu_event_create_map_submit){
                     SharedPreferences.Editor editor = getSharedPreferences("MapAddress", MODE_PRIVATE).edit();
-                    EditText tv = findViewById(R.id.editEventCreateMapSearch);
-                    editor.putString("address", tv.getText().toString());
-                    editor.putString("locX", ""+0.0);
-                    editor.putString("locY", ""+0.0);
+                    EditText et = findViewById(R.id.editEventCreateMapSearch);
+                    editor.putString("address", et.getText().toString());
+                    editor.putString("locX", ""+eventLocation.latitude);
+                    editor.putString("locY", ""+eventLocation.longitude);
                     editor.apply();
                     finish();
                     overridePendingTransition(R.anim.nothing, R.anim.slide_out);
@@ -86,9 +93,13 @@ public class EventCreateMap extends FragmentActivity implements OnMapReadyCallba
                     }
 
                     Address address = addressList.get(0);
-                    LatLng latLng = new LatLng(address.getLatitude(),address.getLongitude());
-                    Marker event = mMap.addMarker(new MarkerOptions().position(latLng).draggable(true).title("Event"));
-                    mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
+
+                    locationSearch.setText(address.getAddressLine(0));
+
+                    eventLocation = new LatLng(address.getLatitude(),address.getLongitude());
+                    et.setText(address.getAddressLine(0));
+                    Marker event = mMap.addMarker(new MarkerOptions().position(eventLocation).draggable(true).title("Event"));
+                    mMap.animateCamera(CameraUpdateFactory.newLatLng(eventLocation));
                 }
             }
         });
@@ -105,7 +116,7 @@ public class EventCreateMap extends FragmentActivity implements OnMapReadyCallba
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
+        mMap.clear();
 
         mMap.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
             @Override
@@ -125,11 +136,13 @@ public class EventCreateMap extends FragmentActivity implements OnMapReadyCallba
                 Geocoder geocoder;
                 List<Address> addresses;
                 geocoder = new Geocoder(EventCreateMap.this, Locale.getDefault());
+                EditText locationSearch = findViewById(R.id.editEventCreateMapSearch);
                 try {
                     addresses = geocoder.getFromLocation(marker.getPosition().latitude, marker.getPosition().longitude, 1);
                     String city = addresses.get(0).getAddressLine(1);
-                    LatLng eventLocation = new LatLng(marker.getPosition().latitude, marker.getPosition().longitude);
-                    Toast.makeText(EventCreateMap.this, city, Toast.LENGTH_SHORT).show();
+                    eventLocation = new LatLng(marker.getPosition().latitude, marker.getPosition().longitude);
+                    locationSearch.setText(addresses.get(0).getAddressLine(0));
+                    //Toast.makeText(EventCreateMap.this, city, Toast.LENGTH_SHORT).show();
                     //Event Location to Database********
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -144,9 +157,9 @@ public class EventCreateMap extends FragmentActivity implements OnMapReadyCallba
 
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         float zoomLevel = 12f;
-        double numLocX = EventCreateActivity.numLocX;
-        double numLocY = EventCreateActivity.numLocY;
-        LatLng event = new LatLng(numLocX - 0.00000001,numLocY - 0.0000001);
+        double numLocX = 33.93775966448825;
+        double numLocY = -84.52007937612456;
+        //LatLng event = new LatLng(numLocX - 0.00000001,numLocY - 0.0000001);
         LatLng current = new LatLng(numLocX,numLocY);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(current, zoomLevel));
         Current = mMap.addMarker(new MarkerOptions()

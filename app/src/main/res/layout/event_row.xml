@@ -11,9 +11,10 @@
         android:layout_width="match_parent"
         android:layout_height="125dp"
         android:layout_marginTop="8dp"
+        android:scaleType="centerCrop"
         android:src="#111111"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/imageEventRowColor"
@@ -47,11 +48,14 @@
 
     <TextView
         android:id="@+id/textEventRowLocation"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="225dp"
+        android:layout_height="20dp"
         android:layout_marginBottom="2dp"
         android:layout_marginStart="8dp"
+        android:elevation="@android:dimen/app_icon_size"
+        android:gravity="left"
         android:text="Location, Loc"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -60,8 +64,20 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="10dp"
+        android:elevation="@android:dimen/app_icon_size"
         android:text=" 00/00/00 00:00"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/textEventRowLocation"
         app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/textEventRowTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:text="Title goes here"
+        android:textAppearance="@android:style/TextAppearance.Medium"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/imageEventRowBackground" />
 
 </android.support.constraint.ConstraintLayout>

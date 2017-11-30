@@ -1,5 +1,6 @@
 package com.example.seanh.groupup;
 
+import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,13 +15,15 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewH
 
     private List<Event> eventsList;
     private User currentUser;
+    private List<Bitmap> eventBitmapList;
 
     public class EventViewHolder extends RecyclerView.ViewHolder {
-        public TextView location, time;
+        public TextView name, location, time;
         public ImageView color, subStar, ownStar, background;
 
         public EventViewHolder(View view) {
             super(view);
+            name = view.findViewById(R.id.textEventRowTitle);
             location = view.findViewById(R.id.textEventRowLocation);
             time = view.findViewById(R.id.textEventRowTime);
 
@@ -31,9 +34,10 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewH
         }
     }
 
-    public EventsAdapter(List<Event> eventsList, User currentUser) {
+    public EventsAdapter(List<Event> eventsList, User currentUser, List<Bitmap> bmL) {
         this.eventsList = eventsList;
         this.currentUser = currentUser;
+        this.eventBitmapList = bmL;
     }
 
     @Override
@@ -46,9 +50,12 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.EventViewH
 
     public void onBindViewHolder(EventViewHolder holder, int position) {
         Event event = eventsList.get(position);
+        Bitmap eventImage = eventBitmapList.get(position);
+        holder.name.setText( event.getName() );
         holder.location.setText( event.getAddressStreet() );
         holder.time.setText( event.genStartTimeDateSimple() );
         holder.color.setColorFilter( event.getColor() );
+        holder.background.setImageBitmap(eventImage);
         if(currentUser != null) {
             //holder.background.setImageDrawable(); //TODO set image
             if (currentUser.getSubscribedEventIds() != null) {

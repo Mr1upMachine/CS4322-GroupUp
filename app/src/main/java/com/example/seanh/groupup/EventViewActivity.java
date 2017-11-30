@@ -1,9 +1,14 @@
 package com.example.seanh.groupup;
 
+import android.app.AlarmManager;
+import android.app.Notification;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -12,6 +17,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -21,13 +33,14 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-public class EventViewActivity extends AppCompatActivity {
+public class EventViewActivity extends AppCompatActivity implements OnMapReadyCallback {
     private Toolbar tb;
     private TextView textEventViewOwner, textEventViewAttendance;
     private ImageView imageEventImage;
     private Event event;
     private User user, owner;
     //private boolean isOwner = false;
+    GoogleMap mMap;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +76,9 @@ public class EventViewActivity extends AppCompatActivity {
         textEventViewAttendance = findViewById(R.id.textEventViewAttendance);
         final TextView textEventViewCapacity = findViewById(R.id.textEventViewCapacity);
         imageEventImage = findViewById(R.id.app_bar_image);
+
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.MapViewActivity);
+                mapFragment.getMapAsync(this);
 
         textEventViewStartTime.setText( event.genStartTimeSimple() );
         textEventViewEndTime.setText( event.genEndTimeSimple() );
@@ -100,6 +116,27 @@ public class EventViewActivity extends AppCompatActivity {
                 startActivity(Intent.createChooser(sendIntent, "Share event details:"));
             }
         });
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+
+        mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+        float zoomLevel = 12f;
+        double numLocX = 33.93775966448825;
+        double numLocY = -84.52007937612456;
+        LatLng eventLocation = new LatLng(event.getLocX(),event.getLocY());
+        LatLng current = new LatLng(numLocX,numLocY);
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(eventLocation, zoomLevel));
+        mMap.addMarker(new MarkerOptions()
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.littleguy))
+                .position(current)
+                .title("Current Location"));
+
+        mMap.addMarker(new MarkerOptions()
+                    .position(eventLocation)
+                    .title(event.getName()));
     }
 
     /*
@@ -191,6 +228,23 @@ public class EventViewActivity extends AppCompatActivity {
         }
     }
 
+
+    private void scheduleNotification(int delay) {
+        Notification.Builder builder = new Notification.Builder(this);
+        builder.setContentTitle(event.getName());
+        builder.setContentText("This event is starting soon!"); //TODO Finish
+        builder.setSmallIcon(R.drawable.ic_location_on_white_18dp);
+        Notification notification = builder.build();
+
+        Intent notificationIntent = new Intent(this, NotificationPublisher.class);
+        notificationIntent.putExtra(NotificationPublisher.NOTIFICATION_ID, 1);
+        notificationIntent.putExtra(NotificationPublisher.NOTIFICATION, notification);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        long futureInMillis = SystemClock.elapsedRealtime() + delay;
+        AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
+    }
 
 
     //relevant database calls

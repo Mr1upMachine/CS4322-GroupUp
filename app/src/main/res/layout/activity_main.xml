@@ -41,7 +41,8 @@
                 android:layout_marginBottom="10dp"
                 android:layout_marginLeft="10dp"
                 android:background="?attr/selectableItemBackground"
-                android:src="@drawable/ic_settings_white" />
+                android:src="@drawable/ic_settings_white"
+                android:visibility="gone" />
         </LinearLayout>
 
     </android.support.design.widget.NavigationView>
