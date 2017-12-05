@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -193,6 +192,7 @@ public class EventViewActivity extends AppCompatActivity implements OnMapReadyCa
                                 event.setAttendance(event.getAttendance() + 1);
                                 textEventViewAttendance.setText("" + event.getAttendance());
                                 buttonViewEventJoin.setText("Leave");
+                                scheduleNotification(500);
                                 Toast.makeText(EventViewActivity.this, "Event joined successfully", Toast.LENGTH_SHORT).show();
                             }
                         } else {
@@ -201,6 +201,8 @@ public class EventViewActivity extends AppCompatActivity implements OnMapReadyCa
 
                             event.setAttendance(event.getAttendance() - 1);
                             textEventViewAttendance.setText("" + event.getAttendance());
+
+                            cancelNotification();
 
                             buttonViewEventJoin.setText("Join");
                             Toast.makeText(EventViewActivity.this, "Event left successfully", Toast.LENGTH_SHORT).show();
@@ -241,9 +243,28 @@ public class EventViewActivity extends AppCompatActivity implements OnMapReadyCa
         notificationIntent.putExtra(NotificationPublisher.NOTIFICATION, notification);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        long futureInMillis = SystemClock.elapsedRealtime() + delay;
+        long futureInMillis = System.currentTimeMillis() + delay;
         AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
         alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
+
+    }
+
+    public void cancelNotification(){
+        Notification.Builder builder = new Notification.Builder(this);
+        builder.setContentTitle(event.getName());
+        builder.setContentText("This event is starting soon!"); //TODO Finish
+        builder.setSmallIcon(R.drawable.ic_location_on_white_18dp);
+        Notification notification = builder.build();
+
+        Intent notificationIntent = new Intent(this, NotificationPublisher.class);
+        notificationIntent.putExtra(NotificationPublisher.NOTIFICATION_ID, 1);
+        notificationIntent.putExtra(NotificationPublisher.NOTIFICATION, notification);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+        if (alarmManager != null) {
+            alarmManager.cancel(pendingIntent);
+        }
     }
 
 
