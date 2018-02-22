@@ -80,14 +80,15 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //toolbar object
         toolbar = findViewById(R.id.toolbarMain);
         setSupportActionBar(toolbar);
         toolbar.setTitle("GroupUp");
         toolbar.setNavigationIcon(R.drawable.ic_menu_white);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                mDrawerLayout.openDrawer(Gravity.START);
+            public void onClick(View view) {
+
             }
         });
         toolbar.inflateMenu(R.menu.menu_main);
@@ -168,6 +169,16 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
+
+
+
+
+
+
+
+
+
+
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapMain);
         mapFragment.getMapAsync(this);
 
@@ -210,6 +221,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
     }
 
+    //creation of menu
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
@@ -256,6 +268,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         return true;
     }
+    //on click for menu items
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
