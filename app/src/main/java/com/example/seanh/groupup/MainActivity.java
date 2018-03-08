@@ -335,7 +335,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             //comments are lame
             this.doubleBackToExitPressedOnce = true;
-            Toast.makeText(this, "Please click BACK again to sign out", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Please click back again to sign out", Toast.LENGTH_SHORT).show();
           
             //after 2 seconds resets
             new Handler().postDelayed(new Runnable() {
