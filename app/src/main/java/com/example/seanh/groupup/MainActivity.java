@@ -333,6 +333,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 return;
             }
 
+            //comments are lame
             this.doubleBackToExitPressedOnce = true;
             Toast.makeText(this, "Please click BACK again to sign out", Toast.LENGTH_SHORT).show();
           
